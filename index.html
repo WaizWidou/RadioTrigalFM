@@ -866,6 +866,22 @@
   }
   body.light #result-overlay { background: #00000066; }
   #result-overlay.show { opacity: 1; pointer-events: all; }
+
+  /* ── AVISO: salir a mitad de ronda del Modo Historia ──
+     Mismo patrón visual que #result-overlay (reutiliza .result-card,
+     .result-emoji, .result-title, .result-score y .result-actions), pero
+     con su propio z-index más alto para poder aparecer también por encima
+     del quiz mientras una ronda está en curso. */
+  #leave-story-confirm-overlay {
+    position: fixed; inset: 0; z-index: 260;
+    background: #0a0e1add;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(6px);
+  }
+  body.light #leave-story-confirm-overlay { background: #00000066; }
+  #leave-story-confirm-overlay.show { opacity: 1; pointer-events: all; }
   .result-card {
     background: var(--bg-card);
     border: 1px solid var(--border);
@@ -1464,6 +1480,82 @@
     line-height: 1.4;
   }
 
+  /* ══════════════════════════════════════════════════════════════
+     DEBUG · SELECTOR DE EVENTOS POKÉMON (SOLO PARA PRUEBAS)
+     ELIMINAR TODO ESTE BLOQUE CSS cuando se retire la función de debug.
+     ══════════════════════════════════════════════════════════════ */
+  #debug-event-btn {
+    display: inline-block;
+    margin: 6px auto 0;
+    font-size: .68rem;
+    font-weight: 800;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: 1px dashed var(--yellow);
+    background: #0003;
+    color: var(--yellow);
+    cursor: pointer;
+  }
+  #debug-event-panel {
+    position: fixed; inset: 0; z-index: 500;
+    display: none;
+    align-items: center; justify-content: center;
+    background: #000000c0;
+    padding: 20px;
+  }
+  #debug-event-panel.show { display: flex; }
+  .debug-event-box {
+    width: min(90vw, 340px);
+    max-height: 80vh;
+    display: flex; flex-direction: column;
+    background: var(--bg-card);
+    border: 2px dashed var(--yellow);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .debug-event-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: var(--yellow);
+    text-align: center;
+  }
+  .debug-event-hint {
+    font-size: .72rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin: 4px 0 10px;
+  }
+  .debug-event-list {
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .debug-event-list button {
+    font-size: .78rem;
+    font-weight: 700;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--yellow);
+    background: #0003;
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+  }
+  .debug-event-list button:active { background: var(--yellow-glow); }
+  .debug-event-close-btn {
+    margin-top: 12px;
+    font-size: .8rem;
+    font-weight: 800;
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    background: var(--yellow);
+    color: #000;
+    cursor: pointer;
+  }
+  /* ══════════════════════════════════════════════════════════════
+     FIN DEBUG · SELECTOR DE EVENTOS POKÉMON
+     ══════════════════════════════════════════════════════════════ */
+
   /* Efecto del evento Inkay: gira las opciones de respuesta 180° */
   .answers-grid.event-inkay {
     transform: rotate(180deg);
@@ -1487,6 +1579,12 @@
     91%           { opacity: .15;transform: translate(-1px, 0); }
     92%           { opacity: 1;  transform: translate(0,0);      text-shadow: none; filter: none; }
   }
+  /* Texto momentáneamente "corrupto" (sustitución de caracteres) del evento Porygon */
+  .porygon-text-glitching {
+    color: #00e5ff !important;
+    text-shadow: 1px 0 #ff2fd6, -1px 0 #00ff88 !important;
+    letter-spacing: .5px;
+  }
 
   /* Efecto del evento Gengar: oscurece toda la pantalla durante la ronda */
   #gengar-dark-overlay {
@@ -1500,13 +1598,14 @@
     background: rgba(0,0,0,.8);
   }
 
-  /* Efecto del evento Hipno: espiral hipnótica girando sobre la pantalla.
+  /* Efecto del evento Hypno: espiral hipnótica girando sobre la pantalla.
      El elemento mide 200vmax (mucho más que la diagonal de cualquier
      pantalla) y está centrado con translate(-50%,-50%), así que al rotar
      sobre su propio centro sus bordes quedan siempre muy lejos fuera de la
      ventana y nunca se ven, sea cual sea el tamaño o la proporción de la
-     pantalla. */
-  #hipno-overlay {
+     pantalla. Las paradas de color intermedias (en vez de un único tono)
+     dan más profundidad y un acabado más pulido a los brazos de la espiral. */
+  #hypno-overlay {
     position: fixed;
     top: 50%; left: 50%;
     width: 200vmax; height: 200vmax;
@@ -1514,17 +1613,55 @@
     z-index: 44;
     opacity: 0;
     transition: opacity .8s ease;
-    background: repeating-conic-gradient(from 0deg, #7c3aedaa 0deg 12deg, transparent 12deg 24deg);
+    background: repeating-conic-gradient(from 0deg, #7c3aedb8 0deg 9deg, #a855f760 9deg 13deg, transparent 13deg 24deg);
     mix-blend-mode: screen;
     transform: translate(-50%, -50%) rotate(0deg);
   }
-  #hipno-overlay.show {
-    opacity: .5;
-    animation: hipno-spin 4s linear infinite;
+  #hypno-overlay.show {
+    opacity: .46;
+    animation: hypno-spin 4s linear infinite;
   }
-  @keyframes hipno-spin {
+  @keyframes hypno-spin {
     from { transform: translate(-50%, -50%) rotate(0deg); }
     to   { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* Viñeta focal fija (no rota con la espiral): oscurece suavemente los
+     bordes de la pantalla para dar profundidad y centrar la atención en
+     el péndulo, con un acabado más cinematográfico y pulido. */
+  #hypno-vignette {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 44;
+    opacity: 0;
+    transition: opacity .8s ease;
+    background: radial-gradient(circle at 50% 46%, transparent 36%, #0d0620a0 76%, #05010fc4 100%);
+  }
+  #hypno-vignette.show { opacity: 1; }
+
+  /* Efecto del evento Hypno · Ondulación líquida + Mareo visual: se aplican
+     juntos sobre TODO el contenido de la app (#app), simulando que la
+     pantalla entera se ha convertido en una superficie líquida:
+       - filter: url(#hypno-liquid-warp) → distorsión de onda orgánica y
+         continua (definida como filtro SVG más abajo, junto al resto de
+         filtros ocultos) que arquea las líneas rectas del interfaz.
+       - animation: hypno-warp-tilt → un balanceo 3D sutil y continuo
+         (perspectiva, inclinación y escala oscilantes) que hace que los
+         elementos parezcan inclinarse y la perspectiva fluctúe, sin que el
+         jugador se haya movido realmente. */
+  #app.hypno-warp-active {
+    filter: url(#hypno-liquid-warp);
+    animation: hypno-warp-tilt 5.4s ease-in-out infinite;
+    transform-origin: 50% 50%;
+    will-change: transform, filter;
+  }
+  @keyframes hypno-warp-tilt {
+    0%   { transform: perspective(880px) rotateX(0deg)    rotateY(0deg)    skewX(0deg)    scale(1); }
+    18%  { transform: perspective(880px) rotateX(2.6deg)  rotateY(-3.2deg) skewX(1.3deg)  scale(1.018); }
+    38%  { transform: perspective(880px) rotateX(-2deg)   rotateY(2.8deg)  skewX(-1.1deg) scale(0.984); }
+    58%  { transform: perspective(880px) rotateX(2.2deg)  rotateY(1.6deg)  skewX(1.5deg)  scale(1.022); }
+    78%  { transform: perspective(880px) rotateX(-2.4deg) rotateY(-2.2deg) skewX(-1.4deg) scale(0.988); }
+    100% { transform: perspective(880px) rotateX(0deg)    rotateY(0deg)    skewX(0deg)    scale(1); }
   }
 
   /* Efecto del evento Shiny: baña la interfaz en colores vivos y cambiantes */
@@ -1620,11 +1757,16 @@
 
   /* Efecto del evento Snorlax: se duerme encima de las respuestas con un PNG
      grande y nítido (artwork oficial, no el sprite pixelado de antes); hay
-     que tocarlo varias veces para despertarlo y poder responder */
+     que tocarlo varias veces para despertarlo y poder responder.
+     El sprite se dimensiona en % (nunca en px fijos) para adaptarse a la
+     altura real disponible (que varía según haya 4 o 6 opciones de
+     respuesta), y el texto va en una "píldora" semitransparente con alto
+     contraste para que siempre sea legible pase lo que pase de fondo. */
   .snorlax-overlay {
     position: absolute; inset: 0; z-index: 40;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 2px;
+    gap: 4px;
+    padding: 8px 10px;
     background:
       radial-gradient(ellipse 70% 60% at 50% 62%, #3a2c5c 0%, #1c1530 62%, #100b1e 100%);
     border: 2px solid var(--border);
@@ -1647,9 +1789,13 @@
     pointer-events: none;
   }
   .snorlax-overlay .snorlax-sprite {
-    width: 168px; height: 168px;
-    max-width: 62%;
+    width: auto;
+    height: 42%;
+    min-height: 44px;
+    max-height: 118px;
+    max-width: 56%;
     object-fit: contain;
+    flex: 0 1 auto;
     filter: drop-shadow(0 10px 20px #0009);
     pointer-events: none;
     position: relative;
@@ -1657,7 +1803,7 @@
   }
   .snorlax-overlay .snorlax-zzz-wrap {
     position: absolute;
-    top: 10%; right: 20%;
+    top: 8%; right: 18%;
     width: 40px; height: 40px;
     pointer-events: none;
   }
@@ -1677,22 +1823,52 @@
     78%  { opacity: .75; }
     100% { opacity: 0; transform: translateY(-40px) scale(1.15); }
   }
+  /* Píldora de texto: fondo propio semitransparente + blur, así el label y
+     el hint son legibles con independencia del degradado de fondo o del
+     tamaño del sprite. flex-shrink:0 asegura que nunca se recorte. */
+  .snorlax-overlay .snorlax-text {
+    flex: 0 0 auto;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 3px;
+    max-width: 94%;
+    padding: 5px 12px 7px;
+    border-radius: 999px;
+    background: #00000059;
+    backdrop-filter: blur(2px);
+  }
   .snorlax-overlay .snorlax-label {
     font-family: 'Fredoka One', cursive;
-    font-size: 1.05rem;
+    font-size: clamp(.78rem, 3.6vw, 1.02rem);
+    line-height: 1.15;
     color: #fff;
     text-align: center;
     pointer-events: none;
     text-shadow: 0 2px 6px #000a;
-    margin-top: 2px;
   }
   .snorlax-overlay .snorlax-hint {
-    font-size: .72rem;
+    font-size: clamp(.62rem, 2.8vw, .72rem);
     font-weight: 800;
-    color: #d9d0f5;
+    color: var(--yellow);
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: .4px;
+    text-align: center;
     pointer-events: none;
+    text-shadow: 0 1px 4px #000c;
+  }
+  .snorlax-overlay .snorlax-progress-track {
+    width: min(70%, 150px);
+    height: 5px;
+    border-radius: 999px;
+    background: #ffffff2e;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .snorlax-overlay .snorlax-progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--yellow), #ffb347);
+    transition: width .25s ease;
   }
   @keyframes snorlax-breathe {
     0%, 100% { transform: scale(1); }
@@ -1754,32 +1930,223 @@
 
   /* Efecto del evento Weezing: humo tóxico que se mueve por toda la pantalla,
      tapando parcial y ocasionalmente las respuestas (pero sin bloquear los
-     clics: pointer-events desactivado, así que siempre se puede responder) */
+     clics: pointer-events desactivado, así que siempre se puede responder).
+     Las nubes usan paradas de color más marcadas (en vez de un simple
+     degradado difuso) y un filtro SVG de turbulencia que distorsiona sus
+     bordes, para que se vean como auténticas nubes de humo con silueta
+     irregular en vez de manchas de luz. */
+  /* El contenedor solo controla la aparición general (opacity) y aplica el
+     filtro de turbulencia a TODAS las nubes a la vez (más barato que uno por
+     nube y da igual de resultado, ya que el filtro distorsiona el resultado
+     final ya compuesto). Cada nube real es un elemento independiente (ver
+     .weezing-cloud más abajo) con su propia posición, tamaño y trayectoria,
+     de forma que se ven varias nubes de humo distintas moviéndose cada una
+     por su cuenta por toda la pantalla, en vez de una única mancha. */
   #weezing-smoke-overlay {
     position: fixed; inset: 0;
     pointer-events: none;
     z-index: 46;
+    overflow: hidden;
     opacity: 0;
     transition: opacity .8s ease;
-    background:
-      radial-gradient(circle at 20% 30%, #7c3aedcc 0%, transparent 38%),
-      radial-gradient(circle at 75% 65%, #a855f7cc 0%, transparent 42%),
-      radial-gradient(circle at 40% 85%, #5b21b6cc 0%, transparent 40%),
-      radial-gradient(circle at 85% 15%, #8b5cf6cc 0%, transparent 34%);
-    background-size: 180% 180%;
-    filter: blur(10px);
+    filter: url(#weezing-turbulence) blur(2px);
   }
-  #weezing-smoke-overlay.show {
-    opacity: .8;
-    animation: weezing-drift 7s ease-in-out infinite;
+  #weezing-smoke-overlay.show { opacity: .92; }
+
+  /* Nube individual: paradas de color muy juntas cerca del borde (en vez de
+     un degradado largo y difuso) para que, incluso después del filtro de
+     turbulencia, se perciba un contorno de nube definido en vez de un simple
+     resplandor de luz. Tamaños reducidos (nubes más pequeñas y numerosas en
+     pantalla) y núcleo más opaco/sólido para que se lean con claridad. */
+  .weezing-cloud {
+    position: absolute;
+    border-radius: 50%;
+    will-change: transform, opacity;
   }
-  @keyframes weezing-drift {
-    0%   { background-position: 0% 0%,   100% 100%, 50% 50%,  20% 80%; }
-    25%  { background-position: 30% 60%, 70% 20%,   10% 90%,  80% 10%; }
-    50%  { background-position: 80% 20%, 20% 80%,   60% 30%,  40% 60%; }
-    75%  { background-position: 50% 90%, 40% 10%,   90% 60%,  10% 30%; }
-    100% { background-position: 0% 0%,   100% 100%, 50% 50%,  20% 80%; }
+  .weezing-cloud.c1 {
+    width: 34vmax; height: 34vmax;
+    top: -8%; left: -6%;
+    background: radial-gradient(circle, #a855f7ff 0%, #a855f7f7 40%, #8b5cf6e0 55%, #7c3aedb0 66%, transparent 78%);
   }
+  .weezing-cloud.c2 {
+    width: 27vmax; height: 27vmax;
+    top: 46%; left: 60%;
+    background: radial-gradient(circle, #9333eaff 0%, #9333eaf7 38%, #7c3aede0 53%, #6d28d9b0 64%, transparent 76%);
+  }
+  .weezing-cloud.c3 {
+    width: 30vmax; height: 30vmax;
+    top: 60%; left: -4%;
+    background: radial-gradient(circle, #8b5cf6ff 0%, #8b5cf6f7 40%, #6d28d9e0 55%, #4c1d95b0 66%, transparent 78%);
+  }
+  .weezing-cloud.c4 {
+    width: 23vmax; height: 23vmax;
+    top: -4%; left: 66%;
+    background: radial-gradient(circle, #7c3aedff 0%, #7c3aedf7 38%, #6d28d9e0 53%, #4c1d95b0 64%, transparent 76%);
+  }
+  .weezing-cloud.c5 {
+    width: 19vmax; height: 19vmax;
+    top: 34%; left: 26%;
+    background: radial-gradient(circle, #c084fcff 0%, #c084fcf7 36%, #a855f7e0 51%, #8b5cf6b0 62%, transparent 76%);
+  }
+
+  /* Cada nube sigue una trayectoria propia basada en curvas seno/coseno
+     (tipo Lissajous), muestreada en 24 puntos repartidos a partes iguales
+     y con "timing-function: linear". La suavidad NO viene de la curva de
+     aceleración por tramo (eso es justo lo que antes producía frenazos en
+     cada punto, al decelerar a velocidad 0 y volver a acelerar en cada
+     keyframe), sino de que la propia posición ya varía de forma continua
+     como un seno: con "linear" la velocidad entre puntos consecutivos
+     cambia gradualmente en vez de dar saltos, así que el recorrido se
+     percibe fluido y natural en todo momento, sin paradas ni tirones. Un
+     giro y una respiración de escala/opacidad (también sinusoidales)
+     terminan de dar un aspecto de humo real, denso y en constante
+     movimiento. */
+  #weezing-smoke-overlay.show .c1 { animation: weezing-cloud-move-1 16s linear infinite; }
+  #weezing-smoke-overlay.show .c2 { animation: weezing-cloud-move-2 13s linear infinite .9s; }
+  #weezing-smoke-overlay.show .c3 { animation: weezing-cloud-move-3 18s linear infinite 2.1s; }
+  #weezing-smoke-overlay.show .c4 { animation: weezing-cloud-move-4 12s linear infinite .4s; }
+  #weezing-smoke-overlay.show .c5 { animation: weezing-cloud-move-5 15s linear infinite 2.7s; }
+
+  @keyframes weezing-cloud-move-1 {
+    0% { transform: translate(0.00vw, 0.00vh) rotate(0.0deg) scale(1.039); opacity: 0.99; }
+    4.167% { transform: translate(4.40vw, 3.88vh) rotate(1.3deg) scale(1.056); opacity: 0.99; }
+    8.333% { transform: translate(8.50vw, 7.50vh) rotate(2.5deg) scale(1.059); opacity: 0.98; }
+    12.5% { transform: translate(12.02vw, 10.61vh) rotate(3.5deg) scale(1.046); opacity: 0.95; }
+    16.667% { transform: translate(14.72vw, 12.99vh) rotate(4.3deg) scale(1.020); opacity: 0.93; }
+    20.833% { transform: translate(16.42vw, 14.49vh) rotate(4.8deg) scale(0.989); opacity: 0.91; }
+    25% { transform: translate(17.00vw, 15.00vh) rotate(5.0deg) scale(0.961); opacity: 0.90; }
+    29.167% { transform: translate(16.42vw, 14.49vh) rotate(4.8deg) scale(0.944); opacity: 0.90; }
+    33.333% { transform: translate(14.72vw, 12.99vh) rotate(4.3deg) scale(0.941); opacity: 0.91; }
+    37.5% { transform: translate(12.02vw, 10.61vh) rotate(3.5deg) scale(0.954); opacity: 0.94; }
+    41.667% { transform: translate(8.50vw, 7.50vh) rotate(2.5deg) scale(0.980); opacity: 0.96; }
+    45.833% { transform: translate(4.40vw, 3.88vh) rotate(1.3deg) scale(1.011); opacity: 0.98; }
+    50% { transform: translate(0.00vw, 0.00vh) rotate(0.0deg) scale(1.039); opacity: 0.99; }
+    54.167% { transform: translate(-4.40vw, -3.88vh) rotate(-1.3deg) scale(1.056); opacity: 0.99; }
+    58.333% { transform: translate(-8.50vw, -7.50vh) rotate(-2.5deg) scale(1.059); opacity: 0.98; }
+    62.5% { transform: translate(-12.02vw, -10.61vh) rotate(-3.5deg) scale(1.046); opacity: 0.95; }
+    66.667% { transform: translate(-14.72vw, -12.99vh) rotate(-4.3deg) scale(1.020); opacity: 0.93; }
+    70.833% { transform: translate(-16.42vw, -14.49vh) rotate(-4.8deg) scale(0.989); opacity: 0.91; }
+    75% { transform: translate(-17.00vw, -15.00vh) rotate(-5.0deg) scale(0.961); opacity: 0.90; }
+    79.167% { transform: translate(-16.42vw, -14.49vh) rotate(-4.8deg) scale(0.944); opacity: 0.90; }
+    83.333% { transform: translate(-14.72vw, -12.99vh) rotate(-4.3deg) scale(0.941); opacity: 0.91; }
+    87.5% { transform: translate(-12.02vw, -10.61vh) rotate(-3.5deg) scale(0.954); opacity: 0.94; }
+    91.667% { transform: translate(-8.50vw, -7.50vh) rotate(-2.5deg) scale(0.980); opacity: 0.96; }
+    95.833% { transform: translate(-4.40vw, -3.88vh) rotate(-1.3deg) scale(1.011); opacity: 0.98; }
+    100% { transform: translate(-0.00vw, -0.00vh) rotate(-0.0deg) scale(1.039); opacity: 0.99; }
+  }
+
+  @keyframes weezing-cloud-move-2 {
+    0% { transform: translate(0.00vw, 0.00vh) rotate(-0.0deg) scale(1.059); opacity: 0.96; }
+    4.167% { transform: translate(4.92vw, 6.50vh) rotate(-1.6deg) scale(1.038); opacity: 0.98; }
+    8.333% { transform: translate(9.50vw, 11.26vh) rotate(-3.0deg) scale(1.006); opacity: 0.99; }
+    12.5% { transform: translate(13.44vw, 13.00vh) rotate(-4.2deg) scale(0.973); opacity: 0.99; }
+    16.667% { transform: translate(16.45vw, 11.26vh) rotate(-5.2deg) scale(0.947); opacity: 0.98; }
+    20.833% { transform: translate(18.35vw, 6.50vh) rotate(-5.8deg) scale(0.935); opacity: 0.96; }
+    25% { transform: translate(19.00vw, 0.00vh) rotate(-6.0deg) scale(0.941); opacity: 0.93; }
+    29.167% { transform: translate(18.35vw, -6.50vh) rotate(-5.8deg) scale(0.962); opacity: 0.91; }
+    33.333% { transform: translate(16.45vw, -11.26vh) rotate(-5.2deg) scale(0.994); opacity: 0.90; }
+    37.5% { transform: translate(13.44vw, -13.00vh) rotate(-4.2deg) scale(1.027); opacity: 0.90; }
+    41.667% { transform: translate(9.50vw, -11.26vh) rotate(-3.0deg) scale(1.053); opacity: 0.91; }
+    45.833% { transform: translate(4.92vw, -6.50vh) rotate(-1.6deg) scale(1.065); opacity: 0.93; }
+    50% { transform: translate(0.00vw, -0.00vh) rotate(-0.0deg) scale(1.059); opacity: 0.96; }
+    54.167% { transform: translate(-4.92vw, 6.50vh) rotate(1.6deg) scale(1.038); opacity: 0.98; }
+    58.333% { transform: translate(-9.50vw, 11.26vh) rotate(3.0deg) scale(1.006); opacity: 0.99; }
+    62.5% { transform: translate(-13.44vw, 13.00vh) rotate(4.2deg) scale(0.973); opacity: 0.99; }
+    66.667% { transform: translate(-16.45vw, 11.26vh) rotate(5.2deg) scale(0.947); opacity: 0.98; }
+    70.833% { transform: translate(-18.35vw, 6.50vh) rotate(5.8deg) scale(0.935); opacity: 0.96; }
+    75% { transform: translate(-19.00vw, 0.00vh) rotate(6.0deg) scale(0.941); opacity: 0.93; }
+    79.167% { transform: translate(-18.35vw, -6.50vh) rotate(5.8deg) scale(0.962); opacity: 0.91; }
+    83.333% { transform: translate(-16.45vw, -11.26vh) rotate(5.2deg) scale(0.994); opacity: 0.90; }
+    87.5% { transform: translate(-13.44vw, -13.00vh) rotate(4.2deg) scale(1.027); opacity: 0.90; }
+    91.667% { transform: translate(-9.50vw, -11.26vh) rotate(3.0deg) scale(1.053); opacity: 0.91; }
+    95.833% { transform: translate(-4.92vw, -6.50vh) rotate(1.6deg) scale(1.065); opacity: 0.93; }
+    100% { transform: translate(-0.00vw, -0.00vh) rotate(0.0deg) scale(1.059); opacity: 0.96; }
+  }
+
+  @keyframes weezing-cloud-move-3 {
+    0% { transform: translate(0.00vw, 0.00vh) rotate(0.0deg) scale(0.985); opacity: 0.99; }
+    4.167% { transform: translate(5.18vw, 7.78vh) rotate(2.7deg) scale(0.958); opacity: 0.97; }
+    8.333% { transform: translate(10.00vw, 11.00vh) rotate(4.8deg) scale(0.942); opacity: 0.95; }
+    12.5% { transform: translate(14.14vw, 7.78vh) rotate(5.5deg) scale(0.942); opacity: 0.93; }
+    16.667% { transform: translate(17.32vw, 0.00vh) rotate(4.8deg) scale(0.957); opacity: 0.91; }
+    20.833% { transform: translate(19.32vw, -7.78vh) rotate(2.7deg) scale(0.984); opacity: 0.91; }
+    25% { transform: translate(20.00vw, -11.00vh) rotate(0.0deg) scale(1.015); opacity: 0.91; }
+    29.167% { transform: translate(19.32vw, -7.78vh) rotate(-2.8deg) scale(1.042); opacity: 0.93; }
+    33.333% { transform: translate(17.32vw, -0.00vh) rotate(-4.8deg) scale(1.058); opacity: 0.95; }
+    37.5% { transform: translate(14.14vw, 7.78vh) rotate(-5.5deg) scale(1.058); opacity: 0.97; }
+    41.667% { transform: translate(10.00vw, 11.00vh) rotate(-4.8deg) scale(1.043); opacity: 0.99; }
+    45.833% { transform: translate(5.18vw, 7.78vh) rotate(-2.8deg) scale(1.016); opacity: 0.99; }
+    50% { transform: translate(0.00vw, 0.00vh) rotate(-0.0deg) scale(0.985); opacity: 0.99; }
+    54.167% { transform: translate(-5.18vw, -7.78vh) rotate(2.7deg) scale(0.958); opacity: 0.97; }
+    58.333% { transform: translate(-10.00vw, -11.00vh) rotate(4.8deg) scale(0.942); opacity: 0.95; }
+    62.5% { transform: translate(-14.14vw, -7.78vh) rotate(5.5deg) scale(0.942); opacity: 0.93; }
+    66.667% { transform: translate(-17.32vw, -0.00vh) rotate(4.8deg) scale(0.957); opacity: 0.91; }
+    70.833% { transform: translate(-19.32vw, 7.78vh) rotate(2.7deg) scale(0.984); opacity: 0.91; }
+    75% { transform: translate(-20.00vw, 11.00vh) rotate(0.0deg) scale(1.015); opacity: 0.91; }
+    79.167% { transform: translate(-19.32vw, 7.78vh) rotate(-2.7deg) scale(1.042); opacity: 0.93; }
+    83.333% { transform: translate(-17.32vw, 0.00vh) rotate(-4.8deg) scale(1.058); opacity: 0.95; }
+    87.5% { transform: translate(-14.14vw, -7.78vh) rotate(-5.5deg) scale(1.058); opacity: 0.97; }
+    91.667% { transform: translate(-10.00vw, -11.00vh) rotate(-4.8deg) scale(1.043); opacity: 0.99; }
+    95.833% { transform: translate(-5.18vw, -7.78vh) rotate(-2.7deg) scale(1.016); opacity: 0.99; }
+    100% { transform: translate(-0.00vw, -0.00vh) rotate(-0.0deg) scale(0.985); opacity: 0.99; }
+  }
+
+  @keyframes weezing-cloud-move-4 {
+    0% { transform: translate(0.00vw, 0.00vh) rotate(-0.0deg) scale(0.940); opacity: 0.93; }
+    4.167% { transform: translate(8.00vw, 3.88vh) rotate(-1.7deg) scale(0.951); opacity: 0.91; }
+    8.333% { transform: translate(13.86vw, 7.50vh) rotate(-3.2deg) scale(0.975); opacity: 0.90; }
+    12.5% { transform: translate(16.00vw, 10.61vh) rotate(-4.6deg) scale(1.005); opacity: 0.90; }
+    16.667% { transform: translate(13.86vw, 12.99vh) rotate(-5.6deg) scale(1.034); opacity: 0.91; }
+    20.833% { transform: translate(8.00vw, 14.49vh) rotate(-6.3deg) scale(1.054); opacity: 0.94; }
+    25% { transform: translate(0.00vw, 15.00vh) rotate(-6.5deg) scale(1.060); opacity: 0.96; }
+    29.167% { transform: translate(-8.00vw, 14.49vh) rotate(-6.3deg) scale(1.049); opacity: 0.98; }
+    33.333% { transform: translate(-13.86vw, 12.99vh) rotate(-5.6deg) scale(1.025); opacity: 0.99; }
+    37.5% { transform: translate(-16.00vw, 10.61vh) rotate(-4.6deg) scale(0.995); opacity: 0.99; }
+    41.667% { transform: translate(-13.86vw, 7.50vh) rotate(-3.2deg) scale(0.966); opacity: 0.98; }
+    45.833% { transform: translate(-8.00vw, 3.88vh) rotate(-1.7deg) scale(0.946); opacity: 0.95; }
+    50% { transform: translate(-0.00vw, 0.00vh) rotate(-0.0deg) scale(0.940); opacity: 0.93; }
+    54.167% { transform: translate(8.00vw, -3.88vh) rotate(1.7deg) scale(0.951); opacity: 0.91; }
+    58.333% { transform: translate(13.86vw, -7.50vh) rotate(3.3deg) scale(0.975); opacity: 0.90; }
+    62.5% { transform: translate(16.00vw, -10.61vh) rotate(4.6deg) scale(1.005); opacity: 0.90; }
+    66.667% { transform: translate(13.86vw, -12.99vh) rotate(5.6deg) scale(1.034); opacity: 0.91; }
+    70.833% { transform: translate(8.00vw, -14.49vh) rotate(6.3deg) scale(1.054); opacity: 0.94; }
+    75% { transform: translate(0.00vw, -15.00vh) rotate(6.5deg) scale(1.060); opacity: 0.96; }
+    79.167% { transform: translate(-8.00vw, -14.49vh) rotate(6.3deg) scale(1.049); opacity: 0.98; }
+    83.333% { transform: translate(-13.86vw, -12.99vh) rotate(5.6deg) scale(1.025); opacity: 0.99; }
+    87.5% { transform: translate(-16.00vw, -10.61vh) rotate(4.6deg) scale(0.995); opacity: 0.99; }
+    91.667% { transform: translate(-13.86vw, -7.50vh) rotate(3.3deg) scale(0.966); opacity: 0.98; }
+    95.833% { transform: translate(-8.00vw, -3.88vh) rotate(1.7deg) scale(0.946); opacity: 0.95; }
+    100% { transform: translate(-0.00vw, -0.00vh) rotate(0.0deg) scale(0.940); opacity: 0.93; }
+  }
+
+  @keyframes weezing-cloud-move-5 {
+    0% { transform: translate(0.00vw, 0.00vh) rotate(0.0deg) scale(0.959); opacity: 0.90; }
+    4.167% { transform: translate(9.19vw, 4.14vh) rotate(1.8deg) scale(0.990); opacity: 0.90; }
+    8.333% { transform: translate(13.00vw, 8.00vh) rotate(3.5deg) scale(1.023); opacity: 0.92; }
+    12.5% { transform: translate(9.19vw, 11.31vh) rotate(4.9deg) scale(1.050); opacity: 0.94; }
+    16.667% { transform: translate(0.00vw, 13.86vh) rotate(6.1deg) scale(1.064); opacity: 0.97; }
+    20.833% { transform: translate(-9.19vw, 15.45vh) rotate(6.8deg) scale(1.061); opacity: 0.99; }
+    25% { transform: translate(-13.00vw, 16.00vh) rotate(7.0deg) scale(1.041); opacity: 0.99; }
+    29.167% { transform: translate(-9.19vw, 15.45vh) rotate(6.8deg) scale(1.010); opacity: 0.99; }
+    33.333% { transform: translate(-0.00vw, 13.86vh) rotate(6.1deg) scale(0.977); opacity: 0.97; }
+    37.5% { transform: translate(9.19vw, 11.31vh) rotate(4.9deg) scale(0.950); opacity: 0.95; }
+    41.667% { transform: translate(13.00vw, 8.00vh) rotate(3.5deg) scale(0.936); opacity: 0.92; }
+    45.833% { transform: translate(9.19vw, 4.14vh) rotate(1.8deg) scale(0.939); opacity: 0.90; }
+    50% { transform: translate(0.00vw, 0.00vh) rotate(0.0deg) scale(0.959); opacity: 0.90; }
+    54.167% { transform: translate(-9.19vw, -4.14vh) rotate(-1.8deg) scale(0.990); opacity: 0.90; }
+    58.333% { transform: translate(-13.00vw, -8.00vh) rotate(-3.5deg) scale(1.023); opacity: 0.92; }
+    62.5% { transform: translate(-9.19vw, -11.31vh) rotate(-4.9deg) scale(1.050); opacity: 0.94; }
+    66.667% { transform: translate(-0.00vw, -13.86vh) rotate(-6.1deg) scale(1.064); opacity: 0.97; }
+    70.833% { transform: translate(9.19vw, -15.45vh) rotate(-6.8deg) scale(1.061); opacity: 0.99; }
+    75% { transform: translate(13.00vw, -16.00vh) rotate(-7.0deg) scale(1.041); opacity: 0.99; }
+    79.167% { transform: translate(9.19vw, -15.45vh) rotate(-6.8deg) scale(1.010); opacity: 0.99; }
+    83.333% { transform: translate(0.00vw, -13.86vh) rotate(-6.1deg) scale(0.977); opacity: 0.97; }
+    87.5% { transform: translate(-9.19vw, -11.31vh) rotate(-4.9deg) scale(0.950); opacity: 0.95; }
+    91.667% { transform: translate(-13.00vw, -8.00vh) rotate(-3.5deg) scale(0.936); opacity: 0.92; }
+    95.833% { transform: translate(-9.19vw, -4.14vh) rotate(-1.8deg) scale(0.939); opacity: 0.90; }
+    100% { transform: translate(-0.00vw, -0.00vh) rotate(-0.0deg) scale(0.959); opacity: 0.90; }
+  }
+
 
   /* Efecto del evento Blastoise: Danza Lluvia — capa puramente visual de
      fondo (por detrás del contenido de la app, nunca por encima de la
@@ -1838,17 +2205,25 @@
   #blastoise-rain-overlay.show .rain-layer.near {
     animation: blastoise-rain-fall-near 0.9s linear infinite;
   }
+  /* El desplazamiento del bucle debe coincidir EXACTAMENTE con el tamaño del
+     patrón (background-size) en ambos ejes para que la vuelta sea invisible.
+     Antes se desplazaba también en X con un valor que no era múltiplo del
+     ancho del patrón, así que al reiniciar el bucle la imagen "saltaba" de
+     posición en vez de fluir; moviendo solo en Y (con el mismo alto que el
+     patrón) el bucle queda perfecto y la caída se ve fluida en todo momento.
+     La inclinación diagonal de las gotas ya viene dada por el ángulo del
+     propio gradiente, así que no hace falta desplazar en X para conservarla. */
   @keyframes blastoise-rain-fall-mist {
     from { background-position: 0 0; }
-    to   { background-position: -76px 210px; }
+    to   { background-position: 0 210px; }
   }
   @keyframes blastoise-rain-fall-far {
     from { background-position: 0 0; }
-    to   { background-position: -58px 155px; }
+    to   { background-position: 0 155px; }
   }
   @keyframes blastoise-rain-fall-near {
     from { background-position: 0 0; }
-    to   { background-position: -44px 115px; }
+    to   { background-position: 0 115px; }
   }
 
   /* Efecto del evento Porygon: fallo digital en toda la pantalla — scanlines,
@@ -2046,14 +2421,48 @@
 <!-- Evento Pokémon Gengar: oscurece la pantalla durante la ronda -->
 <div id="gengar-dark-overlay"></div>
 
-<!-- Evento Pokémon Hipno: efecto de espiral hipnótica sobre la pantalla -->
-<div id="hipno-overlay"></div>
+<!-- Evento Pokémon Hypno: efecto de espiral hipnótica sobre la pantalla,
+     con una viñeta focal fija (no rota) que le da profundidad -->
+<div id="hypno-overlay"></div>
+<div id="hypno-vignette"></div>
 
 <!-- Evento Pokémon Shiny: baña la pantalla en colores vivos y cambiantes -->
 <div id="shiny-color-overlay"></div>
 
-<!-- Evento Pokémon Weezing: humo tóxico que se mueve por toda la pantalla -->
-<div id="weezing-smoke-overlay"></div>
+<!-- Filtro SVG oculto: distorsiona el humo de Weezing para darle bordes
+     irregulares de nube tóxica en vez de un simple resplandor difuso -->
+<svg width="0" height="0" style="position:absolute; overflow:hidden;">
+  <filter id="weezing-turbulence" x="-25%" y="-25%" width="150%" height="150%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" seed="7" result="weezing-noise">
+      <animate attributeName="baseFrequency" dur="18s" values="0.012 0.018;0.016 0.014;0.012 0.018" repeatCount="indefinite" />
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" in2="weezing-noise" scale="70" xChannelSelector="R" yChannelSelector="G" />
+  </filter>
+
+  <!-- Evento Pokémon Hypno · Ondulación líquida: distorsiona TODO el
+       contenido de #app con un ruido orgánico que fluctúa lentamente en
+       frecuencia y en intensidad (scale), dando la sensación de que la
+       pantalla entera es una superficie líquida ondulándose sin parar,
+       en vez de un patrón de olas repetitivo y mecánico. */
+  <filter id="hypno-liquid-warp" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves="2" seed="24" result="hypno-noise">
+      <animate attributeName="baseFrequency" dur="7s" values="0.006 0.011;0.010 0.007;0.005 0.013;0.006 0.011" repeatCount="indefinite" />
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" in2="hypno-noise" xChannelSelector="R" yChannelSelector="G">
+      <animate attributeName="scale" dur="3.6s" values="6;22;9;26;6" repeatCount="indefinite" />
+    </feDisplacementMap>
+  </filter>
+</svg>
+
+<!-- Evento Pokémon Weezing: varias nubes de humo tóxico independientes,
+     cada una con su propia trayectoria, que se mueven por toda la pantalla -->
+<div id="weezing-smoke-overlay">
+  <div class="weezing-cloud c1"></div>
+  <div class="weezing-cloud c2"></div>
+  <div class="weezing-cloud c3"></div>
+  <div class="weezing-cloud c4"></div>
+  <div class="weezing-cloud c5"></div>
+</div>
 
 <!-- Evento Pokémon Porygon: fallo digital con scanlines, ruido y barras de glitch -->
 <div id="porygon-glitch-overlay">
@@ -2107,6 +2516,25 @@
     <div class="poke-event-desc" id="poke-event-desc">—</div>
   </div>
 </div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     DEBUG · SELECTOR DE EVENTOS POKÉMON (SOLO PARA PRUEBAS)
+     Esto es una herramienta temporal para probar eventos rápidamente
+     durante el Modo Historia. ELIMINAR ESTE BLOQUE COMPLETO cuando el
+     juego esté terminado (ver también los bloques marcados "DEBUG" en
+     el CSS y en el bloque de JavaScript más abajo).
+     ══════════════════════════════════════════════════════════════════ -->
+<div id="debug-event-panel">
+  <div class="debug-event-box">
+    <div class="debug-event-title">🧪 Forzar Evento Pokémon</div>
+    <div class="debug-event-hint">Se activará en la siguiente ronda.</div>
+    <div class="debug-event-list" id="debug-event-list"></div>
+    <button type="button" class="debug-event-close-btn" id="debug-event-close-btn">Cerrar</button>
+  </div>
+</div>
+<!-- ══════════════════════════════════════════════════════════════════
+     FIN DEBUG · SELECTOR DE EVENTOS POKÉMON
+     ══════════════════════════════════════════════════════════════════ -->
 
 <div id="app">
 
@@ -2281,6 +2709,11 @@
         <span class="menu-btn-title">Pokémon Ranger</span>
         <small>Solo canciones y opciones de Ranger</small>
       </button>
+      <button class="menu-btn" data-other="title-screens">
+        <span class="menu-btn-icon">🖼️</span>
+        <span class="menu-btn-title">Pantallas de Título</span>
+        <small>Solo canciones y opciones de Pantallas de Título</small>
+      </button>
     </div>
   </section>
 
@@ -2405,7 +2838,7 @@
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🕹️ Minijuegos</div>
-        <div class="guide-item-desc">Partidas cortas de 5 rondas centradas en una categoría concreta: Centros Pokémon, Laboratorios, Bicicletas, Surf, Pokémon Mundo Misterioso, Pokémon Colosseum/XD y Pokémon Ranger. Cada categoría se desbloquea con un logro distinto (puedes ver cuál en la propia pantalla de Minijuegos).</div>
+        <div class="guide-item-desc">Partidas cortas de 5 rondas centradas en una categoría concreta: Centros Pokémon, Laboratorios, Bicicletas, Surf, Pokémon Mundo Misterioso, Pokémon Colosseum/XD, Pokémon Ranger y Pantallas de Título. Cada categoría se desbloquea con un logro distinto (puedes ver cuál en la propia pantalla de Minijuegos).</div>
       </div>
     </div>
 
@@ -2436,11 +2869,11 @@
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🕹️ Categorías de Minijuegos</div>
-        <div class="guide-item-desc">Cada categoría de Minijuegos (Centros Pokémon, Laboratorios, Bicicletas, Surf, Mundo Misterioso, Colosseum/XD, Ranger) se desbloquea al conseguir un logro concreto, indicado con un 🔒 en el botón mientras siga bloqueada.</div>
+        <div class="guide-item-desc">Cada categoría de Minijuegos (Centros Pokémon, Laboratorios, Bicicletas, Surf, Mundo Misterioso, Colosseum/XD, Ranger, Pantallas de Título) se desbloquea al conseguir un logro concreto, indicado con un 🔒 en el botón mientras siga bloqueada.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">✨ Eventos Pokémon</div>
-        <div class="guide-item-desc">Al completar el Modo Historia («Maestro de la Historia») se desbloquean los Eventos Pokémon sorpresa (Gengar, Hipno, Shiny, Weezing, Porygon, Electrode, Blastoise, Venusaur…) también en el Desafío Infinito. Los logros de "encuentro" (por ejemplo, hacer aparecer 5 veces a un Pokémon) desbloquean, uno a uno, que ese Pokémon pueda pasear por el fondo del menú.</div>
+        <div class="guide-item-desc">Al completar el Modo Historia («Maestro de la Historia») se desbloquean los Eventos Pokémon sorpresa (Gengar, Hypno, Shiny, Weezing, Porygon, Electrode, Blastoise, Venusaur…) también en el Desafío Infinito. Los logros de "encuentro" (por ejemplo, hacer aparecer 5 veces a un Pokémon) desbloquean, uno a uno, que ese Pokémon pueda pasear por el fondo del menú.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🎼 Fichas de la Sonidex</div>
@@ -2454,7 +2887,7 @@
         La Sonidex es tu colección de canciones. Cada canción tiene una ficha bloqueada 🔒 hasta que la aciertas <b>10 veces</b> en cualquier modo excepto el Fácil (en el que solo se adivina la región, no la canción). Al desbloquear una ficha podrás reproducir esa canción libremente desde la propia Sonidex.
       </div>
       <div class="guide-item-desc" style="margin-top:8px;">
-        Las fichas están organizadas por región (Kanto, Johto, Hoenn, Sinnoh, Teselia, Kalos y Alola), Música de Combate y todas las categorías de Minijuegos (Centros Pokémon, Laboratorios, Bicicletas, Surf, Mundo Misterioso, Pokémon Colosseum/XD y Pokémon Ranger). La barra de progreso y el contador «X / Y canciones desbloqueadas» tienen en cuenta absolutamente todas las canciones del juego.
+        Las fichas están organizadas por región (Kanto, Johto, Hoenn, Sinnoh, Teselia, Kalos y Alola), Música de Combate y todas las categorías de Minijuegos (Centros Pokémon, Laboratorios, Bicicletas, Surf, Mundo Misterioso, Pokémon Colosseum/XD, Pokémon Ranger y Pantallas de Título). La barra de progreso y el contador «X / Y canciones desbloqueadas» tienen en cuenta absolutamente todas las canciones del juego.
       </div>
       <div class="guide-item" style="margin-top:4px;">
         <div class="guide-item-title">🏙️ ¿Por qué no aparecen todas las ciudades?</div>
@@ -2510,6 +2943,11 @@
 
       <div class="song-question" id="song-question">Cargando…</div>
       <div class="small" id="mode-label" style="text-align:center;"></div>
+
+      <!-- DEBUG: botón para forzar un Evento Pokémon en la próxima ronda (SOLO PRUEBAS, ELIMINAR) -->
+      <button type="button" id="debug-event-btn" style="display:none;">🧪 Forzar evento</button>
+      <!-- FIN DEBUG botón -->
+
       <div class="small" id="audio-status" style="text-align:center;">Cargando…</div>
       <div class="small" id="song-city-reveal" style="text-align:center; display:none; font-weight:900; color:var(--yellow);"></div>
       <div id="hard-timer-wrap" style="display:none; text-align:center; margin-top:4px;">
@@ -2550,9 +2988,29 @@
   </div>
 </div>
 
+<!-- Aviso de confirmación al pulsar "Atrás" (←) durante una ronda del Modo
+     Historia: la partida de Modo Historia no guarda progreso a mitad de
+     región/combate, así que si el jugador sale ahora, la próxima vez que
+     entre a Modo Historia tendrá que empezar de nuevo desde Kanto. -->
+<div id="leave-story-confirm-overlay">
+  <div class="result-card">
+    <div class="result-emoji">⚠️</div>
+    <div class="result-title">¿Salir del Modo Historia?</div>
+    <div class="result-score" style="margin-bottom:24px;">
+      Si sales ahora perderás el progreso de esta partida.<br>
+      La próxima vez tendrás que empezar de nuevo desde Kanto.
+    </div>
+    <div class="result-actions">
+      <button class="restart-btn" id="leave-story-keep-btn">🎮 Seguir jugando</button>
+      <button class="exit-btn" id="leave-story-exit-btn">🚪 Salir igualmente</button>
+    </div>
+  </div>
+</div>
+
 <audio id="main-audio"></audio>
 <audio id="menu-audio"></audio>
 <audio id="blastoise-rain-audio" loop></audio>
+<audio id="snorlax-snore-audio" loop></audio>
 
 <script>
 // ═══════════════════════════════════════════════
@@ -2573,6 +3031,7 @@
 //     mystery-dungeon/ ...
 //     colosseum-xd/ ...
 //     ranger/ ...
+//     title/ ...
 // images/
 // sounds/
 //
@@ -2764,6 +3223,7 @@ const songs = [
   //   "mystery-dungeon" → songs/other/mundo-misterioso/<pista>.mp3
   //   "colosseum-xd"    → songs/other/colosseum-xd/<pista>.mp3
   //   "ranger"          → songs/other/ranger/<pista>.mp3
+  //   "title-screens"   → songs/other/title/<region-en-minusculas>.mp3
   // Sustituye/completa file e image con tus rutas reales; puedes añadir tantas
   // canciones por categoría como quieras (no hace falta que sea 1 por región).
 
@@ -2814,7 +3274,7 @@ const songs = [
 
   // Pokémon Colosseum / XD
   { title: "Básix",                 file: "songs/other/colosseum-xd/basix.mp3",                 image: "images/basix.png",                 group: "other", other: "colosseum-xd" },
-  { title: "Ciudad Oasis.",                  file: "songs/other/colosseum-xd/ciudad-oasis.mp3",                   image: "images/ciudad-oasisb.png",                   group: "other", other: "colosseum-xd" },
+  { title: "Ciudad Oasis",                  file: "songs/other/colosseum-xd/ciudad-oasis.mp3",                   image: "images/ciudad-oasis.png",                   group: "other", other: "colosseum-xd" },
   { title: "Guarida Equipo Cepo",              file: "songs/other/colosseum-xd/guarida-equipo-cepo.mp3",              image: "images/guarida-equipo-cepo.png",              group: "other", other: "colosseum-xd" },
   { title: "Laboratorio Aura",               file: "songs/other/colosseum-xd/laboratorio-aura.mp3",               image: "images/laboratorio-aura.png",                group: "other", other: "colosseum-xd" },
   { title: "Laboratorio Pokémon Oscuros",                file: "songs/other/colosseum-xd/laboratorio-pokemon-oscuros.mp3",                 image: "images/laboratorio-pokemon-oscuros.png",                  group: "other", other: "colosseum-xd" },
@@ -2828,13 +3288,26 @@ const songs = [
 
 
   // Pokémon Ranger
-  { title: "Región Fiore",              file: "songs/other/ranger/region-fiore.mp3",                    image: "images/region-fiore.png",               group: "other", other: "ranger" },
-  { title: "Región Almia",              file: "songs/other/ranger/region-almia.mp3",                    image: "images/region-almia.png",               group: "other", other: "ranger" },
-  { title: "Región Oblivia",            file: "songs/other/ranger/region-oblivia.mp3",                  image: "images/region-oblivia.png",             group: "other", other: "ranger" },
-  { title: "Ranger Union",              file: "songs/other/ranger/ranger-union.mp3",                    image: "images/ranger-union.png",               group: "other", other: "ranger" },
-  { title: "Captura con el Styler",     file: "songs/other/ranger/captura-styler.mp3",                  image: "images/captura-styler.png",             group: "other", other: "ranger" },
-  { title: "Go-Rock Squad",             file: "songs/other/ranger/go-rock-squad.mp3",                   image: "images/go-rock-squad.png",              group: "other", other: "ranger" },
-  { title: "Bosque Vien",               file: "songs/other/ranger/bosque-vien.mp3",                     image: "images/bosque-vien.png",                group: "other", other: "ranger" },
+  { title: "Bosque Lira",              file: "songs/other/ranger/bosque-lira.mp3",                    image: "images/bosque-lira.png",               group: "other", other: "ranger" },
+  { title: "Buceo",              file: "songs/other/ranger/buceo.mp3",                    image: "images/buceo.png",               group: "other", other: "ranger" },
+  { title: "Escuela Ranger",              file: "songs/other/ranger/escuela-ranger.mp3",                    image: "images/escuela-ranger.png",               group: "other", other: "ranger" },
+  { title: "Fábrica Turnoche",     file: "songs/other/ranger/fabrica-turnoche.mp3",                  image: "images/fabrica-turnoche.png",             group: "other", other: "ranger" },
+  { title: "Otonia",             file: "songs/other/ranger/otonia.mp3",                   image: "images/otonia.png",              group: "other", other: "ranger" },
+  { title: "Puerto de Otonia",               file: "songs/other/ranger/puerto-otonia.mp3",                     image: "images/puerto-otonia.png",                group: "other", other: "ranger" },
+  { title: "Base Ranger",               file: "songs/other/ranger/ranger-base.mp3",                     image: "images/ranger-base.png",                group: "other", other: "ranger" },
+  { title: "Red Ranger",               file: "songs/other/ranger/red-ranger.mp3",                     image: "images/red-ranger.png",                group: "other", other: "ranger" },
+  { title: "Unión Ranger",               file: "songs/other/ranger/union-ranger.mp3",                     image: "images/union-ranger.png",                group: "other", other: "ranger" },
+  { title: "Villavera",               file: "songs/other/ranger/villavera.mp3",                     image: "images/villavera.png",                group: "other", other: "ranger" },
+
+
+  // Pantallas de Título
+  { title: "Pantalla de Título Kanto",    file: "songs/other/title/kanto.mp3",    image: "images/titulo-kanto.png",    group: "other", other: "title-screens" },
+  { title: "Pantalla de Título Johto",    file: "songs/other/title/johto.mp3",    image: "images/titulo-johto.png",    group: "other", other: "title-screens" },
+  { title: "Pantalla de Título Hoenn",    file: "songs/other/title/hoenn.mp3",    image: "images/titulo-hoenn.png",    group: "other", other: "title-screens" },
+  { title: "Pantalla de Título Sinnoh",   file: "songs/other/title/sinnoh.mp3",   image: "images/titulo-sinnoh.png",   group: "other", other: "title-screens" },
+  { title: "Pantalla de Título Teselia",  file: "songs/other/title/teselia.mp3",  image: "images/titulo-teselia.png",  group: "other", other: "title-screens" },
+  { title: "Pantalla de Título Kalos",    file: "songs/other/title/kalos.mp3",    image: "images/titulo-kalos.png",    group: "other", other: "title-screens" },
+  { title: "Pantalla de Título Alola",    file: "songs/other/title/alola.mp3",    image: "images/titulo-alola.png",    group: "other", other: "title-screens" },
 ];
 
 // Número de rondas por partida (Modo Fácil, Normal, Difícil y fases de región del Modo Historia)
@@ -2911,12 +3384,15 @@ const SFX = {
   victory:  "sounds/victory.mp3",
   back:     "sounds/back.mp3",
   event:    "sounds/poke-event.mp3", // sonido corto genérico al aparecer un Evento Pokémon
+  explosion: "sounds/explosion.mp3", // Evento Electrode: al explotar por agotarse el tiempo
+  shiny:     "sounds/shiny.mp3",     // Evento Caterpie Shiny: sonido propio de aparición
 };
 
 // Sonidos ambiente en bucle (efectos que duran mientras dura el overlay
 // visual, a diferencia de los SFX de un solo disparo de arriba).
 const AMBIENT_SFX = {
   rain: "sounds/rain-ambient.mp3", // lluvia de fondo del evento Blastoise
+  snore: "sounds/snore.mp3",       // ronquido en bucle del evento Snorlax
 };
 
 // ═══════════════════════════════════════════════
@@ -2972,13 +3448,23 @@ function showScreen(name, push=true) {
     stopSonidexPlayback(true);
   }
 
+  // Si salimos del quiz hacia cualquier otra pantalla (botón Atrás, "Salir",
+  // Game Over, cambio de fase/región del Modo Historia...) mientras había un
+  // Evento Pokémon activo (Weezing, Hypno...), su efecto visual no debe
+  // seguir viéndose fuera de la ronda. Se limpia aquí, de forma centralizada,
+  // para cubrir TODOS los caminos de salida y no solo los que ya se tenían
+  // en cuenta uno a uno.
+  if (screens.quiz.classList.contains("show") && name !== "quiz" && typeof clearPokeEventVisuals === "function") {
+    clearPokeEventVisuals();
+  }
+
   Object.values(screens).forEach(s => s.classList.remove("show"));
   screens[name].classList.add("show");
 
   // stats solo durante quiz
   const inQuiz = (name === "quiz");
   statsWrap.style.display = inQuiz ? "flex" : "none";
-  if (!inQuiz) { stopRoundTimer(); stopElectrodeTimer(); stopHardRoundTimer(); }
+  if (!inQuiz) { stopRoundTimer(); stopElectrodeTimer(); stopHardRoundTimer(); stopPorygonTextGlitch(); }
 
   // back button
   if (name === "home") {
@@ -2993,10 +3479,11 @@ function showScreen(name, push=true) {
   appHeader.style.display = (name === "home") ? "none" : "flex";
 }
 
-backBtn.addEventListener("click", () => {
-  playSFX(SFX.back);
-
-  // parar audio de la ronda si salimos del quiz (no debe seguir sonando en el menú)
+// Aplica la navegación real de "Atrás": parar el audio de la ronda si
+// salimos del quiz y mostrar la pantalla anterior de la pila. Separada del
+// listener del botón para poder posponerla hasta que el jugador confirme,
+// en el caso del aviso de salida del Modo Historia (ver más abajo).
+function goBackFromCurrentScreen() {
   const leavingQuiz = navStack[navStack.length - 1] === "quiz";
   if (leavingQuiz) stopAudioHard();
 
@@ -3010,6 +3497,52 @@ backBtn.addEventListener("click", () => {
 
   // la música del menú debe seguir sonando sin reiniciarse; solo arranca si no estaba sonando
   ensureMenuMusicPlaying();
+}
+
+const leaveStoryConfirmOverlay = document.getElementById('leave-story-confirm-overlay');
+const leaveStoryKeepBtn = document.getElementById('leave-story-keep-btn');
+const leaveStoryExitBtn = document.getElementById('leave-story-exit-btn');
+
+// Muestra el aviso de "¿Salir del Modo Historia?" y solo llama a
+// onConfirmExit() si el jugador confirma que quiere salir igualmente.
+// Si pulsa "Seguir jugando", simplemente se cierra el aviso y la ronda
+// continúa exactamente como estaba.
+function showLeaveStoryConfirm(onConfirmExit) {
+  leaveStoryConfirmOverlay.classList.add('show');
+
+  function onKeep() {
+    playSFX(SFX.go);
+    cleanup();
+  }
+  function onExit() {
+    cleanup();
+    onConfirmExit();
+  }
+  function cleanup() {
+    leaveStoryConfirmOverlay.classList.remove('show');
+    leaveStoryKeepBtn.removeEventListener('click', onKeep);
+    leaveStoryExitBtn.removeEventListener('click', onExit);
+  }
+
+  leaveStoryKeepBtn.addEventListener('click', onKeep);
+  leaveStoryExitBtn.addEventListener('click', onExit);
+}
+
+backBtn.addEventListener("click", () => {
+  playSFX(SFX.back);
+
+  const leavingQuiz = navStack[navStack.length - 1] === "quiz";
+
+  // Modo Historia no guarda progreso a mitad de región/combate: si el
+  // jugador pulsa "Atrás" mientras está jugando una ronda, pedimos
+  // confirmación antes de abandonar, avisando de que la próxima partida
+  // tendrá que empezar desde Kanto.
+  if (leavingQuiz && session.mode === GameMode.STORY) {
+    showLeaveStoryConfirm(goBackFromCurrentScreen);
+    return;
+  }
+
+  goBackFromCurrentScreen();
 });
 
 // ═══════════════════════════════════════════════
@@ -3030,7 +3563,7 @@ const STORY_COMBAT_ROUNDS = 3;
 let session = {
   mode: null,            // GameMode
   normalRegion: null,    // "Kanto"...
-  otherGame: null,       // "mystery-dungeon" | "colosseum-xd" | "ranger"
+  otherGame: null,       // "mystery-dungeon" | "colosseum-xd" | "ranger" | "title-screens"
   pool: [],              // canciones filtradas para la sesión
   questionType: "title", // "title" | "region"
   roundsTarget: 10,      // nº de rondas de la partida actual (se recalcula en startGame)
@@ -3101,6 +3634,12 @@ const PokeEvents = (function () {
   const registry = [];           // catálogo de eventos disponibles
   let active = null;             // evento activo durante la ronda actual (o null)
 
+  // ── DEBUG: id del evento forzado por el selector de pruebas (o null) ──
+  // SOLO PARA PRUEBAS. Eliminar esta variable y debugForceNext() (más abajo,
+  // y en el "return" al final del módulo) cuando se retire la función de debug.
+  let debugForcedId = null;
+  // ── FIN DEBUG ──
+
   // Nº de rondas consecutivas (elegibles) en las que NO se ha activado un
   // evento. Al llegar a PITY_STREAK, la siguiente ronda fuerza un evento
   // seguro y el contador se reinicia a 0.
@@ -3158,6 +3697,23 @@ const PokeEvents = (function () {
       onDone();
       return;
     }
+
+    // ── DEBUG: si hay un evento forzado desde el selector de pruebas,
+    // se activa directamente, saltándose la probabilidad normal.
+    // SOLO PARA PRUEBAS. Eliminar este bloque cuando se retire la función de debug.
+    if (debugForcedId) {
+      const forced = registry.find(e => e.id === debugForcedId);
+      debugForcedId = null;
+      if (forced) {
+        noEventStreak = 0;
+        active = forced;
+        pendingHandoff = true;
+        if (typeof trackEncounter === "function") trackEncounter(active.id);
+        playEventAnimation(active, onDone);
+        return;
+      }
+    }
+    // ── FIN DEBUG ──
 
     const guaranteed = noEventStreak >= PITY_STREAK;
     if (!guaranteed && Math.random() >= TRIGGER_CHANCE) {
@@ -3229,6 +3785,18 @@ const PokeEvents = (function () {
     return active ? active.id : null;
   }
 
+  // Cancela de golpe el evento activo (si lo hay), incluido cualquier
+  // "traspaso" pendiente hacia la próxima startRound(). Se usa cuando el
+  // jugador abandona la ronda en curso (botón Atrás, Salir, Game Over...)
+  // antes de responder: sin esto, el evento seguiría "activo" internamente
+  // aunque ya no hubiera ronda, y una siguiente ronda que arrancara por una
+  // vía distinta a tryTrigger() podría heredarlo indebidamente a través de
+  // pendingHandoff.
+  function clearActive() {
+    active = null;
+    pendingHandoff = false;
+  }
+
   // Devuelve una copia del catálogo completo de eventos registrados (id,
   // name, pokemonId, shiny...). Se usa, entre otras cosas, para poblar de
   // forma automática las colinas del fondo con los Pokémon de los eventos.
@@ -3236,8 +3804,38 @@ const PokeEvents = (function () {
     return registry.slice();
   }
 
-  return { register, tryTrigger, beginRound, applyToAnswers, applyToAudio, activeId, list };
+  // ── DEBUG: fija el id del próximo evento a forzar. SOLO PARA PRUEBAS.
+  // Eliminar esta función cuando se retire la función de debug.
+  function debugForceNext(id) { debugForcedId = id; }
+  // ── FIN DEBUG ──
+
+  return { register, tryTrigger, beginRound, clearActive, applyToAnswers, applyToAudio, activeId, list, debugForceNext };
 })();
+
+// Apaga TODOS los efectos visuales/de audio que pueda haber dejado un
+// Evento Pokémon (Weezing, Hypno, Gengar, Shiny, Blastoise, Porygon,
+// Electrode...), y cancela el evento activo a nivel interno (PokeEvents).
+// Se llama tanto al empezar cada ronda nueva (startRound) como en
+// cualquier punto en el que el jugador abandona la ronda en curso ANTES
+// de responder (botón Atrás, "Salir", Game Over...), para que ningún
+// efecto se quede "colgado" fuera del quiz, por ejemplo en el menú
+// principal.
+function clearPokeEventVisuals() {
+  PokeEvents.clearActive();
+  document.getElementById('answers-grid').classList.remove('event-inkay');
+  document.getElementById('answers-grid').classList.remove('event-porygon');
+  document.getElementById('gengar-dark-overlay').classList.remove('show');
+  document.getElementById('hypno-overlay').classList.remove('show');
+  document.getElementById('hypno-vignette').classList.remove('show');
+  document.getElementById('app').classList.remove('hypno-warp-active');
+  document.getElementById('shiny-color-overlay').classList.remove('show');
+  document.getElementById('weezing-smoke-overlay').classList.remove('show');
+  document.getElementById('blastoise-rain-overlay').classList.remove('show');
+  document.getElementById('porygon-glitch-overlay').classList.remove('show');
+  stopPorygonTextGlitch();
+  stopElectrodeTimer();
+  if (typeof audio !== "undefined" && audio) audio.playbackRate = 1; // reset del efecto Slowpoke
+}
 
 // ── Catálogo de Eventos Pokémon ──
 // Para añadir un evento nuevo, basta con llamar a PokeEvents.register({...})
@@ -3256,11 +3854,12 @@ PokeEvents.register({
 PokeEvents.register({
   id: "porygon",
   name: "Porygon",
-  description: "¡Porygon ha aparecido! La interfaz sufre un fallo digital: glitches, píxeles y las respuestas parpadean como un error informático.",
+  description: "¡Porygon ha aparecido! La interfaz sufre un fallo digital: glitches, píxeles y letras corruptas parpadean como un error informático.",
   pokemonId: 137,
   onAnswers(gridEl) {
     gridEl.classList.add("event-porygon");
     document.getElementById("porygon-glitch-overlay").classList.add("show");
+    startPorygonTextGlitch();
   },
 });
 
@@ -3285,12 +3884,14 @@ PokeEvents.register({
 });
 
 PokeEvents.register({
-  id: "hipno",
-  name: "Hipno",
-  description: "¡Hipno ha aparecido! Su péndulo hipnótico distorsiona la pantalla.",
+  id: "hypno",
+  name: "Hypno",
+  description: "¡Hypno balancea su péndulo! La pantalla se ondula como una superficie líquida y la perspectiva fluctúa, provocando un intenso mareo visual.",
   pokemonId: 97,
   onAnswers() {
-    document.getElementById("hipno-overlay").classList.add("show");
+    document.getElementById("hypno-overlay").classList.add("show");
+    document.getElementById("hypno-vignette").classList.add("show");
+    document.getElementById("app").classList.add("hypno-warp-active");
   },
 });
 
@@ -3327,6 +3928,7 @@ PokeEvents.register({
   description: "¡Un Caterpie Shiny ha aparecido! Sus colores tiñen la pantalla y multiplican tus puntos x5.",
   pokemonId: 10,
   shiny: true,
+  sfx: SFX.shiny,
   onAnswers() {
     document.getElementById("shiny-color-overlay").classList.add("show");
   },
@@ -3335,7 +3937,7 @@ PokeEvents.register({
 PokeEvents.register({
   id: "blastoise",
   name: "Blastoise",
-  description: "¡Blastoise usa Danza Lluvia! Solo es un efecto visual, no cambia nada en la partida.",
+  description: "¡Blastoise usa Danza Lluvia! Una lluvia torrencial cae sobre el campo de batalla.",
   pokemonId: 9,
   onAnswers() {
     document.getElementById("blastoise-rain-overlay").classList.add("show");
@@ -3419,17 +4021,39 @@ PokeEvents.register({
         <span class="snorlax-zzz-particle">💤</span>
       </div>
       <img class="snorlax-sprite" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" alt="Snorlax">
-      <div class="snorlax-label">Snorlax se ha quedado dormido</div>
-      <div class="snorlax-hint">Tócalo para despertarlo</div>
+      <div class="snorlax-text">
+        <div class="snorlax-label">Snorlax se ha quedado dormido</div>
+        <div class="snorlax-hint">Tócalo para despertarlo</div>
+        <div class="snorlax-progress-track"><div class="snorlax-progress-fill"></div></div>
+      </div>
     `;
+    const hintEl = overlay.querySelector(".snorlax-hint");
+    const fillEl = overlay.querySelector(".snorlax-progress-fill");
+    startSnorlaxSnoreSound();
     overlay.addEventListener("click", () => {
       clicks++;
       overlay.classList.remove("shaken");
       void overlay.offsetWidth; // fuerza el reinicio de la animación de sacudida
       overlay.classList.add("shaken");
+      if (fillEl) fillEl.style.width = Math.min(100, (clicks / CLICKS_NEEDED) * 100) + "%";
+      if (hintEl) {
+        hintEl.textContent = (clicks < CLICKS_NEEDED)
+          ? `¡Sigue tocando! (${clicks}/${CLICKS_NEEDED})`
+          : "¡Se ha despertado!";
+      }
       if (clicks >= CLICKS_NEEDED) {
         overlay.classList.add("waking");
+        stopSnorlaxSnoreSound();
+        // Snorlax se está despertando: deshabilitamos las respuestas un
+        // par de segundos para que un toque "de más" (al insistir tocando
+        // a Snorlax) no caiga por error sobre una respuesta justo cuando
+        // el overlay desaparece y deja de bloquear los clics.
+        const answerBtns = Array.from(gridEl.querySelectorAll(".answer-btn"));
+        answerBtns.forEach(b => b.disabled = true);
         setTimeout(() => overlay.remove(), 500);
+        setTimeout(() => {
+          if (!state.answered) answerBtns.forEach(b => b.disabled = false);
+        }, 2000);
       }
     });
     gridEl.appendChild(overlay);
@@ -3658,7 +4282,7 @@ const ACHIEVEMENTS = [
   { id: "encounter_rapidash",     icon: "🐎", title: "Velocidad Rapidash",     desc: "Haz que Rapidash aparezca 5 veces." },
   { id: "encounter_ditto",        icon: "🟣", title: "Imitador Ditto",         desc: "Haz que Ditto aparezca 5 veces." },
   { id: "encounter_inkay",        icon: "🔄", title: "Giro Inkay",             desc: "Haz que Inkay aparezca 5 veces." },
-  { id: "encounter_hipno",        icon: "🌙", title: "Hipnosis de Hypno",      desc: "Haz que Hypno aparezca 5 veces." },
+  { id: "encounter_hypno",        icon: "🌙", title: "Hypnosis de Hypno",      desc: "Haz que Hypno aparezca 5 veces." },
   { id: "encounter_chansey",      icon: "🥚", title: "Segunda oportunidad",    desc: "Haz que Chansey aparezca 5 veces." },
   { id: "encounter_gengar",       icon: "👻", title: "Sombra de Gengar",       desc: "Haz que Gengar aparezca 5 veces." },
   { id: "encounter_pikachu",      icon: "⚡", title: "Chispa de Pikachu",      desc: "Haz que Pikachu aparezca 5 veces." },
@@ -3730,7 +4354,7 @@ const ACHIEVEMENT_CONDITIONS = {
   encounter_rapidash:        s => ((s.encounterCounts && s.encounterCounts.rapidash) || 0) >= 5,
   encounter_ditto:           s => ((s.encounterCounts && s.encounterCounts.ditto) || 0) >= 5,
   encounter_inkay:           s => ((s.encounterCounts && s.encounterCounts.inkay) || 0) >= 5,
-  encounter_hipno:           s => ((s.encounterCounts && s.encounterCounts.hipno) || 0) >= 5,
+  encounter_hypno:           s => ((s.encounterCounts && s.encounterCounts.hypno) || 0) >= 5,
   encounter_chansey:         s => ((s.encounterCounts && s.encounterCounts.chansey) || 0) >= 5,
   encounter_gengar:          s => ((s.encounterCounts && s.encounterCounts.gengar) || 0) >= 5,
   encounter_pikachu:         s => ((s.encounterCounts && s.encounterCounts.pikachu) || 0) >= 5,
@@ -3797,6 +4421,7 @@ const OTHER_UNLOCKS = {
   "mystery-dungeon": { achId: "story_sinnoh",  name: "Pokémon Mundo Misterioso", reqTitle: "Historia: Sinnoh" },
   "colosseum-xd":    { achId: "correct_100",   name: "Pokémon Colosseum / XD",   reqTitle: "Melómano" },
   "ranger":          { achId: "games_30",      name: "Pokémon Ranger",           reqTitle: "Entrenador dedicado" },
+  "title-screens":   { achId: "perfect_easy",  name: "Pantallas de Título",      reqTitle: "Fácil perfecto" },
 };
 
 function isOtherUnlocked(key) {
@@ -4243,6 +4868,7 @@ const SONIDEX_GROUPS = [
   { title: "Mundo Misterioso",     filter: s => s.group === "other" && s.other === "mystery-dungeon" },
   { title: "Pokémon Colosseum / XD", filter: s => s.group === "other" && s.other === "colosseum-xd" },
   { title: "Pokémon Ranger",       filter: s => s.group === "other" && s.other === "ranger" },
+  { title: "Pantallas de Título",  filter: s => s.group === "other" && s.other === "title-screens" },
 ];
 
 function sonidexSongCard(song) {
@@ -4446,6 +5072,31 @@ function stopBlastoiseRainSound() {
     blastoiseRainAudio.currentTime = 0;
   } catch (e) {}
 }
+
+// ── Sonido en bucle de ronquido (evento Snorlax) ──
+// Suena en bucle, junto a la canción de la ronda, mientras Snorlax sigue
+// dormido sobre las respuestas, y se detiene en cuanto el jugador lo
+// despierta a base de toques (ver el evento "snorlax" en el catálogo de
+// PokeEvents). También se detiene desde stopAudioHard() como red de
+// seguridad, igual que el sonido de lluvia de Blastoise, para cubrir todos
+// los puntos donde la ronda/partida termina o cambia antes de que el
+// jugador llegue a despertarlo (siguiente ronda, salir del quiz, reiniciar
+// partida, fin del Modo Historia, etc.).
+const snorlaxSnoreAudio = document.getElementById('snorlax-snore-audio');
+function startSnorlaxSnoreSound() {
+  try {
+    if (!snorlaxSnoreAudio.src) snorlaxSnoreAudio.src = AMBIENT_SFX.snore;
+    snorlaxSnoreAudio.volume = settings.sfxVol;
+    snorlaxSnoreAudio.currentTime = 0;
+    snorlaxSnoreAudio.play().catch(() => {});
+  } catch (e) {}
+}
+function stopSnorlaxSnoreSound() {
+  try {
+    snorlaxSnoreAudio.pause();
+    snorlaxSnoreAudio.currentTime = 0;
+  } catch (e) {}
+}
 // Arranca música de menú SOLO si no hay ya una sonando (evita reinicios al navegar por los menús)
 function ensureMenuMusicPlaying(){
   if (screens.quiz.classList.contains('show')) return;
@@ -4595,6 +5246,7 @@ function stopAudioHard(){
   audio.pause();
   audio.currentTime = 0;
   stopBlastoiseRainSound();
+  stopSnorlaxSnoreSound();
 }
 
 // ── Reproducción de fichas desde la Sonidex ──
@@ -4967,13 +5619,71 @@ function setModeLabel() {
       : `📖 Modo Historia · Región: ${session.normalRegion}`;
   }
   if (session.mode === GameMode.NORMAL && session.normalRegion === "Combate") el.textContent = "Modo: Combate · 6 opciones";
+
+  // DEBUG: el botón de forzar evento solo tiene sentido en Modo Historia. Eliminar esta línea junto con el resto de la función de debug.
+  updateDebugEventButtonVisibility();
 }
+
+// ══════════════════════════════════════════════════════════════════
+// DEBUG · SELECTOR DE EVENTOS POKÉMON (SOLO PARA PRUEBAS)
+// Permite forzar, desde un botón visible solo en Modo Historia, qué
+// Evento Pokémon se activará en la siguiente ronda, para poder probarlos
+// rápidamente sin depender de la probabilidad aleatoria.
+//
+// ELIMINAR POR COMPLETO este bloque (y sus referencias marcadas "DEBUG"
+// en el HTML, el CSS y dentro del módulo PokeEvents) cuando el juego
+// esté terminado.
+// ══════════════════════════════════════════════════════════════════
+function updateDebugEventButtonVisibility() {
+  const btn = document.getElementById("debug-event-btn");
+  if (!btn) return;
+  btn.style.display = (session.mode === GameMode.STORY) ? "inline-block" : "none";
+}
+
+function openDebugEventPanel() {
+  const panel = document.getElementById("debug-event-panel");
+  const list = document.getElementById("debug-event-list");
+  if (!panel || !list || typeof PokeEvents === "undefined") return;
+
+  list.innerHTML = "";
+  PokeEvents.list().forEach(ev => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = `${ev.name}`;
+    btn.addEventListener("click", () => {
+      PokeEvents.debugForceNext(ev.id);
+      closeDebugEventPanel();
+      alert(`🧪 "${ev.name}" se activará en la próxima ronda.`);
+    });
+    list.appendChild(btn);
+  });
+
+  panel.classList.add("show");
+}
+
+function closeDebugEventPanel() {
+  const panel = document.getElementById("debug-event-panel");
+  if (panel) panel.classList.remove("show");
+}
+
+(function initDebugEventTester() {
+  const openBtn = document.getElementById("debug-event-btn");
+  const closeBtn = document.getElementById("debug-event-close-btn");
+  const panel = document.getElementById("debug-event-panel");
+  if (openBtn) openBtn.addEventListener("click", openDebugEventPanel);
+  if (closeBtn) closeBtn.addEventListener("click", closeDebugEventPanel);
+  if (panel) panel.addEventListener("click", (e) => { if (e.target === panel) closeDebugEventPanel(); });
+})();
+// ══════════════════════════════════════════════════════════════════
+// FIN DEBUG · SELECTOR DE EVENTOS POKÉMON
+// ══════════════════════════════════════════════════════════════════
 
 function prettyOther(key){
   if (key === "mystery-dungeon") return "Pokémon Mundo Misterioso";
   if (key === "colosseum-xd") return "Pokémon Colosseum / XD";
   if (key === "ranger") return "Pokémon Ranger";
   if (key === "bicicletas") return "Bicicletas";
+  if (key === "title-screens") return "Pantallas de Título";
   return key;
 }
 
@@ -4992,15 +5702,15 @@ function buildPool() {
     }
     session.questionType = "title";
   } else if (session.mode === GameMode.HARD) {
-    // Difícil: todas las canciones implementadas, EXCEPTO las de Combate
-    session.pool = songs.filter(s => s.group !== "combat");
+    // Difícil: todas las canciones principales, EXCEPTO las de Combate y las de Minijuegos
+    session.pool = songs.filter(s => s.group === "main");
     session.questionType = "title";
   } else if (session.mode === GameMode.OTHER) {
     session.pool = songs.filter(s => s.group === "other" && s.other === session.otherGame);
     session.questionType = "title";
   } else if (session.mode === GameMode.INFINITE) {
-    // Desafío Infinito: todas las canciones, sin límite de rondas, EXCEPTO las de Combate
-    session.pool = songs.filter(s => s.group !== "combat");
+    // Desafío Infinito: todas las canciones principales, sin límite de rondas, EXCEPTO las de Combate y las de Minijuegos
+    session.pool = songs.filter(s => s.group === "main");
     session.questionType = "title";
   }
 }
@@ -5230,6 +5940,72 @@ function stopElectrodeTimer() {
   if (el) el.classList.remove('show');
 }
 
+// ── Evento Pokémon Porygon: parpadeo de caracteres en el texto ──
+// Además del glitch visual (CSS) sobre botones y pantalla, este efecto hace
+// que, de forma aleatoria y momentánea, algunos caracteres de la pregunta y
+// de las respuestas se sustituyan por símbolos "corruptos", simulando un
+// fallo de codificación de texto. Se llama desde el hook onAnswers() del
+// evento Porygon (ver catálogo de Eventos Pokémon) y se detiene junto con el
+// resto de efectos de la ronda en startRound().
+const PORYGON_GLITCH_CHARS = "01#$%&@!?█▓▒░<>/\\¤§ｱｲｳｴｵﾊﾟﾜｾﾁｸ";
+let porygonGlitchInterval = null;
+const porygonScrambledEls = new Map(); // elemento -> { original, timeoutId }
+
+// Sustituye 1-3 caracteres (no espacios) del texto de `el` por símbolos de
+// glitch durante un instante muy breve y luego restaura el texto original.
+// Si el elemento ya está siendo "glitcheado", no hace nada (evita solapar
+// dos sustituciones sobre el mismo texto).
+function porygonScrambleText(el) {
+  if (!el || porygonScrambledEls.has(el)) return;
+  const original = el.textContent;
+  if (!original || !original.trim()) return;
+
+  const chars = original.split("");
+  const editableIdx = chars.map((c, i) => i).filter(i => chars[i].trim() !== "");
+  const glitchCount = Math.max(1, Math.min(3, Math.round(editableIdx.length * 0.25)));
+  for (let n = 0; n < glitchCount && editableIdx.length; n++) {
+    const pick = editableIdx.splice(Math.floor(Math.random() * editableIdx.length), 1)[0];
+    chars[pick] = PORYGON_GLITCH_CHARS[Math.floor(Math.random() * PORYGON_GLITCH_CHARS.length)];
+  }
+  el.textContent = chars.join("");
+  el.classList.add("porygon-text-glitching");
+
+  const timeoutId = setTimeout(() => {
+    el.textContent = original;
+    el.classList.remove("porygon-text-glitching");
+    porygonScrambledEls.delete(el);
+  }, 130 + Math.random() * 110);
+  porygonScrambledEls.set(el, { original, timeoutId });
+}
+
+// Arranca el intervalo que, cada pocos cientos de ms, elige 1-2 elementos de
+// texto al azar (la pregunta y/o alguna respuesta) y los "glitchea".
+function startPorygonTextGlitch() {
+  stopPorygonTextGlitch(); // por seguridad, nunca debería haber uno colgado ya
+  porygonGlitchInterval = setInterval(() => {
+    const grid = document.getElementById("answers-grid");
+    if (!grid || !grid.classList.contains("event-porygon")) { stopPorygonTextGlitch(); return; }
+    const question = document.getElementById("song-question");
+    const targets = [question, ...grid.querySelectorAll(".answer-btn")].filter(Boolean);
+    if (!targets.length) return;
+    const picks = shuffle(targets).slice(0, 1 + Math.floor(Math.random() * 2));
+    picks.forEach(porygonScrambleText);
+  }, 420);
+}
+
+// Detiene el intervalo y restaura de inmediato el texto original de
+// cualquier elemento que estuviera a media sustitución, para no dejar nunca
+// texto "corrupto" colgado al terminar la ronda o el evento.
+function stopPorygonTextGlitch() {
+  if (porygonGlitchInterval) { clearInterval(porygonGlitchInterval); porygonGlitchInterval = null; }
+  porygonScrambledEls.forEach(({ original, timeoutId }, el) => {
+    clearTimeout(timeoutId);
+    el.textContent = original;
+    el.classList.remove("porygon-text-glitching");
+  });
+  porygonScrambledEls.clear();
+}
+
 // Electrode explota: si el jugador aún no ha respondido esta ronda, cuenta
 // como fallo (rompe la racha y revela la respuesta correcta) y le quita una
 // vida. En Modo Historia usa el sistema de vidas habitual (puede acabar la
@@ -5243,7 +6019,7 @@ function electrodeExplode() {
 
   document.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
   state.streak = 0;
-  playSFX(SFX.wrong);
+  playSFX(SFX.explosion); // ¡Electrode ha explotado!
   updateStatsUI();
 
   setTimeout(() => {
@@ -5363,15 +6139,19 @@ function startRound() {
   renderAnswerButtons(options);
 
   // Evento Pokémon: primero se resetea cualquier efecto visual de la ronda
-  // anterior y luego se aplica el del evento activo (si lo hay).
+  // anterior (sin tocar PokeEvents.active: ya lo gestiona beginRound() más
+  // arriba) y luego se aplica el del evento activo de esta ronda (si lo hay).
   document.getElementById('answers-grid').classList.remove('event-inkay');
   document.getElementById('answers-grid').classList.remove('event-porygon');
   document.getElementById('gengar-dark-overlay').classList.remove('show');
-  document.getElementById('hipno-overlay').classList.remove('show');
+  document.getElementById('hypno-overlay').classList.remove('show');
+  document.getElementById('hypno-vignette').classList.remove('show');
+  document.getElementById('app').classList.remove('hypno-warp-active');
   document.getElementById('shiny-color-overlay').classList.remove('show');
   document.getElementById('weezing-smoke-overlay').classList.remove('show');
   document.getElementById('blastoise-rain-overlay').classList.remove('show');
   document.getElementById('porygon-glitch-overlay').classList.remove('show');
+  stopPorygonTextGlitch();
   stopElectrodeTimer();
   PokeEvents.applyToAnswers(document.getElementById('answers-grid'));
 
@@ -5437,6 +6217,7 @@ function handleAnswer(btn, isCorrect) {
   stopRoundTimer();
   stopElectrodeTimer();
   stopHardRoundTimer();
+  stopPorygonTextGlitch();
 
   // Mostrar imagen tras responder
   setSongImage(state.currentSong);
