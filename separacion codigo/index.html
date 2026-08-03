@@ -385,12 +385,6 @@
         <small id="home-sonidex-summary">Desbloquea canciones acertándolas 10 veces</small>
       </button>
 
-      <button class="menu-btn" id="go-leaderboard">
-        <span class="menu-btn-icon">🏆</span>
-        <span class="menu-btn-title">Clasificaciones</span>
-        <small>Tu récord y el top 50 del Desafío Infinito</small>
-      </button>
-
       <button class="menu-btn" id="go-options">
         <span class="menu-btn-icon">⚙️</span>
         <span class="menu-btn-title">Opciones</span>
@@ -717,28 +711,6 @@
     <div id="sonidex-groups"></div>
   </section>
 
-  <!-- CLASIFICACIONES -->
-  <section class="screen" id="screen-leaderboard">
-    <div class="card">
-      <div class="title">🏆 Clasificaciones</div>
-      <div class="subtitle">Los 50 mejores en el Desafío Infinito</div>
-    </div>
-
-    <div class="card">
-      <div class="title" style="font-size:1.1rem;">🙋 Tu récord</div>
-      <div class="streak-row">
-        <div class="streak-name">♾️ Desafío Infinito</div>
-        <div class="streak-value">💰 <span id="leaderboard-personal-best">0</span> pts</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="title" style="font-size:1.1rem;">🌍 Top 50 global</div>
-      <div class="small" id="leaderboard-status" style="margin-bottom:8px;"></div>
-      <div class="leaderboard-list" id="leaderboard-list"></div>
-    </div>
-  </section>
-
   <!-- QUIZ -->
   <section class="screen" id="screen-quiz">
     <div class="song-card">
@@ -820,7 +792,6 @@
 <audio id="jigglypuff-audio"></audio>
 
 <script src="storage.js"></script>
-<script type="module" src="leaderboard.js"></script>
 <script src="audio.js"></script>
 <script src="pokemon.js"></script>
 <script src="ui.js"></script>
