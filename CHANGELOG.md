@@ -16,7 +16,26 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
 
 ## [Unreleased]
 
+### Añadido
+- **4 nuevos avatares de perfil.** Se amplía `AVATAR_CATALOG`
+  (`storage.js`) con retratos estilo Pokémon Mundo Misterioso
+  (PMDCollab/SpriteCollab) de Gible, Chespin, Fennekin y Froakie, para
+  poder usarlos como recompensa de nivel (ver más abajo).
+
 ### Cambiado
+- **Recompensas de avatar por nivel de perfil (niveles 13-31).** Se
+  amplía `AVATAR_UNLOCKS` (`game.js`) con un nuevo tramo de
+  desbloqueos por nivel, del 13 al 31: Gyarados/Dratini (13),
+  Scyther/Larvitar (14), Arcanine/Beldum (15), Bagon/Onix (16),
+  Gible/Heracross (17), Turtwig/Piplup/Chimchar (18), Milotic/Magmar
+  (19), Jynx/Wobbuffet (20), Chatot/Electabuzz (21), Sylveon/Tauros
+  (22), Shuckle/Aerodactyl (23), Snivy/Oshawott/Tepig (24),
+  Alakazam/Flareon (25), Wigglytuff/Vaporeon (26), Lapras/Jolteon (27),
+  Zoroark (28), Scizor (29), Fennekin/Chespin/Froakie (30) y Lucario
+  (31). Las recompensas de nivel 12 e inferiores se mantienen igual.
+  Piplup cambia de nivel de desbloqueo (antes 22, ahora 18). Riolu,
+  Umbreon y Espeon pierden su entrada en `AVATAR_UNLOCKS` y pasan a
+  estar disponibles desde el principio.
 - **Orden de la rejilla de avatares de perfil.** `renderAvatarGrid()`
   (`ui.js`) ahora pinta los avatares ordenados de menor a mayor según
   el nivel necesario para desbloquearlos (`AVATAR_UNLOCKS`, `game.js`);
