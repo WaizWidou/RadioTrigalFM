@@ -458,30 +458,43 @@ function computeLevelInfo(totalXp) {
 }
 
 // ── Avatares de perfil desbloqueables por nivel ──
-// Solo Bulbasaur, Charmander, Squirtle y Eevee están disponibles desde el
-// principio; el resto se desbloquea progresivamente según sube el nivel de
-// perfil. Solo los avatares que aparecen aquí tienen requisito: cualquier
-// avatar del catálogo que no esté en este objeto se considera desbloqueado
-// desde el nivel 1 (ver isAvatarUnlocked()). Mismo criterio que
-// MODE_UNLOCKS/OTHER_UNLOCKS de más abajo, pero por nivel únicamente.
-// TODO: quedan por asignar nivel Pikachu, Jigglypuff, Snorlax, Gengar,
-// Riolu, Umbreon, Espeon, Piplup y la mayoría de los avatares añadidos en
-// la última tanda (ver CHANGELOG.md) — de momento se mantienen tal y como
-// estaban hasta tener el resto de la tabla de niveles.
+// El resto del catálogo (los que no aparecen en este objeto: Pikachu,
+// Jigglypuff, Snorlax, Gengar, Umbreon, Espeon, los legendarios/
+// pseudolegendarios y el resto de avatares añadidos en tandas
+// anteriores) se considera desbloqueado desde el nivel 1 (ver
+// isAvatarUnlocked()). Mismo criterio que MODE_UNLOCKS/OTHER_UNLOCKS de
+// más abajo, pero por nivel únicamente.
 const AVATAR_UNLOCKS = {
   meowth:     { level: 2  },
   psyduck:    { level: 2  },
+  snubbull:   { level: 2  },
   vulpix:     { level: 3  },
+  rattata:    { level: 3  },
+  geodude:    { level: 3  },
   cubone:     { level: 4  },
+  sunkern:    { level: 4  },
+  wooper:     { level: 4  },
   skitty:     { level: 5  },
+  togepi:     { level: 5  },
+  mareep:     { level: 5  },
   chikorita:  { level: 6  },
   cyndaquil:  { level: 6  },
   totodile:   { level: 6  },
   kecleon:    { level: 7  },
+  staryu:     { level: 7  },
+  teddiursa:  { level: 7  },
   kangaskhan: { level: 8  },
+  ralts:      { level: 8  },
+  magikarp:   { level: 8  },
   absol:      { level: 9  },
+  smeargle:   { level: 9  },
+  corsola:    { level: 9  },
   gardevoir:  { level: 10 },
+  marill:     { level: 10 },
+  growlithe:  { level: 10 },
   xatu:       { level: 11 },
+  riolu:      { level: 11 },
+  feebas:     { level: 11 },
   treecko:    { level: 12 },
   mudkip:     { level: 12 },
   torchic:    { level: 12 },
@@ -518,7 +531,9 @@ const AVATAR_UNLOCKS = {
   lapras:     { level: 27 },
   jolteon:    { level: 27 },
   zoroark:    { level: 28 },
+  unown:      { level: 28 },
   scizor:     { level: 29 },
+  sneasler:   { level: 29 },
   fennekin:   { level: 30 },
   chespin:    { level: 30 },
   froakie:    { level: 30 },

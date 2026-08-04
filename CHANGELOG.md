@@ -23,6 +23,16 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
   poder usarlos como recompensa de nivel (ver más abajo).
 
 ### Cambiado
+- **Recompensas de avatar por nivel de perfil (niveles 2-29, segunda
+  tanda).** Se añaden a `AVATAR_UNLOCKS` (`game.js`) desbloqueos por
+  nivel para 19 avatares que hasta ahora estaban disponibles desde el
+  principio: Snubbull (2), Rattata/Geodude (3), Sunkern/Wooper (4),
+  Togepi/Mareep (5), Staryu/Teddiursa (7), Ralts/Magikarp (8),
+  Smeargle/Corsola (9), Marill/Growlithe (10), Riolu/Feebas (11),
+  Unown (28) y Sneasler (29). Riolu pasa a requerir nivel 11 (antes
+  disponible desde el principio, tras el cambio de la sesión
+  anterior).
+
 - **Recompensas de avatar por nivel de perfil (niveles 13-31).** Se
   amplía `AVATAR_UNLOCKS` (`game.js`) con un nuevo tramo de
   desbloqueos por nivel, del 13 al 31: Gyarados/Dratini (13),
