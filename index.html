@@ -721,19 +721,32 @@
   <section class="screen" id="screen-leaderboard">
     <div class="card">
       <div class="title">🏆 Clasificaciones</div>
-      <div class="subtitle">Los 50 mejores en el Desafío Infinito</div>
+      <div class="subtitle">Los 50 mejores de cada categoría</div>
     </div>
 
     <div class="card">
-      <div class="title" style="font-size:1.1rem;">🙋 Tu récord</div>
+      <div class="title" style="font-size:1.1rem;">🙋 Tus récords</div>
+      <div class="streak-row">
+        <div class="streak-name">🧑 Nivel de Jugador</div>
+        <div class="streak-value">Nv. <span id="leaderboard-personal-level">1</span></div>
+      </div>
       <div class="streak-row">
         <div class="streak-name">♾️ Desafío Infinito</div>
-        <div class="streak-value">💰 <span id="leaderboard-personal-best">0</span> pts</div>
+        <div class="streak-value">💰 <span id="leaderboard-personal-infinite">0</span> pts</div>
+      </div>
+      <div class="streak-row">
+        <div class="streak-name">📖 Modo Historia</div>
+        <div class="streak-value">💰 <span id="leaderboard-personal-story">0</span> pts</div>
       </div>
     </div>
 
     <div class="card">
       <div class="title" style="font-size:1.1rem;">🌍 Top 50 global</div>
+      <div class="leaderboard-tabs" id="leaderboard-tabs">
+        <button class="leaderboard-tab active" data-category="level">🧑 Nivel</button>
+        <button class="leaderboard-tab" data-category="infinite">♾️ Infinito</button>
+        <button class="leaderboard-tab" data-category="story">📖 Historia</button>
+      </div>
       <div class="small" id="leaderboard-status" style="margin-bottom:8px;"></div>
       <div class="leaderboard-list" id="leaderboard-list"></div>
     </div>

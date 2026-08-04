@@ -498,11 +498,23 @@ function updateHomeAchievementSummary() {
 // ═══════════════════════════════════════════════
 //  🏆 PANTALLA DE CLASIFICACIONES
 // ═══════════════════════════════════════════════
+// Las tres categorías de clasificación disponibles (deben coincidir con
+// las claves de LEADERBOARD_CATEGORIES en leaderboard.js): id → cómo
+// formatear el valor (nivel o puntuación) en cada fila de la tabla.
+const LEADERBOARD_TABS = {
+  level:    { formatValue: v => `Nv. ${v || 1}` },
+  infinite: { formatValue: v => `💰 ${v || 0}` },
+  story:    { formatValue: v => `💰 ${v || 0}` },
+};
+// Categoría actualmente seleccionada en la pantalla de Clasificaciones.
+let leaderboardActiveCategory = "level";
+
 // Se incrementa en cada llamada a renderLeaderboardScreen() para poder
 // descartar una respuesta de Leaderboard.fetchTop() que llega tarde (p.
-// ej. si el jugador entra y sale varias veces seguidas de la pantalla
-// antes de que responda la primera petición): solo se pinta la
-// respuesta cuya "ficha" siga siendo la más reciente pedida.
+// ej. si el jugador cambia de pestaña o entra y sale varias veces
+// seguidas de la pantalla antes de que responda la primera petición):
+// solo se pinta la respuesta cuya "ficha" siga siendo la más reciente
+// pedida.
 let leaderboardRenderToken = 0;
 
 /** Devuelve el icono de medalla para los tres primeros puestos de la
@@ -514,25 +526,44 @@ function leaderboardRankIcon(rank) {
   return `#${rank}`;
 }
 
-/** Reconstruye la pantalla de Clasificaciones. El récord personal se
- * pinta al instante (ya lo tenemos en local, en
- * achievementsData.stats.bestInfiniteScore); el top 50 global se pide
- * de forma asíncrona a Leaderboard.fetchTop() y se pinta en cuanto
- * llega, mostrando un mensaje mientras carga o si no hay datos/backend
- * todavía (ver leaderboard.js). */
-function renderLeaderboardScreen() {
-  const personalBestEl = document.getElementById("leaderboard-personal-best");
-  if (personalBestEl) personalBestEl.textContent = achievementsData.stats.bestInfiniteScore || 0;
+/** Pinta en la tarjeta "Tus récords" los tres récords personales
+ * (nivel de jugador, Desafío Infinito, Modo Historia), que ya se tienen
+ * en local y no requieren pedirlos al backend. */
+function renderLeaderboardPersonalBests() {
+  const levelEl = document.getElementById("leaderboard-personal-level");
+  if (levelEl) levelEl.textContent = computeLevelInfo(profile.xp).level;
+  const infiniteEl = document.getElementById("leaderboard-personal-infinite");
+  if (infiniteEl) infiniteEl.textContent = achievementsData.stats.bestInfiniteScore || 0;
+  const storyEl = document.getElementById("leaderboard-personal-story");
+  if (storyEl) storyEl.textContent = achievementsData.stats.bestStoryScore || 0;
+}
 
+/** Reconstruye la pantalla de Clasificaciones para la categoría
+ * seleccionada (`leaderboardActiveCategory`). Los récords personales se
+ * pintan al instante (ya los tenemos en local); el top 50 global de esa
+ * categoría se pide de forma asíncrona a Leaderboard.fetchTop() y se
+ * pinta en cuanto llega, mostrando un mensaje mientras carga o si no hay
+ * datos/backend todavía (ver leaderboard.js). */
+function renderLeaderboardScreen() {
+  renderLeaderboardPersonalBests();
+
+  const tabsEl = document.getElementById("leaderboard-tabs");
   const statusEl = document.getElementById("leaderboard-status");
   const listEl = document.getElementById("leaderboard-list");
   if (!statusEl || !listEl) return;
 
+  if (tabsEl) {
+    tabsEl.querySelectorAll(".leaderboard-tab").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.category === leaderboardActiveCategory);
+    });
+  }
+
+  const tab = LEADERBOARD_TABS[leaderboardActiveCategory];
   statusEl.textContent = "Cargando clasificación…";
   listEl.innerHTML = "";
 
   const requestToken = ++leaderboardRenderToken;
-  Leaderboard.fetchTop(50).then(top => {
+  Leaderboard.fetchTop(leaderboardActiveCategory, 50).then(top => {
     if (requestToken !== leaderboardRenderToken) return; // respuesta obsoleta, ya no aplica
 
     if (top === null) {
@@ -549,11 +580,21 @@ function renderLeaderboardScreen() {
         <div class="leaderboard-rank">${leaderboardRankIcon(i + 1)}</div>
         <div class="profile-avatar-frame leaderboard-avatar"><img src="${getAvatarUrl(entry.avatarId)}" alt=""></div>
         <div class="leaderboard-name">${entry.username || "???"}</div>
-        <div class="leaderboard-score">💰 ${entry.score || 0}</div>
+        <div class="leaderboard-score">${tab.formatValue(entry.value)}</div>
       </div>
     `).join("");
   });
 }
+
+// Cambiar de pestaña vuelve a pintar la pantalla con la categoría elegida.
+document.getElementById("leaderboard-tabs")?.querySelectorAll(".leaderboard-tab").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (btn.dataset.category === leaderboardActiveCategory) return;
+    playSFX(SFX.go);
+    leaderboardActiveCategory = btn.dataset.category;
+    renderLeaderboardScreen();
+  });
+});
 
 // ── Pantalla Sonidex ──
 const SONIDEX_GROUPS = [

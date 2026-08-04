@@ -1,14 +1,16 @@
 /* ══════════════════════════════════════════════════════════════════════
    RADIO TRIGAL FM — CLASIFICACIÓN GLOBAL (leaderboard.js)
    ══════════════════════════════════════════════════════════════════════
-   Adaptador hacia Firebase/Firestore, la base de datos donde vive la
-   clasificación global (top 50 del Desafío Infinito). Este fichero NO
+   Adaptador hacia Firebase/Firestore, la base de datos donde viven las
+   clasificaciones globales (nivel de jugador, Desafío Infinito y Modo
+   Historia — ver LEADERBOARD_CATEGORIES más abajo). Este fichero NO
    decide nada de las reglas del juego ni pinta nada en pantalla: solo
-   sabe pedir la clasificación y guardar una puntuación, escondiendo el
+   sabe pedir una clasificación y guardar una puntuación, escondiendo el
    "cómo" (Firestore, sus colecciones, su sintaxis) detrás de dos
    funciones. El resto del juego (game.js/ui.js) solo llama a
-   `Leaderboard.fetchTop()` y `Leaderboard.submitScore()`, sin saber
-   nada de Firebase.
+   `Leaderboard.fetchTop(categoria)` y `Leaderboard.submitScore(categoria, ...)`,
+   pasando siempre uno de los ids de LEADERBOARD_CATEGORIES, sin saber
+   nada de Firebase ni de en qué campo del documento se guarda cada cosa.
 
    ⚠️ DIFERENCIA IMPORTANTE con el resto del proyecto: este es el ÚNICO
    fichero que se carga como `<script type="module">` en vez de como
@@ -28,8 +30,8 @@
    los scripts clásicos normales (después de que el HTML termine de
    analizarse), pero eso no da ningún problema aquí: `Leaderboard` solo
    se usa dentro de funciones que se ejecutan cuando el jugador
-   interactúa (pulsar "Clasificaciones", terminar una partida...), nunca
-   durante la carga inicial de la página.
+   interactúa (pulsar "Clasificaciones", terminar una partida, subir de
+   nivel...), nunca durante la carga inicial de la página.
 
    ── ¿Qué hace falta en la Consola de Firebase para que esto funcione? ──
    1. Firestore Database debe estar creado (Compilación → Firestore
@@ -44,14 +46,21 @@
    excepciones hacia fuera, igual que storage.js con localStorage.
 
    ── Forma de los datos en Firestore ──
-   Colección "leaderboard": un documento por jugador, con el ID del
-   documento = `profile.playerId` (identificador anónimo aleatorio,
-   generado y guardado en localStorage por storage.js — ver
-   `ensurePlayerId()` allí). Usar ese ID fijo como clave del documento
-   es lo que hace que, al mejorar su récord, un jugador ACTUALICE su
-   entrada existente en vez de crear una nueva cada vez (si no,
-   `fetchTop()` acabaría devolviendo varias filas con el mismo nombre).
-   Cada documento tiene: { username, avatarId, score, createdAt }.
+   Colección "leaderboard": UN ÚNICO documento por jugador (no uno por
+   categoría), con el ID del documento = `profile.playerId`
+   (identificador anónimo aleatorio, generado y guardado en localStorage
+   por storage.js — ver `ensurePlayerId()` allí). Usar ese ID fijo como
+   clave del documento es lo que hace que, al mejorar un récord, un
+   jugador ACTUALICE su entrada existente en vez de crear una nueva cada
+   vez (si no, `fetchTop()` acabaría devolviendo varias filas con el
+   mismo nombre).
+
+   Cada documento tiene un campo por categoría (ver
+   LEADERBOARD_CATEGORIES: `level`, `infiniteScore`, `storyScore`), más
+   `username`, `avatarId` y `updatedAt`. Un jugador puede aparecer en las
+   tres clasificaciones a la vez con un solo documento: `submitScore()`
+   solo escribe (con `merge: true`) el campo de la categoría que se le
+   pide, sin tocar ni pisar los campos de las otras dos.
    ══════════════════════════════════════════════════════════════════════ */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
@@ -78,30 +87,53 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
 // Nombre de la colección de Firestore donde vive cada entrada de la
-// clasificación. Si algún día quieres clasificaciones separadas por
-// modo, sería tan sencillo como usar un nombre de colección distinto
-// por modo (p. ej. "leaderboard_infinito", "leaderboard_historia"...).
+// clasificación (un documento por jugador, con un campo por categoría —
+// ver LEADERBOARD_CATEGORIES).
 const LEADERBOARD_COLLECTION = "leaderboard";
 
+// Categorías de clasificación disponibles: id → nombre del campo que
+// guarda cada una dentro del documento del jugador en Firestore. Añadir
+// una clasificación nueva en el futuro es tan sencillo como añadir aquí
+// una entrada nueva (y, en el otro extremo, llamar a
+// `Leaderboard.submitScore()`/`fetchTop()` con su id desde game.js/ui.js).
+const LEADERBOARD_CATEGORIES = {
+  level: "level",
+  infinite: "infiniteScore",
+  story: "storyScore",
+};
+
 /**
- * Pide a Firestore los N mejores jugadores del Desafío Infinito,
- * ordenados de mayor a menor puntuación.
+ * Pide a Firestore los N mejores jugadores de una categoría de la
+ * clasificación (nivel de jugador, Desafío Infinito o Modo Historia),
+ * ordenados de mayor a menor.
+ * @param {"level"|"infinite"|"story"} category  una de las claves de
+ *   LEADERBOARD_CATEGORIES.
+ * @param {number} n
  * @returns {Promise<Array|null>}
- *   - Array de { username, avatarId, score } (puede estar vacío) si la
- *     petición fue bien.
- *   - null si hubo un error (reglas de Firestore, sin conexión...), para
- *     que quien llama pueda distinguir "no hay nadie todavía" de
- *     "no se ha podido cargar".
+ *   - Array de { username, avatarId, value } (puede estar vacío) si la
+ *     petición fue bien. `value` es el nivel o la puntuación, según la
+ *     categoría pedida.
+ *   - null si hubo un error (reglas de Firestore, sin conexión,
+ *     categoría desconocida...), para que quien llama pueda distinguir
+ *     "no hay nadie todavía" de "no se ha podido cargar".
  */
-async function fetchTop(n = 50) {
+async function fetchTop(category, n = 50) {
+  const field = LEADERBOARD_CATEGORIES[category];
+  if (!field) {
+    console.warn(`[Leaderboard] Categoría desconocida: "${category}".`);
+    return null;
+  }
   try {
     const q = query(
       collection(db, LEADERBOARD_COLLECTION),
-      orderBy("score", "desc"),
+      orderBy(field, "desc"),
       fsLimit(n)
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(d => d.data());
+    return snapshot.docs.map(d => {
+      const data = d.data();
+      return { username: data.username, avatarId: data.avatarId, value: data[field] };
+    });
   } catch (e) {
     console.error("[Leaderboard] Error al obtener la clasificación:", e);
     return null;
@@ -109,16 +141,24 @@ async function fetchTop(n = 50) {
 }
 
 /**
- * Guarda en Firestore la puntuación del jugador actual en el Desafío
- * Infinito, sobrescribiendo su entrada anterior (si la tenía) en vez de
- * crear una nueva cada vez que mejora su récord.
+ * Guarda en Firestore, para una categoría concreta, el nuevo récord del
+ * jugador actual, actualizando (con `merge: true`) su documento en vez
+ * de crear uno nuevo o pisar sus datos de las otras categorías.
+ * @param {"level"|"infinite"|"story"} category  una de las claves de
+ *   LEADERBOARD_CATEGORIES.
  * @param {string} username
  * @param {string} avatarId
- * @param {number} score
+ * @param {number} value  el nuevo nivel o la nueva puntuación, según la
+ *   categoría.
  * @param {string} playerId  identificador anónimo estable del jugador
  *   (ver ensurePlayerId() en storage.js), usado como ID del documento.
  */
-async function submitScore(username, avatarId, score, playerId) {
+async function submitScore(category, username, avatarId, value, playerId) {
+  const field = LEADERBOARD_CATEGORIES[category];
+  if (!field) {
+    console.warn(`[Leaderboard] Categoría desconocida: "${category}".`);
+    return;
+  }
   if (!playerId) {
     console.warn("[Leaderboard] Falta playerId: no se puede enviar la puntuación.");
     return;
@@ -127,9 +167,9 @@ async function submitScore(username, avatarId, score, playerId) {
     await setDoc(doc(db, LEADERBOARD_COLLECTION, playerId), {
       username: (username || "Entrenador").slice(0, 16),
       avatarId: avatarId || "pikachu",
-      score: Math.max(0, Math.round(score)),
-      createdAt: Date.now(),
-    });
+      [field]: Math.max(0, Math.round(value)),
+      updatedAt: Date.now(),
+    }, { merge: true });
   } catch (e) {
     console.error("[Leaderboard] Error al enviar la puntuación:", e);
   }

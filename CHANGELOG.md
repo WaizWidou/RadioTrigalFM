@@ -17,6 +17,37 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
 ## [Unreleased]
 
 ### Añadido
+- **Clasificaciones ahora tienen tres categorías** en vez de solo el
+  Desafío Infinito: **Nivel de Jugador**, **Desafío Infinito** y **Modo
+  Historia**, seleccionables con pestañas en la pantalla de
+  Clasificaciones.
+  - `leaderboard.js`: `Leaderboard.fetchTop()` y
+    `Leaderboard.submitScore()` ahora reciben un primer parámetro
+    `category` (`"level"` / `"infinite"` / `"story"`, ver la nueva
+    constante `LEADERBOARD_CATEGORIES`). Cada jugador sigue teniendo un
+    único documento en Firestore (ID = `playerId`), pero ahora con un
+    campo por categoría (`level`/`infiniteScore`/`storyScore`);
+    `submitScore()` actualiza (`merge: true`) solo el campo de la
+    categoría indicada, sin pisar las otras dos. `fetchTop()` devuelve
+    cada fila como `{ username, avatarId, value }`.
+  - `game.js`: además del envío ya existente al superar el récord de
+    Desafío Infinito, ahora también se envía la puntuación al superar
+    el récord de Modo Historia (`storyGameOver()`/`storyFinish()`) y el
+    nivel de jugador al subir de nivel (`addProfileXp()`).
+  - `ui.js`/`index.html`: la pantalla de Clasificaciones muestra ahora
+    los tres récords personales a la vez (tarjeta "Tus récords") y un
+    selector de pestañas para elegir qué top 50 global se pide/pinta.
+  - `styles.css`: nuevo estilo `.leaderboard-tabs`/`.leaderboard-tab`
+    para las pestañas.
+  - ⚠️ Como esta integración con Firebase todavía no se había publicado
+    (sigue en `[Unreleased]`), no hay datos reales en Firestore que
+    migrar: el cambio de forma de los datos (de `score` a
+    `level`/`infiniteScore`/`storyScore` por documento) no requiere
+    ningún paso adicional.
+  - `firestore.rules` (fichero de referencia, no se carga desde el
+    juego): actualizado a los 3 campos nuevos (`level`/`infiniteScore`/
+    `storyScore`, cada uno opcional en la escritura ya que
+    `submitScore()` solo manda el campo de la categoría que mejoró).
 - `leaderboard.js` conectado a un backend real (**Firebase/Firestore**):
   `Leaderboard.fetchTop(n)` y `Leaderboard.submitScore(...)` ya no son un
   stub, hablan de verdad con la colección `leaderboard` de Firestore.

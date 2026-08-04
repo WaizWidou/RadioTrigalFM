@@ -1481,6 +1481,26 @@
     font-family: 'Fredoka One', cursive; color: var(--yellow); font-size: .95rem;
     flex-shrink: 0;
   }
+  .leaderboard-tabs {
+    display: flex; gap: 8px; margin-bottom: 12px;
+  }
+  .leaderboard-tab {
+    flex: 1;
+    padding: 8px 4px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg-card2);
+    color: var(--text-dim);
+    font-family: 'Fredoka One', cursive;
+    font-size: .75rem;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .leaderboard-tab.active {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+  }
 
   /* Helpers */
   .muted { color: var(--text-dim); font-weight: 800; font-size: .8rem; line-height: 1.45; }

@@ -455,6 +455,9 @@ function addProfileXp(points) {
     queueAchievementToasts(toasts);
     playSFX(SFX.newmode);
     updateModeLocksUI();
+    // La clasificación global de nivel de jugador se actualiza cada vez
+    // que se sube de nivel (no en cada punto de xp ganado): ver leaderboard.js.
+    Leaderboard.submitScore("level", profile.username, profile.avatarId, after.level, ensurePlayerId());
   }
   if (profileOverlay && profileOverlay.classList.contains("show")) renderProfileStats();
 }
@@ -1071,6 +1074,9 @@ function storyGameOver() {
   if (state.score > (achievementsData.stats.bestStoryScore || 0)) {
     achievementsData.stats.bestStoryScore = state.score;
     saveAchievements();
+    // Igual que en Desafío Infinito, solo se envía al backend de
+    // clasificaciones al superar el récord personal (ver leaderboard.js).
+    Leaderboard.submitScore("story", profile.username, profile.avatarId, state.score, ensurePlayerId());
   }
   showScreen("home", false);
   storyCompleteTitle.textContent = "Game Over";
@@ -1476,7 +1482,7 @@ function showResult() {
       saveAchievements();
       // Solo se envía al backend de clasificaciones cuando se supera el
       // récord personal (no en cada partida): ver leaderboard.js.
-      Leaderboard.submitScore(profile.username, profile.avatarId, state.score, ensurePlayerId());
+      Leaderboard.submitScore("infinite", profile.username, profile.avatarId, state.score, ensurePlayerId());
     }
     return;
   }
@@ -1674,6 +1680,9 @@ function storyFinish() {
   if (pct === 100) achievementsData.stats.storyModeCompletedPerfect = true;
   if (session.storyTotalScore > (achievementsData.stats.bestStoryScore || 0)) {
     achievementsData.stats.bestStoryScore = session.storyTotalScore;
+    // Igual que en Desafío Infinito, solo se envía al backend de
+    // clasificaciones al superar el récord personal (ver leaderboard.js).
+    Leaderboard.submitScore("story", profile.username, profile.avatarId, session.storyTotalScore, ensurePlayerId());
   }
   saveAchievements();
   trackGameFinished(pct, { mode: session.mode });

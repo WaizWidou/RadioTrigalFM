@@ -60,8 +60,8 @@ Este orden **no es arbitrario** y no debe cambiarse sin entender por qué:
 6. `game.js` es el último: usa funciones de todos los anteriores en su
    bloque INIT final (`loadSettings()`, `buildBgPokemon()`,
    `renderProfileBar()`...) y en toda su lógica de partida (incluye
-   `Leaderboard.submitScore()` al superar el récord de Desafío
-   Infinito).
+   `Leaderboard.submitScore()` al superar un récord de nivel de
+   jugador, Desafío Infinito o Modo Historia).
 
 Las referencias "hacia adelante" (p. ej. `ui.js` llamando a `startGame`
 o `session`, que se definen en `game.js`, cargado después) son seguras
@@ -105,13 +105,16 @@ si se desbloquea un logro...) vive en `game.js`, no aquí.
 
 ### `leaderboard.js` — adaptador de clasificación global
 Única fuente de verdad sobre **cómo se habla con Firebase/Firestore**,
-donde vive la clasificación global (top 50 de Desafío Infinito). Expone
-únicamente `Leaderboard.fetchTop(n)` (pide los N mejores) y
-`Leaderboard.submitScore(username, avatarId, score, playerId)` (guarda
-una puntuación), ambas `async` y sin lanzar excepciones hacia fuera
-(igual que `storage.js` con `localStorage`: si falla —p. ej. reglas de
-Firestore mal configuradas—, se registra en consola y se devuelve un
-valor que quien llama sabe interpretar).
+donde viven las clasificaciones globales. Hay tres categorías (constante
+`LEADERBOARD_CATEGORIES`): nivel de jugador (`level`), Desafío Infinito
+(`infinite`) y Modo Historia (`story`). Expone únicamente
+`Leaderboard.fetchTop(category, n)` (pide los N mejores de esa
+categoría, cada fila como `{ username, avatarId, value }`) y
+`Leaderboard.submitScore(category, username, avatarId, value, playerId)`
+(guarda un nuevo récord en esa categoría), ambas `async` y sin lanzar
+excepciones hacia fuera (igual que `storage.js` con `localStorage`: si
+falla —p. ej. reglas de Firestore mal configuradas—, se registra en
+consola y se devuelve un valor que quien llama sabe interpretar).
 
 ⚠️ Es el ÚNICO fichero del proyecto que se carga como
 `<script type="module">` en vez de como script clásico (lo exige el SDK
@@ -123,11 +126,14 @@ reglas de seguridad de Firestore (quién puede leer/escribir la
 colección "leaderboard") viven fuera del proyecto, en la Consola de
 Firebase (ver `firestore.rules` como referencia de qué pegar ahí).
 
-Cada entrada de la clasificación se guarda con el ID de documento =
+Cada jugador tiene un ÚNICO documento en Firestore (ID =
 `profile.playerId`, un identificador anónimo generado por
-`ensurePlayerId()` (en `storage.js`) la primera vez que hace falta, para
-que un jugador actualice su propia fila al mejorar su récord en vez de
-crear una nueva cada vez.
+`ensurePlayerId()` en `storage.js` la primera vez que hace falta), con
+un campo por categoría (`level`/`infiniteScore`/`storyScore`).
+`submitScore()` actualiza (`merge: true`) solo el campo de la categoría
+que se le pide, sin crear una fila nueva ni pisar las otras dos, de
+forma que un mismo jugador puede aparecer en las tres clasificaciones a
+la vez.
 
 ### `audio.js` — motor de audio
 Catálogo de sonidos (`SFX`, `AMBIENT_SFX`) y todo lo relacionado con
