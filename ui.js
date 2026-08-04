@@ -73,21 +73,25 @@ function showPointsPopup(btn, points, multiplier) {
 // ═══════════════════════════════════════════════
 // Rellena una rejilla de avatares (reutilizada en la pantalla inicial y en el
 // modal de perfil) y devuelve un getter/setter para el avatar seleccionado.
-// Los avatares todavía no desbloqueados por nivel (isAvatarUnlocked(),
-// AVATAR_UNLOCKS — ambos en game.js) se pintan en gris con un candado y no
-// son seleccionables: al tocarlos se muestra un aviso con el nivel que hace
-// falta, igual que al pulsar un modo/minijuego bloqueado.
-// Orden de pintado: de menor a mayor nivel requerido (AVATAR_UNLOCKS,
-// game.js); los avatares sin entrada ahí están desbloqueados desde el
-// nivel 1, así que van primero, en el mismo orden en que aparecen en
-// AVATAR_CATALOG (sort estable → no se reordenan entre sí).
+// Los avatares todavía no desbloqueados (isAvatarUnlocked(), AVATAR_UNLOCKS
+// — ambos en game.js, por nivel de perfil o por logro según el avatar) se
+// pintan en gris con un candado y no son seleccionables: al tocarlos se
+// muestra un aviso con el requisito que hace falta (avatarLockRequirementText()
+// en game.js), igual que al pulsar un modo/minijuego bloqueado.
+// Orden de pintado: de menor a mayor nivel requerido para los avatares
+// desbloqueables por nivel; los desbloqueables por logro van después de
+// esos (en el mismo orden en que aparecen en AVATAR_CATALOG); los avatares
+// sin entrada en AVATAR_UNLOCKS están desbloqueados desde el nivel 1, así
+// que van primero de todos (sort estable → no se reordenan entre sí).
+const AVATAR_ACHIEVEMENT_SORT_WEIGHT = 1000;
+function avatarSortWeight(avatarId) {
+  const cfg = AVATAR_UNLOCKS[avatarId];
+  if (!cfg) return 1;
+  return typeof cfg.level === "number" ? cfg.level : AVATAR_ACHIEVEMENT_SORT_WEIGHT;
+}
 function renderAvatarGrid(gridEl, selectedId, onSelect) {
   gridEl.innerHTML = "";
-  const sortedCatalog = [...AVATAR_CATALOG].sort((a, b) => {
-    const levelA = AVATAR_UNLOCKS[a.id] ? AVATAR_UNLOCKS[a.id].level : 1;
-    const levelB = AVATAR_UNLOCKS[b.id] ? AVATAR_UNLOCKS[b.id].level : 1;
-    return levelA - levelB;
-  });
+  const sortedCatalog = [...AVATAR_CATALOG].sort((a, b) => avatarSortWeight(a.id) - avatarSortWeight(b.id));
   sortedCatalog.forEach(av => {
     const unlocked = isAvatarUnlocked(av.id);
     const btn = document.createElement("button");
@@ -95,12 +99,12 @@ function renderAvatarGrid(gridEl, selectedId, onSelect) {
     btn.className = "profile-avatar-option"
       + (av.id === selectedId ? " selected" : "")
       + (unlocked ? "" : " locked");
-    btn.title = unlocked ? av.name : `${av.name} (bloqueado — nivel ${AVATAR_UNLOCKS[av.id].level})`;
+    btn.title = unlocked ? av.name : `${av.name} (bloqueado — requiere ${avatarLockRequirementText(av.id)})`;
     btn.innerHTML = `<img src="${av.url}" alt="${av.name}" loading="lazy" onerror="this.closest('.profile-avatar-option').style.display='none'">`
       + (unlocked ? "" : `<span class="avatar-lock-badge">🔒</span>`);
     btn.addEventListener("click", () => {
       if (!unlocked) {
-        queueAchievementToasts([{ icon: "🔒", title: `Alcanza el nivel ${AVATAR_UNLOCKS[av.id].level} de perfil para desbloquear este avatar` }]);
+        queueAchievementToasts([{ icon: "🔒", title: `Consigue ${avatarLockRequirementText(av.id)} para desbloquear este avatar` }]);
         return;
       }
       gridEl.querySelectorAll(".profile-avatar-option.selected").forEach(el => el.classList.remove("selected"));

@@ -457,14 +457,38 @@ function computeLevelInfo(totalXp) {
   return { level, xpIntoLevel: remaining, xpForNextLevel: needed };
 }
 
-// ── Avatares de perfil desbloqueables por nivel ──
-// El resto del catálogo (los que no aparecen en este objeto: Pikachu,
-// Jigglypuff, Snorlax, Gengar, Umbreon, Espeon, los legendarios/
-// pseudolegendarios y el resto de avatares añadidos en tandas
-// anteriores) se considera desbloqueado desde el nivel 1 (ver
-// isAvatarUnlocked()). Mismo criterio que MODE_UNLOCKS/OTHER_UNLOCKS de
-// más abajo, pero por nivel únicamente.
+// ── Avatares de perfil desbloqueables por nivel o por logro ──
+// Cada entrada se desbloquea de una de dos formas, igual que
+// MODE_UNLOCKS/OTHER_UNLOCKS más abajo:
+//   - { level: N }   → desbloqueado al alcanzar el nivel N de perfil.
+//   - { achId: "…" } → desbloqueado al conseguir ese logro (ver
+//     isAvatarUnlocked()). Se usa para los avatares de los Pokémon que
+//     protagonizan un Evento Pokémon: se desbloquean con el logro
+//     "Avistamiento: <nombre>" (el de 5 apariciones, `encounter_<id>_5`
+//     en ACHIEVEMENTS), no con el más difícil de 10.
+// El resto del catálogo (los que no aparecen en este objeto: Umbreon,
+// Espeon, los legendarios/pseudolegendarios y el resto de avatares
+// añadidos en tandas anteriores) se considera desbloqueado desde el
+// nivel 1 (ver isAvatarUnlocked()).
 const AVATAR_UNLOCKS = {
+  charizard:  { achId: "encounter_charizard_5"  },
+  venusaur:   { achId: "encounter_venusaur_5"   },
+  blastoise:  { achId: "encounter_blastoise_5"  },
+  pikachu:    { achId: "encounter_pikachu_5"    },
+  ditto:      { achId: "encounter_ditto_5"      },
+  inkay:      { achId: "encounter_inkay_5"      },
+  rapidash:   { achId: "encounter_rapidash_5"   },
+  slowpoke:   { achId: "encounter_slowpoke_5"   },
+  hypno:      { achId: "encounter_hypno_5"      },
+  chansey:    { achId: "encounter_chansey_5"    },
+  porygon:    { achId: "encounter_porygon_5"    },
+  gengar:     { achId: "encounter_gengar_5"     },
+  electrode:  { achId: "encounter_electrode_5"  },
+  snorlax:    { achId: "encounter_snorlax_5"    },
+  jigglypuff: { achId: "encounter_jigglypuff_5" },
+  caterpie:   { achId: "encounter_shiny_5"      },
+  mewtwo:     { achId: "encounter_mewtwo_5"     },
+  mew:        { achId: "encounter_mew_5"        },
   meowth:     { level: 2  },
   psyduck:    { level: 2  },
   snubbull:   { level: 2  },
@@ -541,12 +565,25 @@ const AVATAR_UNLOCKS = {
 };
 
 /** Indica si un avatar del catálogo (AVATAR_CATALOG) está desbloqueado para
- * el jugador actual: por nivel de perfil si aparece en AVATAR_UNLOCKS, o
- * desbloqueado desde el principio si no aparece ahí. */
+ * el jugador actual: por nivel de perfil o por logro (según cómo esté
+ * configurado en AVATAR_UNLOCKS), o desbloqueado desde el principio si no
+ * aparece ahí. Mismo criterio que isModeUnlocked()/isOtherUnlocked(). */
 function isAvatarUnlocked(avatarId) {
   const cfg = AVATAR_UNLOCKS[avatarId];
   if (!cfg) return true;
-  return computeLevelInfo(profile.xp).level >= cfg.level;
+  if (typeof cfg.level === "number") return computeLevelInfo(profile.xp).level >= cfg.level;
+  return !!achievementsData.unlocked[cfg.achId];
+}
+
+/** Texto legible con el requisito para desbloquear un avatar bloqueado
+ * (nivel de perfil o logro necesario), usado tanto en el título del botón
+ * como en el aviso al pulsar un avatar todavía bloqueado. */
+function avatarLockRequirementText(avatarId) {
+  const cfg = AVATAR_UNLOCKS[avatarId];
+  if (!cfg) return "";
+  if (typeof cfg.level === "number") return `nivel ${cfg.level} de perfil`;
+  const ach = ACHIEVEMENTS.find(a => a.id === cfg.achId);
+  return ach ? `el logro «${ach.title}»` : "un logro";
 }
 
 // Añade puntos ganados en una ronda a la experiencia total del jugador y
@@ -883,6 +920,13 @@ function getFeatureUnlocksForAchievement(achId) {
     const ev = typeof PokeEvents !== "undefined" ? PokeEvents.list().find(e => e.id === eventId) : null;
     if (ev) feats.push({ icon: "🌄", name: `${ev.name} en las colinas`, type: "Pokémon del fondo" });
   }
+  Object.keys(AVATAR_UNLOCKS).forEach(id => {
+    const cfg = AVATAR_UNLOCKS[id];
+    if (cfg.achId === achId) {
+      const av = AVATAR_CATALOG.find(a => a.id === id);
+      feats.push({ icon: "🖼️", name: av ? `Avatar: ${av.name}` : "un avatar", type: "avatar de perfil" });
+    }
+  });
   return feats;
 }
 
@@ -1066,9 +1110,22 @@ function checkAchievements() {
       }
     });
 
-    if (modeToasts.length || eventToasts.length || hillToasts.length) playSFX(SFX.newmode);
+    // Los logros «encounter_<id>_5» que aparecen en AVATAR_UNLOCKS también
+    // desbloquean el avatar de perfil de ese Pokémon. Un mismo logro puede
+    // desbloquear a la vez el avatar y el paseo por las colinas (ver
+    // hillToasts arriba): son avisos independientes, ambos se muestran.
+    const avatarToasts = [];
+    Object.keys(AVATAR_UNLOCKS).forEach(id => {
+      const cfg = AVATAR_UNLOCKS[id];
+      if (cfg.achId && newlyUnlockedIds.includes(cfg.achId)) {
+        const av = AVATAR_CATALOG.find(a => a.id === id);
+        avatarToasts.push({ icon: "🖼️", title: `¡Nuevo avatar disponible: ${av ? av.name : id}!` });
+      }
+    });
 
-    queueAchievementToasts(newlyUnlocked.concat(modeToasts).concat(eventToasts).concat(hillToasts));
+    if (modeToasts.length || eventToasts.length || hillToasts.length || avatarToasts.length) playSFX(SFX.newmode);
+
+    queueAchievementToasts(newlyUnlocked.concat(modeToasts).concat(eventToasts).concat(hillToasts).concat(avatarToasts));
     updateModeLocksUI();
     updateOtherLocksUI();
     newHillPokemon.forEach(addBgPokemon);

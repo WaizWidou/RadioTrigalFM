@@ -16,6 +16,34 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
 
 ## [Unreleased]
 
+### Cambiado
+- **Avatares de perfil desbloqueables por logro de avistamiento, en vez
+  de por nivel.** `AVATAR_UNLOCKS` (`game.js`) admite ahora, además de
+  `{ level }`, una forma `{ achId }`: el avatar se desbloquea al
+  conseguir ese logro en vez de al alcanzar un nivel de perfil
+  (`isAvatarUnlocked()` comprueba una u otra según el avatar, mismo
+  criterio que `isModeUnlocked()`/`isOtherUnlocked()`). Se usa para 18
+  avatares —Charizard, Venusaur, Blastoise, Pikachu, Ditto, Inkay,
+  Rapidash, Slowpoke, Hypno, Chansey, Porygon, Gengar, Electrode,
+  Snorlax, Jigglypuff, Caterpie, Mewtwo y Mew—, cada uno ligado al
+  logro "Avistamiento: `<nombre>`" (`encounter_<id>_5` en
+  `ACHIEVEMENTS`, el de 5 apariciones de ese Evento Pokémon) salvo
+  Caterpie, ligado a "Avistamiento brillante" (`encounter_shiny_5`).
+  Estos avatares ya existían en `AVATAR_CATALOG` y hasta ahora estaban
+  disponibles desde el principio. Al conseguir uno de estos logros
+  (`checkAchievements()`) se muestra un aviso de avatar nuevo
+  disponible, igual que al desbloquear un modo o categoría de
+  Minijuegos; el logro correspondiente también enlaza al avatar desde
+  la pantalla de Logros (`getFeatureUnlocksForAchievement()`).
+- **Rejilla de avatares y aviso de bloqueo, adaptados a logros.**
+  `renderAvatarGrid()` (`ui.js`) ordena ahora los avatares
+  desbloqueables por logro después de los desbloqueables por nivel
+  (nueva `avatarSortWeight()`), y tanto el título del botón como el
+  aviso al pulsar un avatar bloqueado usan el nuevo
+  `avatarLockRequirementText()` (`game.js`), que describe el requisito
+  real (nivel de perfil o nombre del logro) en vez de asumir siempre un
+  nivel.
+
 ### Añadido
 - **4 nuevos avatares de perfil.** Se amplía `AVATAR_CATALOG`
   (`storage.js`) con retratos estilo Pokémon Mundo Misterioso
