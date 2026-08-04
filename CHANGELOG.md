@@ -17,6 +17,53 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
 ## [Unreleased]
 
 ### Añadido
+- **Evento Electrode: sprite real y animación de carga/explosión.** El
+  badge del temporizador ya no usa el emoticono 💣, sino el sprite de
+  `images/electrode.png`. Mientras la mecha está encendida, el sprite se
+  va poniendo cada vez más blanco y brillante (sincronizado con los 10s
+  de `ELECTRODE_FUSE_SECONDS`), con un halo de luz alrededor que empieza
+  inapreciable y va ganando brillo y tamaño al mismo ritmo, y en el
+  instante de la explosión ambos revientan en un destello final antes de
+  que el badge desaparezca.
+  - `index.html`: sustituido el emoji por `<img id="electrode-sprite">`
+    dentro de `#electrode-timer`, envuelto en
+    `<span id="electrode-sprite-wrap">` (necesario para poder pintar el
+    halo detrás con un `::before` sin tocar el propio sprite).
+  - `styles.css`: estilos de `#electrode-sprite`/`#electrode-sprite-wrap`
+    y las animaciones `electrode-charge`/`electrode-glow` (blanqueo del
+    sprite y crecimiento del halo, clase `.charging`) y
+    `electrode-blast`/`electrode-glow-blast` (destello final, clase
+    `.exploding`).
+  - `ui.js`: `startElectrodeTimer()` añade la clase `charging` y fija
+    `--electrode-fuse` para sincronizar la duración de ambas animaciones
+    con `ELECTRODE_FUSE_SECONDS`. `stopElectrodeTimer(exploded)` acepta
+    un nuevo parámetro opcional: si es `true`, añade brevemente la clase
+    `exploding` antes de ocultar el badge.
+  - `game.js`: `electrodeExplode()` ahora distingue entre "ya había
+    respondido" (limpieza silenciosa) y "ha explotado de verdad" (llama
+    a `stopElectrodeTimer(true)` para disparar el destello). Solo afecta
+    al Electrode junto al temporizador, no al que pasea de fondo en el
+    menú (otro elemento distinto, en `pokemon.js`).
+
+### Cambiado
+- **Botón de información de Eventos Pokémon más grande** en la pantalla
+  previa de región del Modo Historia (`.story-info-btn`): de 38×38px y
+  1.15rem de icono a 50×50px y 1.5rem.
+
+- **Evento Porygon: glitch también en el audio**, no solo en lo visual.
+  Mientras el evento está activo, la canción de la ronda suena
+  entrecortada (pequeños saltos hacia atrás al azar cada pocos cientos
+  de ms), a juego con las letras corruptas y los píxeles de la interfaz.
+  - `audio.js`: nuevas `startPorygonAudioGlitch(audioEl)` /
+    `stopPorygonAudioGlitch()`, que manipulan directamente
+    `audioEl.currentTime` del `<audio>` de la ronda (no es un sonido
+    ambiente aparte, como la lluvia de Blastoise o el ronquido de
+    Snorlax). `stopAudioHard()` la llama también como red de seguridad.
+  - `pokemon.js`: el evento `porygon` añade un hook `onAudio` que arranca
+    el efecto; `clearPokeEventVisuals()` lo detiene junto al resto de
+    efectos al cambiar de ronda o salir del quiz.
+  - `game.js`: `startRound()` detiene el efecto de la ronda anterior
+    junto al resto de resets de Eventos Pokémon.
 - **Avatares de perfil desbloqueables por nivel**: de los 20 avatares de
   `AVATAR_CATALOG` (`storage.js`), ahora solo los 10 primeros están
   disponibles desde el principio; los otros 10 se desbloquean
@@ -141,6 +188,20 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
   `encounter_*` vía `ENCOUNTER_CONDITION_IDS`.
 
 ### Cambiado
+- `audio.js`: el glitch de audio del evento Porygon
+  (`startPorygonAudioGlitch()`) saltaba con demasiada frecuencia; el
+  intervalo entre saltos pasa de 650ms a 2600ms (x4, una cuarta parte de
+  frecuencia).
+- **Nubes de humo del evento Weezing: contorno estilo anime**. Cada
+  degradado radial de `.weezing-cloud` mantiene ahora su color de
+  relleno plano hasta cerca del borde y luego pasa, en un tramo muy
+  estrecho, a un tono casi negro (`#170a2c`) totalmente opaco antes de
+  desvanecerse a transparente — una "tinta" sólida que traza el
+  contorno de la nube, en vez de un simple resplandor difuso sin línea.
+  Al formar parte del propio degradado (y no un `border`/`box-shadow`
+  aparte), esa línea pasa igual que el resto por el filtro de
+  turbulencia de `#weezing-smoke-overlay`, así que queda pegada al
+  borde irregular ya distorsionado de cada nube.
 - **Pantalla de Logros reorganizada en secciones plegables**, en vez de
   una única rejilla plana con todos los logros a la vez.
   - `game.js`: cada logro de `ACHIEVEMENTS` declara ahora un campo

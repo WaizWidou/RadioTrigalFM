@@ -160,6 +160,35 @@ const snorlaxSnoreAudio = document.getElementById('snorlax-snore-audio');
 function startSnorlaxSnoreSound() { startAmbientLoop(snorlaxSnoreAudio, AMBIENT_SFX.snore); }
 /** Detiene y rebobina el sonido de ronquido de Snorlax. */
 function stopSnorlaxSnoreSound() { stopAmbientLoop(snorlaxSnoreAudio); }
+
+// ── Glitch de audio (evento Porygon) ──
+// A diferencia de la lluvia de Blastoise o el ronquido de Snorlax (sonidos
+// ambiente aparte, en bucle), este efecto no añade ningún audio nuevo: cada
+// pocos segundos retrocede unas décimas de segundo la propia canción de la
+// ronda, para que suene como un "salto"/tartamudeo digital, a juego con el
+// resto del efecto visual de Porygon (letras corruptas, píxeles). Se
+// detiene desde stopAudioHard() como red de seguridad, igual que el resto
+// de sonidos de Eventos Pokémon, para cubrir todos los puntos donde la
+// ronda/partida termina o cambia (siguiente ronda, salir del quiz, etc.).
+let porygonAudioGlitchInterval = null;
+/** Arranca el glitch de audio del evento Porygon sobre el `<audio>`
+ * indicado (el de la ronda en curso): cada intervalo, si sigue
+ * reproduciéndose, retrocede una fracción de segundo al azar. */
+function startPorygonAudioGlitch(audioEl) {
+  stopPorygonAudioGlitch(); // por seguridad, nunca debería haber uno colgado ya
+  porygonAudioGlitchInterval = setInterval(() => {
+    try {
+      if (!audioEl || audioEl.paused || audioEl.ended) return;
+      const jumpBack = 0.05 + Math.random() * 0.15; // retrocede entre 50 y 200ms
+      audioEl.currentTime = Math.max(0, audioEl.currentTime - jumpBack);
+    } catch (e) {}
+  }, 2600); // antes 650ms; se espacian a una cuarta parte de frecuencia (intervalo x4)
+}
+/** Detiene el glitch de audio del evento Porygon. */
+function stopPorygonAudioGlitch() {
+  if (porygonAudioGlitchInterval) { clearInterval(porygonAudioGlitchInterval); porygonAudioGlitchInterval = null; }
+}
+
 // Arranca música de menú SOLO si no hay ya una sonando (evita reinicios al navegar por los menús)
 function ensureMenuMusicPlaying(){
   if (screens.quiz.classList.contains('show')) return;
@@ -175,6 +204,7 @@ function unlockMenuMusic(){
   // por si el autoplay (incluso silenciado) fue bloqueado del todo, la arrancamos ahora
   ensureMenuMusicPlaying();
 }
+
 
 // Elemento <audio> principal: reproduce tanto la canción de cada ronda del
 // quiz como, reutilizándolo, las fichas de la Sonidex (nunca suenan a la vez).
@@ -334,6 +364,7 @@ function stopAudioHard(){
   stopBlastoiseRainSound();
   stopSnorlaxSnoreSound();
   stopJigglypuffSinging();
+  stopPorygonAudioGlitch();
 }
 
 // ── Reproducción de fichas desde la Sonidex ──

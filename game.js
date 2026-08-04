@@ -1183,8 +1183,8 @@ function storyGameOver() {
 // había concedido alguna; si no tiene ninguna, termina la partida como
 // cualquier otro fallo en ese modo.
 function electrodeExplode() {
-  stopElectrodeTimer();
-  if (state.answered) return; // ya respondió justo antes de que saltara
+  if (state.answered) { stopElectrodeTimer(); return; } // ya respondió justo antes de que saltara
+  stopElectrodeTimer(true); // true = ha explotado de verdad: pinta el destello final del sprite
   state.answered = true;
 
   document.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
@@ -1338,6 +1338,7 @@ function startRound() {
   document.getElementById('blastoise-rain-overlay').classList.remove('show');
   document.getElementById('porygon-glitch-overlay').classList.remove('show');
   stopPorygonTextGlitch();
+  stopPorygonAudioGlitch();
   stopElectrodeTimer();
   stopJigglypuffSinging();
   PokeEvents.applyToAnswers(document.getElementById('answers-grid'));

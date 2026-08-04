@@ -366,6 +366,7 @@ function clearPokeEventVisuals() {
   document.getElementById('blastoise-rain-overlay').classList.remove('show');
   document.getElementById('porygon-glitch-overlay').classList.remove('show');
   stopPorygonTextGlitch();
+  stopPorygonAudioGlitch();
   stopElectrodeTimer();
   stopJigglypuffSinging();
   if (typeof audio !== "undefined" && audio) audio.playbackRate = 1; // reset del efecto Slowpoke
@@ -388,12 +389,15 @@ PokeEvents.register({
 PokeEvents.register({
   id: "porygon",
   name: "Porygon",
-  description: "¡Porygon ha aparecido! La interfaz sufre un fallo digital: glitches, píxeles y letras corruptas parpadean como un error informático.",
+  description: "¡Porygon ha aparecido! La interfaz sufre un fallo digital: glitches, píxeles y letras corruptas parpadean como un error informático, y la propia canción suena entrecortada.",
   pokemonId: 137,
   onAnswers(gridEl) {
     gridEl.classList.add("event-porygon");
     document.getElementById("porygon-glitch-overlay").classList.add("show");
     startPorygonTextGlitch();
+  },
+  onAudio(audioEl) {
+    startPorygonAudioGlitch(audioEl);
   },
 });
 

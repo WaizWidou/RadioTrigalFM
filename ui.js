@@ -1376,7 +1376,11 @@ function startElectrodeTimer() {
 
   let remaining = ELECTRODE_FUSE_SECONDS;
   val.textContent = remaining;
-  el.classList.add('show');
+  // La variable --electrode-fuse marca en CSS cuánto dura la animación de
+  // "carga" del sprite (electrode-charge), para que quede sincronizada con
+  // ELECTRODE_FUSE_SECONDS sin duplicar el número en styles.css.
+  el.style.setProperty('--electrode-fuse', ELECTRODE_FUSE_SECONDS + 's');
+  el.classList.add('show', 'charging');
 
   electrodeTickInterval = setInterval(() => {
     remaining = Math.max(0, remaining - 1);
@@ -1388,14 +1392,22 @@ function startElectrodeTimer() {
 
 // Desactiva el temporizador de Electrode y oculta el contador en pantalla.
 // Se llama al responder la ronda, al empezar cualquier ronda nueva (por si
-// quedó uno colgado) y al salir de la pantalla del quiz.
-function stopElectrodeTimer() {
+// quedó uno colgado) y al salir de la pantalla del quiz. Si `exploded` es
+// true (solo lo pasa electrodeExplode() en game.js), antes de ocultar el
+// badge añade un instante el destello de explosión (.exploding, ver
+// styles.css) sobre el sprite, que ya está blanco por la animación de carga.
+function stopElectrodeTimer(exploded = false) {
   clearInterval(electrodeTickInterval);
   clearTimeout(electrodeFuseTimeout);
   electrodeTickInterval = null;
   electrodeFuseTimeout = null;
   const el = document.getElementById('electrode-timer');
-  if (el) el.classList.remove('show');
+  if (!el) return;
+  if (exploded) {
+    el.classList.add('exploding');
+    setTimeout(() => el.classList.remove('exploding'), 400);
+  }
+  el.classList.remove('show', 'charging');
 }
 
 // ═══════════════════════════════════════════════

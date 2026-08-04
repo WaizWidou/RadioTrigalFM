@@ -1949,12 +1949,12 @@
     position: absolute;
     top: 18px; right: 18px;
     z-index: 2;
-    width: 38px; height: 38px;
+    width: 50px; height: 50px;
     border-radius: 50%;
     border: 1px solid var(--border);
     background: var(--bg-card2);
     color: var(--yellow);
-    font-size: 1.15rem;
+    font-size: 1.5rem;
     line-height: 1;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
@@ -2472,6 +2472,84 @@
     50%      { transform: translateX(-50%) scale(1.08); }
   }
 
+  /* Sprite de Electrode dentro del badge, sustituye al emoticono de bomba */
+  #electrode-sprite {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    filter: brightness(1) saturate(1) drop-shadow(0 0 0 transparent);
+    transform-origin: center;
+    position: relative;
+    z-index: 1;
+  }
+  /* Envoltorio del sprite: solo existe para poder colocar detrás (::before)
+     el halo de luz sin afectar al Electrode que pasea de fondo en el menú
+     (ese es otro elemento, construido en pokemon.js/buildBgPokemon, y no
+     usa esta clase). */
+  #electrode-sprite-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+  }
+  /* Halo de luz alrededor del sprite: empieza inapreciable y va brillando
+     cada vez más a medida que pasa el tiempo (misma duración que la carga
+     del sprite, --electrode-fuse), como si Electrode fuera acumulando
+     energía hasta el momento de la explosión. */
+  #electrode-sprite-wrap::before {
+    content: "";
+    position: absolute;
+    inset: -11px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #fff9 40%, transparent 72%);
+    opacity: 0;
+    transform: scale(.5);
+    z-index: 0;
+    pointer-events: none;
+  }
+  #electrode-timer.charging #electrode-sprite-wrap::before {
+    animation: electrode-glow var(--electrode-fuse, 10s) linear forwards;
+  }
+  @keyframes electrode-glow {
+    0%   { opacity: 0;   transform: scale(.5); }
+    60%  { opacity: .35; transform: scale(.85); }
+    100% { opacity: .95; transform: scale(1.5); }
+  }
+  /* Mientras la mecha está encendida (clase .charging), el sprite se va
+     poniendo cada vez más blanco y brillante hasta el instante en el que
+     explota, en sintonía con la cuenta atrás de startElectrodeTimer(). La
+     duración se fija en JS vía la variable --electrode-fuse para no
+     duplicar ELECTRODE_FUSE_SECONDS aquí. */
+  #electrode-timer.charging #electrode-sprite {
+    animation: electrode-charge var(--electrode-fuse, 10s) linear forwards;
+  }
+  @keyframes electrode-charge {
+    0%   { filter: brightness(1) saturate(1) drop-shadow(0 0 0 transparent); }
+    70%  { filter: brightness(1.7) saturate(.55) drop-shadow(0 0 5px #fff9); }
+    100% { filter: brightness(3.4) saturate(0) drop-shadow(0 0 12px #fff); }
+  }
+  /* Destello final de la explosión (clase .exploding, ver stopElectrodeTimer
+     en ui.js): el sprite, ya blanco, revienta con un flash y se agranda
+     antes de que el badge entero desaparezca con su transición habitual. */
+  #electrode-timer.exploding #electrode-sprite {
+    animation: electrode-blast .4s ease-out forwards;
+  }
+  @keyframes electrode-blast {
+    0%   { filter: brightness(3.4) saturate(0) drop-shadow(0 0 12px #fff); transform: scale(1); opacity: 1; }
+    40%  { filter: brightness(7) saturate(0) drop-shadow(0 0 26px #fff); transform: scale(1.7); opacity: 1; }
+    100% { filter: brightness(7) saturate(0) drop-shadow(0 0 26px #fff); transform: scale(2.4); opacity: 0; }
+  }
+  /* El halo también revienta junto al sprite en el destello final */
+  #electrode-timer.exploding #electrode-sprite-wrap::before {
+    animation: electrode-glow-blast .4s ease-out forwards;
+  }
+  @keyframes electrode-glow-blast {
+    0%   { opacity: .95; transform: scale(1.5); }
+    100% { opacity: 0;   transform: scale(2.6); }
+  }
+
   /* Modo Difícil: temporizador de 10s por ronda (sustituye a la antigua pausa
      de la canción a los 3s). Se muestra bajo el estado del audio y avisa con
      un pulso rojo cuando quedan 3s o menos. */
@@ -2753,7 +2831,17 @@
      un degradado largo y difuso) para que, incluso después del filtro de
      turbulencia, se perciba un contorno de nube definido en vez de un simple
      resplandor de luz. Tamaños reducidos (nubes más pequeñas y numerosas en
-     pantalla) y núcleo más opaco/sólido para que se lean con claridad. */
+     pantalla) y núcleo más opaco/sólido para que se lean con claridad.
+     Contorno estilo anime: justo antes de desvanecerse a transparente, cada
+     degradado mantiene su color de relleno plano un tramo (en vez de seguir
+     difuminándose) y luego pasa, en un rango muy estrecho, a un tono casi
+     negro (#170a2c) totalmente opaco — una "tinta" sólida que traza el
+     borde de la nube, como el contorno de un cómic/anime, en vez de un
+     simple resplandor sin línea. Al ir dentro del propio degradado (y no
+     como un border/box-shadow aparte), esa línea pasa igualmente por el
+     filtro de turbulencia de #weezing-smoke-overlay, así que queda pegada
+     al borde irregular ya distorsionado de la nube en vez de quedarse como
+     un círculo perfecto de fondo. */
   .weezing-cloud {
     position: absolute;
     border-radius: 50%;
@@ -2762,27 +2850,27 @@
   .weezing-cloud.c1 {
     width: 34vmax; height: 34vmax;
     top: -8%; left: -6%;
-    background: radial-gradient(circle, #a855f7ff 0%, #a855f7f7 40%, #8b5cf6e0 55%, #7c3aedb0 66%, transparent 78%);
+    background: radial-gradient(circle, #a855f7ff 0%, #a855f7f7 40%, #8b5cf6e0 55%, #7c3aedb0 66%, #7c3aedb0 71%, #170a2c 74%, #170a2c 77%, transparent 80%);
   }
   .weezing-cloud.c2 {
     width: 27vmax; height: 27vmax;
     top: 46%; left: 60%;
-    background: radial-gradient(circle, #9333eaff 0%, #9333eaf7 38%, #7c3aede0 53%, #6d28d9b0 64%, transparent 76%);
+    background: radial-gradient(circle, #9333eaff 0%, #9333eaf7 38%, #7c3aede0 53%, #6d28d9b0 64%, #6d28d9b0 69%, #170a2c 72%, #170a2c 75%, transparent 78%);
   }
   .weezing-cloud.c3 {
     width: 30vmax; height: 30vmax;
     top: 60%; left: -4%;
-    background: radial-gradient(circle, #8b5cf6ff 0%, #8b5cf6f7 40%, #6d28d9e0 55%, #4c1d95b0 66%, transparent 78%);
+    background: radial-gradient(circle, #8b5cf6ff 0%, #8b5cf6f7 40%, #6d28d9e0 55%, #4c1d95b0 66%, #4c1d95b0 71%, #170a2c 74%, #170a2c 77%, transparent 80%);
   }
   .weezing-cloud.c4 {
     width: 23vmax; height: 23vmax;
     top: -4%; left: 66%;
-    background: radial-gradient(circle, #7c3aedff 0%, #7c3aedf7 38%, #6d28d9e0 53%, #4c1d95b0 64%, transparent 76%);
+    background: radial-gradient(circle, #7c3aedff 0%, #7c3aedf7 38%, #6d28d9e0 53%, #4c1d95b0 64%, #4c1d95b0 69%, #170a2c 72%, #170a2c 75%, transparent 78%);
   }
   .weezing-cloud.c5 {
     width: 19vmax; height: 19vmax;
     top: 34%; left: 26%;
-    background: radial-gradient(circle, #c084fcff 0%, #c084fcf7 36%, #a855f7e0 51%, #8b5cf6b0 62%, transparent 76%);
+    background: radial-gradient(circle, #c084fcff 0%, #c084fcf7 36%, #a855f7e0 51%, #8b5cf6b0 62%, #8b5cf6b0 67%, #170a2c 70%, #170a2c 73%, transparent 76%);
   }
 
   /* Cada nube sigue una trayectoria propia basada en curvas seno/coseno
