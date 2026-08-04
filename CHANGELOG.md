@@ -17,6 +17,31 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
 ## [Unreleased]
 
 ### Añadido
+- **Avatares de perfil desbloqueables por nivel**: de los 20 avatares de
+  `AVATAR_CATALOG` (`storage.js`), ahora solo los 10 primeros están
+  disponibles desde el principio; los otros 10 se desbloquean
+  progresivamente al subir de nivel.
+  - `game.js`: nueva constante `AVATAR_UNLOCKS` (avatar → nivel
+    requerido) y helper `isAvatarUnlocked(avatarId)`. `addProfileXp()`
+    ahora también avisa (toast "🖼️ ¡Nuevo avatar disponible!") cuando
+    subir de nivel desbloquea algún avatar nuevo, igual que ya hacía con
+    los modos de juego.
+  - `ui.js`: `renderAvatarGrid()` (usada tanto en la configuración
+    inicial de perfil como en el modal de perfil) pinta en gris y con
+    candado los avatares todavía bloqueados; tocarlos muestra un aviso
+    con el nivel necesario en vez de seleccionarlos.
+  - `styles.css`: estilos `.profile-avatar-option.locked` y
+    `.avatar-lock-badge` para el candado sobre el avatar.
+- `game.js`: catálogo real de canciones del minijuego **Mundo
+  Misterioso** (30 pistas), sustituyendo las 7 de ejemplo. Rutas
+  actualizadas a `songs/other/mistery-dungeon/<pista>.mp3` /
+  `images/<pista>.png` (antes `songs/other/mundo-misterioso/...`), ya
+  que es donde se han añadido los ficheros reales. Los títulos son
+  provisionales (nombre del propio fichero, en formato legible) a la
+  espera de que se sustituyan por los títulos definitivos; la clave
+  `other: "mystery-dungeon"` no cambia, así que no afecta a
+  desbloqueos ni al resto del juego.
+
 - **Clasificaciones ahora tienen tres categorías** en vez de solo el
   Desafío Infinito: **Nivel de Jugador**, **Desafío Infinito** y **Modo
   Historia**, seleccionables con pestañas en la pantalla de
@@ -116,6 +141,41 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
   `encounter_*` vía `ENCOUNTER_CONDITION_IDS`.
 
 ### Cambiado
+- **Pantalla de Logros reorganizada en secciones plegables**, en vez de
+  una única rejilla plana con todos los logros a la vez.
+  - `game.js`: cada logro de `ACHIEVEMENTS` declara ahora un campo
+    `section`; nueva constante `ACHIEVEMENT_SECTIONS` (Progreso y
+    rachas, Maestría y partidas perfectas, Sonidex, Modo Historia,
+    Eventos Pokémon) que define esas categorías y su orden de
+    aparición.
+  - `ui.js`: `renderAchievementsScreen()` agrupa los logros por sección
+    dentro de bloques `<details>` plegables, cada uno con su propio
+    contador "X / Y". Todas las secciones empiezan plegadas, mostrando
+    solo la cabecera con el título de la categoría (antes se abrían por
+    defecto las secciones con algún logro pendiente).
+  - `index.html`/`styles.css`: la lista de logros pasa de un único
+    `.card` con `.ach-list` a `.ach-sections` (una tarjeta por
+    categoría, con cabecera plegable `.ach-section-summary`).
+- **Botones "Clasificaciones" y "Opciones" en pantalla de Inicio,
+  agrupados en una fila compacta**: ya no son botones principales de
+  ancho completo con título y subtítulo, sino dos botones uno junto al
+  otro, cada uno mostrando solo su icono y ocupando la mitad del ancho
+  horizontal que ocupa un botón principal (Jugar, Modo Historia...).
+  - `index.html`: ambos botones (`#go-leaderboard`/`#go-options`) ahora
+    van dentro de un contenedor `.menu-row-compact`, con la clase extra
+    `.menu-btn-compact` y sin `.menu-btn-title` ni `<small>` (se añade
+    `title`/`aria-label` para mantener el nombre accesible).
+  - `styles.css`: nuevas reglas `.menu-row-compact` (fila flex) y
+    `.menu-btn-compact` (variante compacta de `.menu-btn`, solo icono).
+- **Pantalla de Logros: eliminada la tarjeta "Récords de puntuación"**
+  (Desafío Infinito / Modo Historia); esos dos récords personales siguen
+  visibles en la pantalla de Clasificaciones ("Tus récords") y en el
+  modal de perfil, así que no se pierde el dato, solo se deja de
+  duplicar en Logros.
+  - `ui.js`: eliminada la función `renderRecordsCard()` y su llamada
+    desde `renderAchievementsScreen()`.
+  - `index.html`: eliminada la tarjeta y el contenedor `#records-list`
+    de `#screen-achievements`.
 - `pokemon.js`/`styles.css`: el evento Gengar ahora es un minijuego de
   búsqueda: la pantalla se oscurece por completo (negro totalmente
   opaco) y el sprite de Gengar aparece escondido en un punto aleatorio;
@@ -139,6 +199,25 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
   antes de encontrarlo.
 
 ### Corregido
+- `game.js`: al acertar una respuesta, si mostrar el aviso de subida de
+  nivel/logro/ficha de Sonidex desbloqueada (`addProfileXp()` /
+  `trackCorrectAnswer()` / `trackSongCorrect()`, que además pueden tocar
+  cosas más "delicadas" como `Leaderboard.submitScore()`) lanzaba una
+  excepción inesperada, `handleAnswer()` se cortaba en ese punto y nunca
+  llegaba a la línea final que muestra el botón "Siguiente Ronda": el
+  botón se quedaba sin aparecer, dando la sensación de que "desaparecía"
+  justo cuando saltaba una notificación. Ahora esas tres llamadas van
+  cada una en su propio try/catch, así que un fallo ahí ya no puede
+  impedir que el resto de la ronda (y el botón "Siguiente Ronda") siga
+  su curso con normalidad.
+- `game.js`: al pulsar repetidamente la barra espaciadora (atajo de
+  "Siguiente Ronda") a veces se saltaba también la ronda siguiente,
+  porque la clase `visible` del botón `#next-btn` se quita dentro de
+  `startRound()`, que puede tardar en ejecutarse (Eventos Pokémon,
+  timeouts...); si el jugador pulsaba varias veces antes de que
+  desapareciera esa clase, cada pulsación llamaba a `nextRound()` por
+  separado. Ahora el atajo, además de exigir que el botón esté visible,
+  solo puede dispararse como mucho una vez cada 2 segundos.
 - `pokemon.js`/`styles.css`: el aviso de "busca a Gengar" (icono + texto)
   no llegaba a verse por encima del oscurecimiento pese a tener un
   `z-index` mayor: al colgar de `gridEl` (dentro de `#app`, que tiene su

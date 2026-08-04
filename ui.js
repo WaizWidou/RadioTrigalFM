@@ -73,15 +73,27 @@ function showPointsPopup(btn, points, multiplier) {
 // ═══════════════════════════════════════════════
 // Rellena una rejilla de avatares (reutilizada en la pantalla inicial y en el
 // modal de perfil) y devuelve un getter/setter para el avatar seleccionado.
+// Los avatares todavía no desbloqueados por nivel (isAvatarUnlocked(),
+// AVATAR_UNLOCKS — ambos en game.js) se pintan en gris con un candado y no
+// son seleccionables: al tocarlos se muestra un aviso con el nivel que hace
+// falta, igual que al pulsar un modo/minijuego bloqueado.
 function renderAvatarGrid(gridEl, selectedId, onSelect) {
   gridEl.innerHTML = "";
   AVATAR_CATALOG.forEach(av => {
+    const unlocked = isAvatarUnlocked(av.id);
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "profile-avatar-option" + (av.id === selectedId ? " selected" : "");
-    btn.title = av.name;
-    btn.innerHTML = `<img src="${av.url}" alt="${av.name}" loading="lazy" onerror="this.closest('.profile-avatar-option').style.display='none'">`;
+    btn.className = "profile-avatar-option"
+      + (av.id === selectedId ? " selected" : "")
+      + (unlocked ? "" : " locked");
+    btn.title = unlocked ? av.name : `${av.name} (bloqueado — nivel ${AVATAR_UNLOCKS[av.id].level})`;
+    btn.innerHTML = `<img src="${av.url}" alt="${av.name}" loading="lazy" onerror="this.closest('.profile-avatar-option').style.display='none'">`
+      + (unlocked ? "" : `<span class="avatar-lock-badge">🔒</span>`);
     btn.addEventListener("click", () => {
+      if (!unlocked) {
+        queueAchievementToasts([{ icon: "🔒", title: `Alcanza el nivel ${AVATAR_UNLOCKS[av.id].level} de perfil para desbloquear este avatar` }]);
+        return;
+      }
       gridEl.querySelectorAll(".profile-avatar-option.selected").forEach(el => el.classList.remove("selected"));
       btn.classList.add("selected");
       onSelect(av.id);
@@ -445,45 +457,66 @@ function renderStreaksCard() {
   wrap.innerHTML = html;
 }
 
-/** Rellena la tarjeta de "Récords de puntuación" (Desafío Infinito y
- * Modo Historia) en la pantalla de Logros. */
-function renderRecordsCard() {
-  const s = achievementsData.stats;
-  const wrap = document.getElementById("records-list");
-  let html = "";
-  html += `<div class="streak-row"><div class="streak-name">♾️ Desafío Infinito</div><div class="streak-value">💰 ${s.bestInfiniteScore || 0} pts</div></div>`;
-  html += `<div class="streak-row"><div class="streak-name">📖 Modo Historia</div><div class="streak-value">💰 ${s.bestStoryScore || 0} pts</div></div>`;
-  wrap.innerHTML = html;
+/** Construye el HTML de una tarjeta de logro individual (icono, título,
+ * descripción y fecha de desbloqueo si procede), usado dentro de cada
+ * sección de renderAchievementsScreen(). No añade listeners: quien llama
+ * decide si hace falta engancharlos (p. ej. el aviso de función especial). */
+function achievementItemHTML(a, unlockedAt, feats) {
+  return `
+    <div class="ach-icon">${unlockedAt ? a.icon : "🔒"}${feats.length ? '<span class="ach-star-badge" title="Desbloquea una función especial">⭐</span>' : ""}</div>
+    <div class="ach-info">
+      <div class="ach-title">${a.title}</div>
+      <div class="ach-desc">${a.desc}</div>
+      ${unlockedAt ? `<div class="ach-date">Desbloqueado el ${new Date(unlockedAt).toLocaleDateString('es-ES')}</div>` : ""}
+    </div>
+  `;
 }
 
-/** Reconstruye por completo la pantalla de Logros: tarjetas de rachas y
- * récords, barra de progreso general y la rejilla con todos los logros
- * (desbloqueados y bloqueados). */
+/** Reconstruye por completo la pantalla de Logros: tarjeta de rachas,
+ * barra de progreso general y la lista de logros agrupada por secciones
+ * plegables (ACHIEVEMENT_SECTIONS, en game.js) en vez de una única rejilla
+ * plana, para que no se vean los ~60 logros todos amontonados a la vez. */
 function renderAchievementsScreen() {
   renderStreaksCard();
-  renderRecordsCard();
   const list = document.getElementById("achievements-list");
   list.innerHTML = "";
   let unlockedCount = 0;
-  ACHIEVEMENTS.forEach(a => {
-    const unlockedAt = achievementsData.unlocked[a.id];
-    if (unlockedAt) unlockedCount++;
-    const feats = getFeatureUnlocksForAchievement(a.id);
-    const div = document.createElement("div");
-    div.className = "ach-item " + (unlockedAt ? "unlocked" : "locked") + (feats.length ? " has-feature" : "");
-    div.innerHTML = `
-      <div class="ach-icon">${unlockedAt ? a.icon : "🔒"}${feats.length ? '<span class="ach-star-badge" title="Desbloquea una función especial">⭐</span>' : ""}</div>
-      <div class="ach-info">
-        <div class="ach-title">${a.title}</div>
-        <div class="ach-desc">${a.desc}</div>
-        ${unlockedAt ? `<div class="ach-date">Desbloqueado el ${new Date(unlockedAt).toLocaleDateString('es-ES')}</div>` : ""}
-      </div>
+
+  ACHIEVEMENT_SECTIONS.forEach(sec => {
+    const items = ACHIEVEMENTS.filter(a => a.section === sec.id);
+    if (!items.length) return;
+    let sectionUnlocked = 0;
+
+    const itemsHTML = items.map(a => {
+      const unlockedAt = achievementsData.unlocked[a.id];
+      if (unlockedAt) { unlockedCount++; sectionUnlocked++; }
+      const feats = getFeatureUnlocksForAchievement(a.id);
+      const clickable = feats.length ? ` data-ach-id="${a.id}"` : "";
+      return `<div class="ach-item ${unlockedAt ? "unlocked" : "locked"}${feats.length ? " has-feature" : ""}"${clickable}>${achievementItemHTML(a, unlockedAt, feats)}</div>`;
+    }).join("");
+
+    const details = document.createElement("details");
+    details.className = "ach-section";
+    details.open = false; // todas las secciones empiezan plegadas, mostrando solo el título
+    details.innerHTML = `
+      <summary class="ach-section-summary">
+        <span class="ach-section-icon">${sec.icon}</span>
+        <span class="ach-section-title">${sec.title}</span>
+        <span class="ach-section-count">${sectionUnlocked} / ${items.length}</span>
+        <span class="ach-section-chevron">▾</span>
+      </summary>
+      <div class="ach-list">${itemsHTML}</div>
     `;
-    if (feats.length) {
-      div.addEventListener("click", () => showAchFeatureInfo(a, feats));
-    }
-    list.appendChild(div);
+    // Los logros con función especial (marca ⭐) abren el modal informativo
+    // al tocarlos; se engancha aquí para no meter onclick="" en el HTML.
+    details.querySelectorAll(".ach-item[data-ach-id]").forEach(el => {
+      const a = ACHIEVEMENTS.find(x => x.id === el.dataset.achId);
+      const feats = getFeatureUnlocksForAchievement(a.id);
+      el.addEventListener("click", () => showAchFeatureInfo(a, feats));
+    });
+    list.appendChild(details);
   });
+
   document.getElementById("ach-progress-subtitle").textContent = `${unlockedCount} / ${ACHIEVEMENTS.length} desbloqueados`;
   document.getElementById("ach-progress-bar-fill").style.width = (unlockedCount / ACHIEVEMENTS.length * 100) + "%";
 }

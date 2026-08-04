@@ -260,7 +260,7 @@ const songs = [
   //   "laboratorios"   → songs/other/laboratorio/lab-<region>.mp3
   //   "bicicletas"     → songs/other/bicicleta/bici-<region>.mp3
   //   "surf"           → songs/other/surf/surf-<region>.mp3
-  //   "mystery-dungeon" → songs/other/mundo-misterioso/<pista>.mp3
+  //   "mystery-dungeon" → songs/other/mistery-dungeon/<pista>.mp3
   //   "colosseum-xd"    → songs/other/colosseum-xd/<pista>.mp3
   //   "ranger"          → songs/other/ranger/<pista>.mp3
   //   "title-screens"   → songs/other/title/<region-en-minusculas>.mp3
@@ -304,14 +304,36 @@ const songs = [
   { title: "Montura Acuática Alola",   file: "songs/other/surf/surf-alola.mp3",    image: "images/surf-alola.png",    group: "other", other: "surf" },
 
   // Pokémon Mundo Misterioso
-  { title: "Treasure Town",             file: "songs/other/mundo-misterioso/treasure-town.mp3",             image: "images/treasure-town.png",             group: "other", other: "mystery-dungeon" },
-  { title: "Beach Cave",                file: "songs/other/mundo-misterioso/beach-cave.mp3",                image: "images/beach-cave.png",                group: "other", other: "mystery-dungeon" },
-  { title: "Sharpedo Bluff",            file: "songs/other/mundo-misterioso/sharpedo-bluff.mp3",            image: "images/sharpedo-bluff.png",            group: "other", other: "mystery-dungeon" },
-  { title: "Guildmaster Wigglytuff",    file: "songs/other/mundo-misterioso/guildmaster-wigglytuff.mp3",    image: "images/guildmaster-wigglytuff.png",    group: "other", other: "mystery-dungeon" },
-  { title: "Sky Tower",                 file: "songs/other/mundo-misterioso/sky-tower.mp3",                 image: "images/sky-tower.png",                 group: "other", other: "mystery-dungeon" },
-  { title: "Temporal Tower",            file: "songs/other/mundo-misterioso/temporal-tower.mp3",            image: "images/temporal-tower.png",            group: "other", other: "mystery-dungeon" },
-  { title: "In the Hands of Fate",      file: "songs/other/mundo-misterioso/in-the-hands-of-fate.mp3",      image: "images/in-the-hands-of-fate.png",      group: "other", other: "mystery-dungeon" },
-
+  { title: "Arboleda Chica", file: "songs/other/mistery-dungeon/arboleda-chica.mp3", image: "images/arboleda-chica.png", group: "other", other: "mystery-dungeon" },
+  { title: "Base Equipo", file: "songs/other/mistery-dungeon/base-equipo.mp3", image: "images/base-equipo.png", group: "other", other: "mystery-dungeon" },
+  { title: "Bosque Helado", file: "songs/other/mistery-dungeon/bosque-helado.mp3", image: "images/bosque-helado.png", group: "other", other: "mystery-dungeon" },
+  { title: "Bosque Niebla", file: "songs/other/mistery-dungeon/bosque-niebla.mp3", image: "images/bosque-niebla.png", group: "other", other: "mystery-dungeon" },
+  { title: "Bosque Sombrío", file: "songs/other/mistery-dungeon/bosque-sombrio.mp3", image: "images/bosque-sombrio.png", group: "other", other: "mystery-dungeon" },
+  { title: "Bosque Tétrico", file: "songs/other/mistery-dungeon/bosque-tetrico.mp3", image: "images/bosque-tetrico.png", group: "other", other: "mystery-dungeon" },
+  { title: "Caverna Magma", file: "songs/other/mistery-dungeon/caverna-magma.mp3", image: "images/caverna-magma.png", group: "other", other: "mystery-dungeon" },
+  { title: "Colina Oscura", file: "songs/other/mistery-dungeon/colina-oscura.mp3", image: "images/colina-oscura.png", group: "other", other: "mystery-dungeon" },
+  { title: "Cueva Abismo", file: "songs/other/mistery-dungeon/cueva-abismo.mp3", image: "images/cueva-abismo.png", group: "other", other: "mystery-dungeon" },
+  { title: "Cueva Bajamar", file: "songs/other/mistery-dungeon/cueva-bajamar.mp3", image: "images/cueva-bajamar.png", group: "other", other: "mystery-dungeon" },
+  { title: "Cueva Cristal", file: "songs/other/mistery-dungeon/cueva-cristal.mp3", image: "images/cueva-cristal.png", group: "other", other: "mystery-dungeon" },
+  { title: "Desierto Norte", file: "songs/other/mistery-dungeon/desierto-norte.mp3", image: "images/desierto-norte.png", group: "other", other: "mystery-dungeon" },
+  { title: "Dialga Primario", file: "songs/other/mistery-dungeon/dialga-primario.mp3", image: "images/dialga-primario.png", group: "other", other: "mystery-dungeon" },
+  { title: "Dojo Makuhita", file: "songs/other/mistery-dungeon/dojo-makuhita.mp3", image: "images/dojo-makuhita.png", group: "other", other: "mystery-dungeon" },
+  { title: "Fugitivos", file: "songs/other/mistery-dungeon/fugitivos.mp3", image: "images/fugitivos.png", group: "other", other: "mystery-dungeon" },
+  { title: "Gran Cañón", file: "songs/other/mistery-dungeon/gran-cañon.mp3", image: "images/gran-cañon.png", group: "other", other: "mystery-dungeon" },
+  { title: "Manzanar", file: "songs/other/mistery-dungeon/manzanar.mp3", image: "images/manzanar.png", group: "other", other: "mystery-dungeon" },
+  { title: "A Través del Mar del Tiempo", file: "songs/other/mistery-dungeon/mar-tiempo.mp3", image: "images/mar-tiempo.png", group: "other", other: "mystery-dungeon" },
+  { title: "Mina Onda Trueno", file: "songs/other/mistery-dungeon/mina-onda-trueno.mp3", image: "images/mina-onda-trueno.png", group: "other", other: "mystery-dungeon" },
+  { title: "Monte Acero", file: "songs/other/mistery-dungeon/monte-acero.mp3", image: "images/monte-acero.png", group: "other", other: "mystery-dungeon" },
+  { title: "Monte Árido", file: "songs/other/mistery-dungeon/monte-arido.mp3", image: "images/monte-arido.png", group: "other", other: "mystery-dungeon" },
+  { title: "Monte Escarcha", file: "songs/other/mistery-dungeon/monte-escarcha.mp3", image: "images/monte-escarcha.png", group: "other", other: "mystery-dungeon" },
+  { title: "Monte Ígneo", file: "songs/other/mistery-dungeon/monte-igneo.mp3", image: "images/monte-igneo.png", group: "other", other: "mystery-dungeon" },
+  { title: "Monte Trueno", file: "songs/other/mistery-dungeon/monte-trueno.mp3", image: "images/monte-trueno.png", group: "other", other: "mystery-dungeon" },
+  { title: "Plaza Pokémon", file: "songs/other/mistery-dungeon/plaza-pokemon.mp3", image: "images/plaza-pokemon.png", group: "other", other: "mystery-dungeon" },
+  { title: "Pokégremio", file: "songs/other/mistery-dungeon/pokegremio.mp3", image: "images/pokegremio.png", group: "other", other: "mystery-dungeon" },
+  { title: "Risco Calado", file: "songs/other/mistery-dungeon/risco-calado.mp3", image: "images/risco-calado.png", group: "other", other: "mystery-dungeon" },
+  { title: "Sima Silenciosa", file: "songs/other/mistery-dungeon/sima-silenciosa.mp3", image: "images/sima-silenciosa.png", group: "other", other: "mystery-dungeon" },
+  { title: "Test Personalidad", file: "songs/other/mistery-dungeon/test-personalidad.mp3", image: "images/test-personalidad.png", group: "other", other: "mystery-dungeon" },
+  { title: "Torre Del Cielo", file: "songs/other/mistery-dungeon/torre-del-cielo.mp3", image: "images/torre-del-cielo.png", group: "other", other: "mystery-dungeon" },
   // Pokémon Colosseum / XD
   { title: "Básix",                 file: "songs/other/colosseum-xd/basix.mp3",                 image: "images/basix.png",                 group: "other", other: "colosseum-xd" },
   { title: "Ciudad Oasis",                  file: "songs/other/colosseum-xd/ciudad-oasis.mp3",                   image: "images/ciudad-oasis.png",                   group: "other", other: "colosseum-xd" },
@@ -434,6 +456,36 @@ function computeLevelInfo(totalXp) {
   }
   return { level, xpIntoLevel: remaining, xpForNextLevel: needed };
 }
+
+// ── Avatares de perfil desbloqueables por nivel ──
+// Los 10 primeros avatares de AVATAR_CATALOG (storage.js) están disponibles
+// desde el principio; los otros 10 se desbloquean progresivamente según sube
+// el nivel de perfil. Solo los avatares que aparecen aquí tienen requisito:
+// cualquier avatar del catálogo que no esté en este objeto se considera
+// desbloqueado desde el nivel 1 (ver isAvatarUnlocked()). Mismo criterio que
+// MODE_UNLOCKS/OTHER_UNLOCKS de más abajo, pero por nivel únicamente.
+const AVATAR_UNLOCKS = {
+  vulpix:    { level: 4  },
+  chikorita: { level: 6  },
+  cyndaquil: { level: 8  },
+  totodile:  { level: 10 },
+  riolu:     { level: 13 },
+  umbreon:   { level: 16 },
+  espeon:    { level: 19 },
+  piplup:    { level: 22 },
+  torchic:   { level: 26 },
+  mudkip:    { level: 30 },
+};
+
+/** Indica si un avatar del catálogo (AVATAR_CATALOG) está desbloqueado para
+ * el jugador actual: por nivel de perfil si aparece en AVATAR_UNLOCKS, o
+ * desbloqueado desde el principio si no aparece ahí. */
+function isAvatarUnlocked(avatarId) {
+  const cfg = AVATAR_UNLOCKS[avatarId];
+  if (!cfg) return true;
+  return computeLevelInfo(profile.xp).level >= cfg.level;
+}
+
 // Añade puntos ganados en una ronda a la experiencia total del jugador y
 // comprueba si eso implica subir de nivel, mostrando un aviso si es así.
 function addProfileXp(points) {
@@ -450,6 +502,14 @@ function addProfileXp(points) {
       const cfg = MODE_UNLOCKS[key];
       if (typeof cfg.level === "number" && cfg.level > before && cfg.level <= after.level) {
         toasts.push({ icon: "🔓", title: `¡${cfg.name} desbloqueado!` });
+      }
+    });
+    // Comprobar si el nuevo nivel desbloquea algún avatar de perfil nuevo
+    Object.keys(AVATAR_UNLOCKS).forEach(id => {
+      const cfg = AVATAR_UNLOCKS[id];
+      if (cfg.level > before && cfg.level <= after.level) {
+        const av = AVATAR_CATALOG.find(a => a.id === id);
+        toasts.push({ icon: "🖼️", title: `¡Nuevo avatar disponible: ${av ? av.name : id}!` });
       }
     });
     queueAchievementToasts(toasts);
@@ -517,70 +577,83 @@ let state = {
 //  🏅 SISTEMA DE LOGROS
 // ═══════════════════════════════════════════════
 const ACHIEVEMENTS = [
-  { id: "first_correct",          icon: "🎯", title: "Primer acierto",         desc: "Consigue tu primer acierto." },
-  { id: "streak_3",               icon: "✨", title: "Buena racha",            desc: "Alcanza una racha de 3 respuestas correctas consecutivas." },
-  { id: "streak_5",               icon: "🔥", title: "En racha",               desc: "Alcanza una racha de 5 respuestas correctas consecutivas." },
-  { id: "streak_20",              icon: "👑", title: "Leyenda viviente",       desc: "Alcanza una racha de 20 respuestas correctas consecutivas." },
-  { id: "streak_30",              icon: "🌠", title: "Racha imparable",        desc: "Alcanza una racha de 30 respuestas correctas consecutivas." },
-  { id: "perfect_normal_region",  icon: "🏆", title: "Región perfecta",        desc: "Completa una partida perfecta en cualquier región del modo Normal." },
-  { id: "perfect_easy",           icon: "🌱", title: "Fácil perfecto",         desc: "Completa una partida perfecta en el modo Fácil." },
-  { id: "hard_correct_8",         icon: "💪", title: "Reto superado",          desc: "Consigue 8 o más respuestas correctas en una partida del modo Difícil." },
-  { id: "perfect_hard",           icon: "💀", title: "Genio musical",          desc: "Completa una partida perfecta en el modo Difícil." },
-  { id: "perfect_regions_normal_5", icon: "🗾", title: "Especialista regional", desc: "Completa 5 regiones en el modo Normal con un 100 % de aciertos." },
-  { id: "correct_10",             icon: "🎵", title: "Buen oído",              desc: "Responde correctamente a 10 preguntas." },
-  { id: "correct_20",             icon: "🎶", title: "Oído entrenado",         desc: "Responde correctamente a 20 preguntas." },
-  { id: "correct_50",             icon: "🎤", title: "Conocedor musical",      desc: "Responde correctamente a 50 preguntas." },
-  { id: "correct_100",            icon: "🎧", title: "Melómano",               desc: "Responde correctamente a 100 preguntas." },
-  { id: "correct_250",            icon: "📻", title: "Fanático de la música",  desc: "Responde correctamente a 250 preguntas." },
-  { id: "correct_500",            icon: "📚", title: "Enciclopedia musical",   desc: "Responde correctamente a 500 preguntas." },
-  { id: "games_10",               icon: "🎮", title: "Aficionado",             desc: "Juega 10 partidas." },
-  { id: "games_20",               icon: "🕹️", title: "Jugador habitual",       desc: "Juega 20 partidas." },
-  { id: "games_30",               icon: "🎲", title: "Entrenador dedicado",    desc: "Juega 30 partidas." },
-  { id: "games_50",               icon: "🎖️", title: "Veterano",               desc: "Juega 50 partidas." },
-  { id: "games_100",              icon: "🥇", title: "Campeón Pokémon",        desc: "Juega 100 partidas." },
-  { id: "all_modes",              icon: "🗺️", title: "Explorador",             desc: "Completa al menos una partida en los modos Fácil, Normal y Difícil." },
-  { id: "all_regions",            icon: "🌍", title: "Viajero regional",       desc: "Completa al menos una partida en todas las regiones disponibles." },
-  { id: "perfect_combat",         icon: "⚔️", title: "As del combate",         desc: "Completa una partida perfecta en el modo Combate." },
-  { id: "sonidex_5",              icon: "🎼", title: "Primeras notas",         desc: "Desbloquea 5 fichas de la Sonidex." },
-  { id: "sonidex_10",             icon: "📀", title: "Coleccionista de sonidos", desc: "Desbloquea 10 fichas de la Sonidex." },
-  { id: "sonidex_20",             icon: "🎷", title: "Oído fino",              desc: "Desbloquea 20 fichas de la Sonidex." },
-  { id: "sonidex_50",             icon: "🎹", title: "Melómano experto",       desc: "Desbloquea 50 fichas de la Sonidex." },
-  { id: "sonidex_100",            icon: "📖", title: "Archivo sonoro",         desc: "Desbloquea 100 fichas de la Sonidex." },
-  { id: "sonidex_200",            icon: "🗃️", title: "Biblioteca sonora",      desc: "Desbloquea 200 fichas de la Sonidex." },
-  { id: "sonidex_kanto",          icon: "🍃", title: "Sonidex de Kanto",       desc: "Desbloquea todas las fichas de Kanto." },
-  { id: "sonidex_johto",          icon: "🍂", title: "Sonidex de Johto",       desc: "Desbloquea todas las fichas de Johto." },
-  { id: "sonidex_hoenn",          icon: "🌺", title: "Sonidex de Hoenn",       desc: "Desbloquea todas las fichas de Hoenn." },
-  { id: "sonidex_sinnoh",         icon: "❄️", title: "Sonidex de Sinnoh",      desc: "Desbloquea todas las fichas de Sinnoh." },
-  { id: "sonidex_teselia",        icon: "🌉", title: "Sonidex de Teselia",     desc: "Desbloquea todas las fichas de Teselia." },
-  { id: "sonidex_kalos",          icon: "🥐", title: "Sonidex de Kalos",       desc: "Desbloquea todas las fichas de Kalos." },
-  { id: "sonidex_alola",          icon: "🌴", title: "Sonidex de Alola",       desc: "Desbloquea todas las fichas de Alola." },
-  { id: "story_kanto",            icon: "📜", title: "Historia: Kanto",        desc: "Completa Kanto en el modo Historia." },
-  { id: "story_johto",            icon: "📜", title: "Historia: Johto",        desc: "Completa Johto en el modo Historia." },
-  { id: "story_hoenn",            icon: "📜", title: "Historia: Hoenn",        desc: "Completa Hoenn en el modo Historia." },
-  { id: "story_sinnoh",           icon: "📜", title: "Historia: Sinnoh",       desc: "Completa Sinnoh en el modo Historia." },
-  { id: "story_teselia",          icon: "📜", title: "Historia: Teselia",      desc: "Completa Teselia en el modo Historia." },
-  { id: "story_kalos",            icon: "📜", title: "Historia: Kalos",        desc: "Completa Kalos en el modo Historia." },
-  { id: "story_complete",         icon: "🏅", title: "Maestro de la Historia", desc: "Completa el modo Historia." },
-  { id: "story_complete_100",     icon: "👑", title: "Historia perfecta",      desc: "Completa el modo Historia con un 100 % de aciertos." },
-  { id: "encounter_charizard",    icon: "🔥", title: "Cazador de llamas",      desc: "Haz que Charizard aparezca 5 veces." },
-  { id: "encounter_slowpoke",     icon: "🐌", title: "Paciencia Slowpoke",     desc: "Haz que Slowpoke aparezca 5 veces." },
-  { id: "encounter_rapidash",     icon: "🐎", title: "Velocidad Rapidash",     desc: "Haz que Rapidash aparezca 5 veces." },
-  { id: "encounter_ditto",        icon: "🟣", title: "Imitador Ditto",         desc: "Haz que Ditto aparezca 5 veces." },
-  { id: "encounter_inkay",        icon: "🔄", title: "Giro Inkay",             desc: "Haz que Inkay aparezca 5 veces." },
-  { id: "encounter_hypno",        icon: "🌙", title: "Hypnosis de Hypno",      desc: "Haz que Hypno aparezca 5 veces." },
-  { id: "encounter_chansey",      icon: "🥚", title: "Segunda oportunidad",    desc: "Haz que Chansey aparezca 5 veces." },
-  { id: "encounter_gengar",       icon: "👻", title: "Sombra de Gengar",       desc: "Haz que Gengar aparezca 5 veces." },
-  { id: "encounter_pikachu",      icon: "⚡", title: "Chispa de Pikachu",      desc: "Haz que Pikachu aparezca 5 veces." },
-  { id: "encounter_blastoise",    icon: "💧", title: "Danza lluvia",           desc: "Haz que Blastoise aparezca 5 veces." },
-  { id: "encounter_venusaur",     icon: "🌿", title: "Aroma de Venusaur",      desc: "Haz que Venusaur aparezca 5 veces." },
-  { id: "encounter_electrode",    icon: "💥", title: "Cuenta atrás",           desc: "Haz que Electrode aparezca 5 veces." },
-  { id: "encounter_weezing",      icon: "☠️", title: "Humo tóxico",            desc: "Haz que Weezing aparezca 5 veces." },
-  { id: "encounter_porygon",      icon: "🖥️", title: "Fallo digital",          desc: "Haz que Porygon aparezca 5 veces." },
-  { id: "encounter_snorlax",      icon: "😴", title: "Siesta de Snorlax",      desc: "Haz que Snorlax aparezca 5 veces." },
-  { id: "encounter_jigglypuff",   icon: "🎤", title: "Canción de cuna",        desc: "Haz que Jigglypuff aparezca 5 veces." },
-  { id: "encounter_shiny",        icon: "✨", title: "Cazabrillos",            desc: "Encuentra 5 veces un Pokémon shiny." },
-  { id: "encounter_mewtwo",       icon: "🧬", title: "Clon psíquico",          desc: "Haz que Mewtwo aparezca 5 veces." },
-  { id: "encounter_mew",          icon: "🎭", title: "Transformista",          desc: "Haz que Mew aparezca 5 veces." },
+  { id: "first_correct",          icon: "🎯", title: "Primer acierto",         desc: "Consigue tu primer acierto.", section: "progress" },
+  { id: "streak_3",               icon: "✨", title: "Buena racha",            desc: "Alcanza una racha de 3 respuestas correctas consecutivas.", section: "progress" },
+  { id: "streak_5",               icon: "🔥", title: "En racha",               desc: "Alcanza una racha de 5 respuestas correctas consecutivas.", section: "progress" },
+  { id: "streak_20",              icon: "👑", title: "Leyenda viviente",       desc: "Alcanza una racha de 20 respuestas correctas consecutivas.", section: "progress" },
+  { id: "streak_30",              icon: "🌠", title: "Racha imparable",        desc: "Alcanza una racha de 30 respuestas correctas consecutivas.", section: "progress" },
+  { id: "perfect_normal_region",  icon: "🏆", title: "Región perfecta",        desc: "Completa una partida perfecta en cualquier región del modo Normal.", section: "mastery" },
+  { id: "perfect_easy",           icon: "🌱", title: "Fácil perfecto",         desc: "Completa una partida perfecta en el modo Fácil.", section: "mastery" },
+  { id: "hard_correct_8",         icon: "💪", title: "Reto superado",          desc: "Consigue 8 o más respuestas correctas en una partida del modo Difícil.", section: "mastery" },
+  { id: "perfect_hard",           icon: "💀", title: "Genio musical",          desc: "Completa una partida perfecta en el modo Difícil.", section: "mastery" },
+  { id: "perfect_regions_normal_5", icon: "🗾", title: "Especialista regional", desc: "Completa 5 regiones en el modo Normal con un 100 % de aciertos.", section: "mastery" },
+  { id: "correct_10",             icon: "🎵", title: "Buen oído",              desc: "Responde correctamente a 10 preguntas.", section: "progress" },
+  { id: "correct_20",             icon: "🎶", title: "Oído entrenado",         desc: "Responde correctamente a 20 preguntas.", section: "progress" },
+  { id: "correct_50",             icon: "🎤", title: "Conocedor musical",      desc: "Responde correctamente a 50 preguntas.", section: "progress" },
+  { id: "correct_100",            icon: "🎧", title: "Melómano",               desc: "Responde correctamente a 100 preguntas.", section: "progress" },
+  { id: "correct_250",            icon: "📻", title: "Fanático de la música",  desc: "Responde correctamente a 250 preguntas.", section: "progress" },
+  { id: "correct_500",            icon: "📚", title: "Enciclopedia musical",   desc: "Responde correctamente a 500 preguntas.", section: "progress" },
+  { id: "games_10",               icon: "🎮", title: "Aficionado",             desc: "Juega 10 partidas.", section: "progress" },
+  { id: "games_20",               icon: "🕹️", title: "Jugador habitual",       desc: "Juega 20 partidas.", section: "progress" },
+  { id: "games_30",               icon: "🎲", title: "Entrenador dedicado",    desc: "Juega 30 partidas.", section: "progress" },
+  { id: "games_50",               icon: "🎖️", title: "Veterano",               desc: "Juega 50 partidas.", section: "progress" },
+  { id: "games_100",              icon: "🥇", title: "Campeón Pokémon",        desc: "Juega 100 partidas.", section: "progress" },
+  { id: "all_modes",              icon: "🗺️", title: "Explorador",             desc: "Completa al menos una partida en los modos Fácil, Normal y Difícil.", section: "mastery" },
+  { id: "all_regions",            icon: "🌍", title: "Viajero regional",       desc: "Completa al menos una partida en todas las regiones disponibles.", section: "mastery" },
+  { id: "perfect_combat",         icon: "⚔️", title: "As del combate",         desc: "Completa una partida perfecta en el modo Combate.", section: "mastery" },
+  { id: "sonidex_5",              icon: "🎼", title: "Primeras notas",         desc: "Desbloquea 5 fichas de la Sonidex.", section: "sonidex" },
+  { id: "sonidex_10",             icon: "📀", title: "Coleccionista de sonidos", desc: "Desbloquea 10 fichas de la Sonidex.", section: "sonidex" },
+  { id: "sonidex_20",             icon: "🎷", title: "Oído fino",              desc: "Desbloquea 20 fichas de la Sonidex.", section: "sonidex" },
+  { id: "sonidex_50",             icon: "🎹", title: "Melómano experto",       desc: "Desbloquea 50 fichas de la Sonidex.", section: "sonidex" },
+  { id: "sonidex_100",            icon: "📖", title: "Archivo sonoro",         desc: "Desbloquea 100 fichas de la Sonidex.", section: "sonidex" },
+  { id: "sonidex_200",            icon: "🗃️", title: "Biblioteca sonora",      desc: "Desbloquea 200 fichas de la Sonidex.", section: "sonidex" },
+  { id: "sonidex_kanto",          icon: "🍃", title: "Sonidex de Kanto",       desc: "Desbloquea todas las fichas de Kanto.", section: "sonidex" },
+  { id: "sonidex_johto",          icon: "🍂", title: "Sonidex de Johto",       desc: "Desbloquea todas las fichas de Johto.", section: "sonidex" },
+  { id: "sonidex_hoenn",          icon: "🌺", title: "Sonidex de Hoenn",       desc: "Desbloquea todas las fichas de Hoenn.", section: "sonidex" },
+  { id: "sonidex_sinnoh",         icon: "❄️", title: "Sonidex de Sinnoh",      desc: "Desbloquea todas las fichas de Sinnoh.", section: "sonidex" },
+  { id: "sonidex_teselia",        icon: "🌉", title: "Sonidex de Teselia",     desc: "Desbloquea todas las fichas de Teselia.", section: "sonidex" },
+  { id: "sonidex_kalos",          icon: "🥐", title: "Sonidex de Kalos",       desc: "Desbloquea todas las fichas de Kalos.", section: "sonidex" },
+  { id: "sonidex_alola",          icon: "🌴", title: "Sonidex de Alola",       desc: "Desbloquea todas las fichas de Alola.", section: "sonidex" },
+  { id: "story_kanto",            icon: "📜", title: "Historia: Kanto",        desc: "Completa Kanto en el modo Historia.", section: "story" },
+  { id: "story_johto",            icon: "📜", title: "Historia: Johto",        desc: "Completa Johto en el modo Historia.", section: "story" },
+  { id: "story_hoenn",            icon: "📜", title: "Historia: Hoenn",        desc: "Completa Hoenn en el modo Historia.", section: "story" },
+  { id: "story_sinnoh",           icon: "📜", title: "Historia: Sinnoh",       desc: "Completa Sinnoh en el modo Historia.", section: "story" },
+  { id: "story_teselia",          icon: "📜", title: "Historia: Teselia",      desc: "Completa Teselia en el modo Historia.", section: "story" },
+  { id: "story_kalos",            icon: "📜", title: "Historia: Kalos",        desc: "Completa Kalos en el modo Historia.", section: "story" },
+  { id: "story_complete",         icon: "🏅", title: "Maestro de la Historia", desc: "Completa el modo Historia.", section: "story" },
+  { id: "story_complete_100",     icon: "👑", title: "Historia perfecta",      desc: "Completa el modo Historia con un 100 % de aciertos.", section: "story" },
+  { id: "encounter_charizard",    icon: "🔥", title: "Cazador de llamas",      desc: "Haz que Charizard aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_slowpoke",     icon: "🐌", title: "Paciencia Slowpoke",     desc: "Haz que Slowpoke aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_rapidash",     icon: "🐎", title: "Velocidad Rapidash",     desc: "Haz que Rapidash aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_ditto",        icon: "🟣", title: "Imitador Ditto",         desc: "Haz que Ditto aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_inkay",        icon: "🔄", title: "Giro Inkay",             desc: "Haz que Inkay aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_hypno",        icon: "🌙", title: "Hypnosis de Hypno",      desc: "Haz que Hypno aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_chansey",      icon: "🥚", title: "Segunda oportunidad",    desc: "Haz que Chansey aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_gengar",       icon: "👻", title: "Sombra de Gengar",       desc: "Haz que Gengar aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_pikachu",      icon: "⚡", title: "Chispa de Pikachu",      desc: "Haz que Pikachu aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_blastoise",    icon: "💧", title: "Danza lluvia",           desc: "Haz que Blastoise aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_venusaur",     icon: "🌿", title: "Aroma de Venusaur",      desc: "Haz que Venusaur aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_electrode",    icon: "💥", title: "Cuenta atrás",           desc: "Haz que Electrode aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_weezing",      icon: "☠️", title: "Humo tóxico",            desc: "Haz que Weezing aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_porygon",      icon: "🖥️", title: "Fallo digital",          desc: "Haz que Porygon aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_snorlax",      icon: "😴", title: "Siesta de Snorlax",      desc: "Haz que Snorlax aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_jigglypuff",   icon: "🎤", title: "Canción de cuna",        desc: "Haz que Jigglypuff aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_shiny",        icon: "✨", title: "Cazabrillos",            desc: "Encuentra 5 veces un Pokémon shiny.", section: "encounters" },
+  { id: "encounter_mewtwo",       icon: "🧬", title: "Clon psíquico",          desc: "Haz que Mewtwo aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_mew",          icon: "🎭", title: "Transformista",          desc: "Haz que Mew aparezca 5 veces.", section: "encounters" },
+];
+
+// Secciones en las que se agrupan los logros en la pantalla de Logros (ver
+// `renderAchievementsScreen()` en ui.js), en el orden en que deben mostrarse.
+// Cada logro de ACHIEVEMENTS declara a qué sección pertenece con su campo
+// `section`; añadir un logro nuevo a una sección existente no requiere tocar
+// nada aquí. Solo hace falta editar esto si se crea una sección nueva.
+const ACHIEVEMENT_SECTIONS = [
+  { id: "progress",   icon: "🎯", title: "Progreso y rachas" },
+  { id: "mastery",    icon: "🏆", title: "Maestría y partidas perfectas" },
+  { id: "sonidex",    icon: "🎧", title: "Sonidex" },
+  { id: "story",      icon: "📖", title: "Modo Historia" },
+  { id: "encounters", icon: "👻", title: "Eventos Pokémon" },
 ];
 
 // Genera la condición «desbloquea todas las fichas de la Sonidex de <region>»
@@ -1391,13 +1464,21 @@ function handleAnswer(btn, isCorrect) {
     const multiplier = getStreakMultiplier(state.streak) * eventPointsMultiplier;
     const roundPoints = Math.round(basePoints * multiplier);
     state.score += roundPoints;
-    addProfileXp(roundPoints);
+    // addProfileXp/trackCorrectAnswer/trackSongCorrect son las únicas llamadas
+    // de este bloque que pueden disparar avisos (subida de nivel, logro,
+    // ficha de Sonidex...) y, con ello, tocar cosas más "delicadas" como la
+    // clasificación global (Leaderboard.submitScore). Van en su propio
+    // try/catch para que, si algo ahí falla de forma inesperada, no corte el
+    // resto de handleAnswer: sin esto, una excepción a mitad de esta cadena
+    // hacía que la función terminara ahí mismo y el botón "Siguiente Ronda"
+    // (que se muestra al final) se quedara sin aparecer nunca.
+    try { addProfileXp(roundPoints); } catch (e) { console.error("[handleAnswer] Error en addProfileXp:", e); }
     showPointsPopup(btn, roundPoints, multiplier);
 
     playSFX(SFX.correct);
     spawnParticles(btn);
-    trackCorrectAnswer();
-    trackSongCorrect(state.currentSong);
+    try { trackCorrectAnswer(); } catch (e) { console.error("[handleAnswer] Error en trackCorrectAnswer:", e); }
+    try { trackSongCorrect(state.currentSong); } catch (e) { console.error("[handleAnswer] Error en trackSongCorrect:", e); }
 
     // Evento Venusaur: solo restaura una vida si el jugador acierta esta ronda.
     if (activeEventId === "venusaur") healLife();
@@ -1597,11 +1678,24 @@ document.getElementById("exit-btn").addEventListener("click", () => { playSFX(SF
 // para evitar el scroll de página y, si el botón tuviera el foco, para que
 // el navegador no dispare además su propio evento "click" y se llame a
 // nextRound() dos veces.
+//
+// Cooldown de 2s (`lastNextRoundKeyPress`): comprobar solo la clase
+// "visible" no basta, porque esa clase se quita dentro de startRound(),
+// que puede tardar en llegar (Eventos Pokémon, timeouts...). Si el
+// jugador pulsa la barra espaciadora varias veces seguidas mientras el
+// botón todavía no ha perdido esa clase, cada pulsación dispara su
+// propia llamada a nextRound() y se saltan rondas de golpe. Limitando el
+// atajo a como mucho una vez cada 2 segundos evitamos ese spam sin tener
+// que tocar nextRound() ni el resto del flujo de partida.
+let lastNextRoundKeyPress = 0;
 document.addEventListener("keydown", (e) => {
   if (e.code !== "Space" && e.key !== " ") return;
   const nextBtn = document.getElementById("next-btn");
   if (!nextBtn || !nextBtn.classList.contains("visible")) return;
   e.preventDefault();
+  const now = Date.now();
+  if (now - lastNextRoundKeyPress < 2000) return;
+  lastNextRoundKeyPress = now;
   nextRound();
 });
 

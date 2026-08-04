@@ -385,17 +385,15 @@
         <small id="home-sonidex-summary">Desbloquea canciones acertándolas 10 veces</small>
       </button>
 
-      <button class="menu-btn" id="go-leaderboard">
-        <span class="menu-btn-icon">🏆</span>
-        <span class="menu-btn-title">Clasificaciones</span>
-        <small>Tu récord y el top 50 del Desafío Infinito</small>
-      </button>
+      <div class="menu-row-compact">
+        <button class="menu-btn menu-btn-compact" id="go-leaderboard" title="Clasificaciones" aria-label="Clasificaciones">
+          <span class="menu-btn-icon">🏆</span>
+        </button>
 
-      <button class="menu-btn" id="go-options">
-        <span class="menu-btn-icon">⚙️</span>
-        <span class="menu-btn-title">Opciones</span>
-        <small>Sonido, tema y más ajustes</small>
-      </button>
+        <button class="menu-btn menu-btn-compact" id="go-options" title="Opciones" aria-label="Opciones">
+          <span class="menu-btn-icon">⚙️</span>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -693,14 +691,7 @@
       <div id="streaks-list"></div>
     </div>
 
-    <div class="card">
-      <div class="title" style="font-size:1.1rem;">🏆 Récords de puntuación</div>
-      <div id="records-list"></div>
-    </div>
-
-    <div class="card">
-      <div class="ach-list" id="achievements-list"></div>
-    </div>
+    <div id="achievements-list" class="ach-sections"></div>
   </section>
 
   <!-- SONIDEX -->

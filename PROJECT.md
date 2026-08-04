@@ -202,17 +202,24 @@ este orden dentro del archivo):
    `getStreakMultiplier` hasta x2 en racha 11+).
 3. **Ajustes y perfil de jugador**: sistema de niveles a partir de xp
    (`xpNeededForLevel`, `computeLevelInfo`, `addProfileXp`) — usa
-   `settings`/`profile` definidos en `storage.js`.
+   `settings`/`profile` definidos en `storage.js`. Incluye también
+   `AVATAR_UNLOCKS`/`isAvatarUnlocked()`: de los 20 avatares de
+   `AVATAR_CATALOG` (storage.js), los 10 primeros están disponibles desde
+   el principio y los otros 10 se desbloquean por nivel de perfil, mismo
+   criterio que `MODE_UNLOCKS` pero solo por nivel (nunca por logro).
 4. **Estado del juego/modo**: `GameMode` (enum de modos), `session`
    (config de la partida en curso: modo, región, pool, fase de
    historia, vidas...) y `state` (score, ronda, racha, canción actual).
-5. **Sistema de logros**: `ACHIEVEMENTS[]` (catálogo),
-   `ACHIEVEMENT_CONDITIONS` (condición de desbloqueo por id),
-   `MODE_UNLOCKS`/`OTHER_UNLOCKS` (qué logro desbloquea qué modo/
-   minijuego), `trackModePlayed`/`trackCorrectAnswer`/
-   `trackSongCorrect`/`trackEncounter`/`trackGameFinished` (registran
-   estadísticas tras cada evento relevante) y `checkAchievements()`
-   (comprueba y desbloquea).
+5. **Sistema de logros**: `ACHIEVEMENTS[]` (catálogo, cada logro con un
+   campo `section` que indica en qué categoría se agrupa visualmente),
+   `ACHIEVEMENT_SECTIONS[]` (esas categorías, en el orden en que se
+   pintan como bloques plegables en la pantalla de Logros — ver
+   `renderAchievementsScreen()` en ui.js), `ACHIEVEMENT_CONDITIONS`
+   (condición de desbloqueo por id), `MODE_UNLOCKS`/`OTHER_UNLOCKS` (qué
+   logro desbloquea qué modo/minijuego), `trackModePlayed`/
+   `trackCorrectAnswer`/`trackSongCorrect`/`trackEncounter`/
+   `trackGameFinished` (registran estadísticas tras cada evento
+   relevante) y `checkAchievements()` (comprueba y desbloquea).
 6. **Lógica del quiz**: `shuffle`, `buildPool()` (arma `session.pool`
    según el modo), `getRandomSongFromPool`,
    `generateOptionsForCurrent`.
