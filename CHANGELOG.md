@@ -16,7 +16,26 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
 
 ## [Unreleased]
 
+### Añadido
+- **Avatar de Volcarona.** Se amplía `AVATAR_CATALOG` (`storage.js`) con
+  un retrato estilo Pokémon Mundo Misterioso (PMDCollab/SpriteCollab)
+  de Volcarona, para poder usarlo como recompensa de nivel 43 (ver más
+  abajo).
+
 ### Cambiado
+- **Recompensas de avatar por nivel de perfil (niveles 11-50, tramo
+  alto).** Se amplía `AVATAR_UNLOCKS` (`game.js`) con un nuevo tramo de
+  desbloqueos por nivel: Swablu (11), Trapinch (13), Hoothoot (14),
+  Spinda (31), Miltank/Spoink (32), Loudred (33), Dunsparce/Ledian (34),
+  Torkoal/Sharpedo (35), Medicham/Shedinja (36), Mantine/Sableye (37),
+  Lunatone/Solrock (38), Sunflora/Ninetales (39), Flygon (41), Aggron
+  (42), Volcarona (43), Dragonite (44), Tyranitar (45), Garchomp (46),
+  Metagross (47), Latios/Latias (48), Lugia/Ho-Oh (49) y Celebi/Jirachi
+  (50). Todos estos avatares ya existían en `AVATAR_CATALOG` (salvo
+  Volcarona, nuevo) y hasta ahora estaban disponibles desde el
+  principio. Además, tres avatares que ya tenían nivel asignado cambian
+  de nivel: Xatu (antes 11, ahora 31), Alakazam (antes 25, ahora 33) y
+  Lucario (antes 31, ahora 40).
 - **Avatares de perfil desbloqueables por logro de avistamiento, en vez
   de por nivel.** `AVATAR_UNLOCKS` (`game.js`) admite ahora, además de
   `{ level }`, una forma `{ achId }`: el avatar se desbloquea al
