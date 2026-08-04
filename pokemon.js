@@ -762,7 +762,7 @@ function bgPokeSpriteUrl(ev) {
 }
 
 // Un Pokémon de las colinas está desbloqueado si el logro «Haz que aparezca
-// 5 veces» asociado a su evento ya se ha conseguido. Los eventos que no
+// 10 veces» asociado a su evento ya se ha conseguido. Los eventos que no
 // tienen un logro «encounter_<id>» asociado (p. ej. el Caterpie shiny) no
 // están sujetos a este sistema y se muestran siempre.
 function isHillPokemonUnlocked(ev) {

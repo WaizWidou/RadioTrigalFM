@@ -77,9 +77,18 @@ function showPointsPopup(btn, points, multiplier) {
 // AVATAR_UNLOCKS — ambos en game.js) se pintan en gris con un candado y no
 // son seleccionables: al tocarlos se muestra un aviso con el nivel que hace
 // falta, igual que al pulsar un modo/minijuego bloqueado.
+// Orden de pintado: de menor a mayor nivel requerido (AVATAR_UNLOCKS,
+// game.js); los avatares sin entrada ahí están desbloqueados desde el
+// nivel 1, así que van primero, en el mismo orden en que aparecen en
+// AVATAR_CATALOG (sort estable → no se reordenan entre sí).
 function renderAvatarGrid(gridEl, selectedId, onSelect) {
   gridEl.innerHTML = "";
-  AVATAR_CATALOG.forEach(av => {
+  const sortedCatalog = [...AVATAR_CATALOG].sort((a, b) => {
+    const levelA = AVATAR_UNLOCKS[a.id] ? AVATAR_UNLOCKS[a.id].level : 1;
+    const levelB = AVATAR_UNLOCKS[b.id] ? AVATAR_UNLOCKS[b.id].level : 1;
+    return levelA - levelB;
+  });
+  sortedCatalog.forEach(av => {
     const unlocked = isAvatarUnlocked(av.id);
     const btn = document.createElement("button");
     btn.type = "button";

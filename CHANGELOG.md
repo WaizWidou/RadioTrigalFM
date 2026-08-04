@@ -16,7 +16,54 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
 
 ## [Unreleased]
 
+### Cambiado
+- **Orden de la rejilla de avatares de perfil.** `renderAvatarGrid()`
+  (`ui.js`) ahora pinta los avatares ordenados de menor a mayor según
+  el nivel necesario para desbloquearlos (`AVATAR_UNLOCKS`, `game.js`);
+  antes seguían el orden de declaración en `AVATAR_CATALOG`
+  (`storage.js`). Los avatares sin requisito de nivel (desbloqueados
+  desde el principio) van primero, conservando entre ellos su orden
+  original en el catálogo.
+
 ### Añadido
+- **33 nuevos avatares de perfil.** Se amplía `AVATAR_CATALOG`
+  (`storage.js`) con retratos estilo Pokémon Mundo Misterioso
+  (PMDCollab/SpriteCollab) de Rattata, Geodude, Onix, Staryu,
+  Aerodactyl, Larvitar, Mantine, Smeargle, Miltank, Lugia, Ho-Oh,
+  Ralts, Shedinja, Loudred, Sableye, Aggron, Medicham, Sharpedo,
+  Torkoal, Spoink, Spinda, Trapinch, Flygon, Cacnea, Swablu, Lunatone,
+  Solrock, Whiscash, Bagon, Beldum, Latias, Latios y Jirachi. Se omite
+  Celebi porque ya tenía avatar en el catálogo. Igual que las tandas
+  anteriores, se añaden sin entrada en `AVATAR_UNLOCKS` (`game.js`),
+  por lo que quedan disponibles desde el principio.
+
+- **32 nuevos avatares de perfil.** Se amplía `AVATAR_CATALOG`
+  (`storage.js`) con retratos estilo Pokémon Mundo Misterioso
+  (PMDCollab/SpriteCollab) de Feebas, Magikarp, Gyarados, Milotic,
+  Growlithe, Magnemite, Scyther, Electabuzz, Magmar, Jynx, Tauros,
+  Jolteon, Flareon, Vaporeon, Dratini, Hoothoot, Ledian, Togepi,
+  Mareep, Marill, Sunkern, Sunflora, Wooper, Unown, Wobbuffet,
+  Dunsparce, Snubbull, Shuckle, Heracross, Teddiursa, Corsola y
+  Sneasler. Igual que la tanda anterior, se añaden sin entrada en
+  `AVATAR_UNLOCKS` (`game.js`), por lo que quedan disponibles desde el
+  principio.
+
+- **45 nuevos avatares de perfil.** Se amplía `AVATAR_CATALOG`
+  (`storage.js`) con retratos estilo Pokémon Mundo Misterioso
+  (PMDCollab/SpriteCollab) de Venusaur, Blastoise, Charizard, Caterpie,
+  Rapidash, Slowpoke, Hypno, Electrode, Chansey, Ditto, Porygon,
+  Mewtwo, Mew, Inkay, Treecko, Turtwig, Chimchar, Snivy, Oshawott,
+  Tepig, Skitty, Cubone, Alakazam, Xatu, Absol, Ninetales, Gardevoir,
+  Wigglytuff, Chatot, Grovyle, Dusknoir, Celebi, Kangaskhan, Kecleon,
+  Lucario, Garchomp, Dragonite, Lapras, Arcanine, Scizor, Tyranitar,
+  Salamence, Metagross, Zoroark y Sylveon. Se omiten los Pokémon que ya
+  tenían avatar (Bulbasaur, Squirtle, Charmander, Pikachu, Jigglypuff,
+  Gengar, Snorlax, Meowth, Chikorita, Cyndaquil, Totodile, Riolu,
+  Eevee, Torchic, Piplup, Mudkip). Los avatares nuevos se añaden sin
+  entrada en `AVATAR_UNLOCKS` (`game.js`), por lo que quedan
+  disponibles desde el principio, igual que los 10 primeros del
+  catálogo original.
+
 - **Evento Electrode: sprite real y animación de carga/explosión.** El
   badge del temporizador ya no usa el emoticono 💣, sino el sprite de
   `images/electrode.png`. Mientras la mecha está encendida, el sprite se
@@ -45,7 +92,33 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
     al Electrode junto al temporizador, no al que pasea de fondo en el
     menú (otro elemento distinto, en `pokemon.js`).
 
+### Añadido
+- **19 nuevos logros «de primer avistamiento» para los Eventos Pokémon.**
+  Junto a cada logro `encounter_<id>` ya existente (que ahora pide 10
+  apariciones), se añade uno nuevo con id `encounter_<id>_5` que se
+  desbloquea a las 5 apariciones de ese mismo Pokémon/evento — el mismo
+  umbral que tenían todos estos logros antes del cambio anterior.
+  Reutilizan el mismo contador `stats.encounterCounts` (no hace falta
+  tocar `storage.js`), así que un jugador desbloquea primero el logro
+  de 5 y, más adelante, el de 10 sin perder progreso. El desbloqueo de
+  Pokémon en las colinas de fondo (`isHillPokemonUnlocked` en
+  `pokemon.js`) sigue atado únicamente al logro de 10, como hasta
+  ahora: los nuevos ids `_5` no coinciden con ningún `PokeEvents.list()`
+  al quitarles el prefijo `encounter_`, así que no disparan ese
+  desbloqueo por error.
+
 ### Cambiado
+- **Umbral de los logros de Eventos Pokémon: de 5 a 10 apariciones.**
+  Los 19 logros `encounter_*` (uno por cada Pokémon/evento, más el de
+  Pokémon shiny) ahora exigen que su Evento Pokémon correspondiente
+  haya aparecido 10 veces en vez de 5. Cambio centralizado en
+  `game.js`, en el bucle que genera `ACHIEVEMENT_CONDITIONS[encounter_*]`
+  a partir de la nueva constante `ENCOUNTER_THRESHOLD`, más la
+  actualización del texto (`desc`) de cada logro en `ACHIEVEMENTS[]`.
+  Como sigue usando el mismo contador `stats.encounterCounts` de
+  siempre, el progreso ya acumulado por los jugadores no se pierde: los
+  logros que antes estaban en 5/5 pasan a mostrarse como 5/10.
+
 - **Botón de información de Eventos Pokémon más grande** en la pantalla
   previa de región del Modo Historia (`.story-info-btn`): de 38×38px y
   1.15rem de icono a 50×50px y 1.5rem.

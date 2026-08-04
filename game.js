@@ -458,23 +458,37 @@ function computeLevelInfo(totalXp) {
 }
 
 // ── Avatares de perfil desbloqueables por nivel ──
-// Los 10 primeros avatares de AVATAR_CATALOG (storage.js) están disponibles
-// desde el principio; los otros 10 se desbloquean progresivamente según sube
-// el nivel de perfil. Solo los avatares que aparecen aquí tienen requisito:
-// cualquier avatar del catálogo que no esté en este objeto se considera
-// desbloqueado desde el nivel 1 (ver isAvatarUnlocked()). Mismo criterio que
+// Solo Bulbasaur, Charmander, Squirtle y Eevee están disponibles desde el
+// principio; el resto se desbloquea progresivamente según sube el nivel de
+// perfil. Solo los avatares que aparecen aquí tienen requisito: cualquier
+// avatar del catálogo que no esté en este objeto se considera desbloqueado
+// desde el nivel 1 (ver isAvatarUnlocked()). Mismo criterio que
 // MODE_UNLOCKS/OTHER_UNLOCKS de más abajo, pero por nivel únicamente.
+// TODO: quedan por asignar nivel Pikachu, Jigglypuff, Snorlax, Gengar,
+// Riolu, Umbreon, Espeon, Piplup y la mayoría de los avatares añadidos en
+// la última tanda (ver CHANGELOG.md) — de momento se mantienen tal y como
+// estaban hasta tener el resto de la tabla de niveles.
 const AVATAR_UNLOCKS = {
-  vulpix:    { level: 4  },
-  chikorita: { level: 6  },
-  cyndaquil: { level: 8  },
-  totodile:  { level: 10 },
-  riolu:     { level: 13 },
-  umbreon:   { level: 16 },
-  espeon:    { level: 19 },
-  piplup:    { level: 22 },
-  torchic:   { level: 26 },
-  mudkip:    { level: 30 },
+  meowth:     { level: 2  },
+  psyduck:    { level: 2  },
+  vulpix:     { level: 3  },
+  cubone:     { level: 4  },
+  skitty:     { level: 5  },
+  chikorita:  { level: 6  },
+  cyndaquil:  { level: 6  },
+  totodile:   { level: 6  },
+  kecleon:    { level: 7  },
+  kangaskhan: { level: 8  },
+  absol:      { level: 9  },
+  gardevoir:  { level: 10 },
+  xatu:       { level: 11 },
+  treecko:    { level: 12 },
+  mudkip:     { level: 12 },
+  torchic:    { level: 12 },
+  riolu:      { level: 13 },
+  umbreon:    { level: 16 },
+  espeon:     { level: 19 },
+  piplup:     { level: 22 },
 };
 
 /** Indica si un avatar del catálogo (AVATAR_CATALOG) está desbloqueado para
@@ -622,25 +636,44 @@ const ACHIEVEMENTS = [
   { id: "story_kalos",            icon: "📜", title: "Historia: Kalos",        desc: "Completa Kalos en el modo Historia.", section: "story" },
   { id: "story_complete",         icon: "🏅", title: "Maestro de la Historia", desc: "Completa el modo Historia.", section: "story" },
   { id: "story_complete_100",     icon: "👑", title: "Historia perfecta",      desc: "Completa el modo Historia con un 100 % de aciertos.", section: "story" },
-  { id: "encounter_charizard",    icon: "🔥", title: "Cazador de llamas",      desc: "Haz que Charizard aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_slowpoke",     icon: "🐌", title: "Paciencia Slowpoke",     desc: "Haz que Slowpoke aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_rapidash",     icon: "🐎", title: "Velocidad Rapidash",     desc: "Haz que Rapidash aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_ditto",        icon: "🟣", title: "Imitador Ditto",         desc: "Haz que Ditto aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_inkay",        icon: "🔄", title: "Giro Inkay",             desc: "Haz que Inkay aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_hypno",        icon: "🌙", title: "Hypnosis de Hypno",      desc: "Haz que Hypno aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_chansey",      icon: "🥚", title: "Segunda oportunidad",    desc: "Haz que Chansey aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_gengar",       icon: "👻", title: "Sombra de Gengar",       desc: "Haz que Gengar aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_pikachu",      icon: "⚡", title: "Chispa de Pikachu",      desc: "Haz que Pikachu aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_blastoise",    icon: "💧", title: "Danza lluvia",           desc: "Haz que Blastoise aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_venusaur",     icon: "🌿", title: "Aroma de Venusaur",      desc: "Haz que Venusaur aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_electrode",    icon: "💥", title: "Cuenta atrás",           desc: "Haz que Electrode aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_weezing",      icon: "☠️", title: "Humo tóxico",            desc: "Haz que Weezing aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_porygon",      icon: "🖥️", title: "Fallo digital",          desc: "Haz que Porygon aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_snorlax",      icon: "😴", title: "Siesta de Snorlax",      desc: "Haz que Snorlax aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_jigglypuff",   icon: "🎤", title: "Canción de cuna",        desc: "Haz que Jigglypuff aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_shiny",        icon: "✨", title: "Cazabrillos",            desc: "Encuentra 5 veces un Pokémon shiny.", section: "encounters" },
-  { id: "encounter_mewtwo",       icon: "🧬", title: "Clon psíquico",          desc: "Haz que Mewtwo aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_mew",          icon: "🎭", title: "Transformista",          desc: "Haz que Mew aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_charizard_5",   icon: "🔥", title: "Avistamiento: Charizard",  desc: "Haz que Charizard aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_charizard",    icon: "🔥", title: "Cazador de llamas",      desc: "Haz que Charizard aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_slowpoke_5",    icon: "🐌", title: "Avistamiento: Slowpoke",   desc: "Haz que Slowpoke aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_slowpoke",     icon: "🐌", title: "Paciencia Slowpoke",     desc: "Haz que Slowpoke aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_rapidash_5",    icon: "🐎", title: "Avistamiento: Rapidash",   desc: "Haz que Rapidash aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_rapidash",     icon: "🐎", title: "Velocidad Rapidash",     desc: "Haz que Rapidash aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_ditto_5",       icon: "🟣", title: "Avistamiento: Ditto",      desc: "Haz que Ditto aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_ditto",        icon: "🟣", title: "Imitador Ditto",         desc: "Haz que Ditto aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_inkay_5",       icon: "🔄", title: "Avistamiento: Inkay",      desc: "Haz que Inkay aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_inkay",        icon: "🔄", title: "Giro Inkay",             desc: "Haz que Inkay aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_hypno_5",       icon: "🌙", title: "Avistamiento: Hypno",      desc: "Haz que Hypno aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_hypno",        icon: "🌙", title: "Hypnosis de Hypno",      desc: "Haz que Hypno aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_chansey_5",     icon: "🥚", title: "Avistamiento: Chansey",    desc: "Haz que Chansey aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_chansey",      icon: "🥚", title: "Segunda oportunidad",    desc: "Haz que Chansey aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_gengar_5",      icon: "👻", title: "Avistamiento: Gengar",     desc: "Haz que Gengar aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_gengar",       icon: "👻", title: "Sombra de Gengar",       desc: "Haz que Gengar aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_pikachu_5",     icon: "⚡", title: "Avistamiento: Pikachu",    desc: "Haz que Pikachu aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_pikachu",      icon: "⚡", title: "Chispa de Pikachu",      desc: "Haz que Pikachu aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_blastoise_5",   icon: "💧", title: "Avistamiento: Blastoise",  desc: "Haz que Blastoise aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_blastoise",    icon: "💧", title: "Danza lluvia",           desc: "Haz que Blastoise aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_venusaur_5",    icon: "🌿", title: "Avistamiento: Venusaur",   desc: "Haz que Venusaur aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_venusaur",     icon: "🌿", title: "Aroma de Venusaur",      desc: "Haz que Venusaur aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_electrode_5",   icon: "💥", title: "Avistamiento: Electrode",  desc: "Haz que Electrode aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_electrode",    icon: "💥", title: "Cuenta atrás",           desc: "Haz que Electrode aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_weezing_5",     icon: "☠️", title: "Avistamiento: Weezing",    desc: "Haz que Weezing aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_weezing",      icon: "☠️", title: "Humo tóxico",            desc: "Haz que Weezing aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_porygon_5",     icon: "🖥️", title: "Avistamiento: Porygon",    desc: "Haz que Porygon aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_porygon",      icon: "🖥️", title: "Fallo digital",          desc: "Haz que Porygon aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_snorlax_5",     icon: "😴", title: "Avistamiento: Snorlax",    desc: "Haz que Snorlax aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_snorlax",      icon: "😴", title: "Siesta de Snorlax",      desc: "Haz que Snorlax aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_jigglypuff_5",  icon: "🎤", title: "Avistamiento: Jigglypuff", desc: "Haz que Jigglypuff aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_jigglypuff",   icon: "🎤", title: "Canción de cuna",        desc: "Haz que Jigglypuff aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_shiny_5",       icon: "✨", title: "Avistamiento brillante",  desc: "Encuentra 5 veces un Pokémon shiny.", section: "encounters" },
+  { id: "encounter_shiny",        icon: "✨", title: "Cazabrillos",            desc: "Encuentra 10 veces un Pokémon shiny.", section: "encounters" },
+  { id: "encounter_mewtwo_5",      icon: "🧬", title: "Avistamiento: Mewtwo",     desc: "Haz que Mewtwo aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_mewtwo",       icon: "🧬", title: "Clon psíquico",          desc: "Haz que Mewtwo aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_mew_5",         icon: "🎭", title: "Avistamiento: Mew",        desc: "Haz que Mew aparezca 5 veces.", section: "encounters" },
+  { id: "encounter_mew",          icon: "🎭", title: "Transformista",          desc: "Haz que Mew aparezca 10 veces.", section: "encounters" },
 ];
 
 // Secciones en las que se agrupan los logros en la pantalla de Logros (ver
@@ -714,17 +747,22 @@ const ACHIEVEMENT_CONDITIONS = {
 };
 
 // Las condiciones encounter_* comparten todas la misma forma (¿ha
-// aparecido este Pokémon/evento 5 veces o más?), así que en vez de repetir
+// aparecido este Pokémon/evento N veces o más?), así que en vez de repetir
 // la misma expresión una y otra vez cambiando solo la clave, se generan
-// aquí en bucle a partir de la lista de ids. Si en el futuro cambia el
-// umbral de "5 veces", solo hay que tocarlo en este único sitio.
+// aquí en bucle a partir de la lista de ids. Hay dos escalones por cada
+// Pokémon/evento: uno a las 5 apariciones (id `encounter_<id>_5`) y otro,
+// más difícil, a las 10 (id `encounter_<id>`, el histórico). Si en el
+// futuro cambia alguno de los dos umbrales, solo hay que tocarlo aquí.
+const ENCOUNTER_THRESHOLD_5 = 5;
+const ENCOUNTER_THRESHOLD = 10;
 const ENCOUNTER_CONDITION_IDS = [
   "charizard", "slowpoke", "rapidash", "ditto", "inkay", "hypno", "chansey",
   "gengar", "pikachu", "blastoise", "venusaur", "electrode", "weezing",
   "porygon", "snorlax", "jigglypuff", "shiny", "mewtwo", "mew",
 ];
 ENCOUNTER_CONDITION_IDS.forEach(id => {
-  ACHIEVEMENT_CONDITIONS[`encounter_${id}`] = s => ((s.encounterCounts && s.encounterCounts[id]) || 0) >= 5;
+  ACHIEVEMENT_CONDITIONS[`encounter_${id}_5`] = s => ((s.encounterCounts && s.encounterCounts[id]) || 0) >= ENCOUNTER_THRESHOLD_5;
+  ACHIEVEMENT_CONDITIONS[`encounter_${id}`] = s => ((s.encounterCounts && s.encounterCounts[id]) || 0) >= ENCOUNTER_THRESHOLD;
 });
 
 // Cuenta cuántas canciones de una lista están desbloqueadas en la Sonidex
