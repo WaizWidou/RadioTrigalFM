@@ -65,12 +65,6 @@ const PokeEvents = (function () {
   const registry = [];           // catálogo de eventos disponibles
   let active = null;             // evento activo durante la ronda actual (o null)
 
-  // ── DEBUG: id del evento forzado por el selector de pruebas (o null) ──
-  // SOLO PARA PRUEBAS. Eliminar esta variable y debugForceNext() (más abajo,
-  // y en el "return" al final del módulo) cuando se retire la función de debug.
-  let debugForcedId = null;
-  // ── FIN DEBUG ──
-
   // Nº de rondas consecutivas (elegibles) en las que NO se ha activado un
   // evento. Al llegar a PITY_STREAK, la siguiente ronda fuerza un evento
   // seguro y el contador se reinicia a 0.
@@ -129,23 +123,6 @@ const PokeEvents = (function () {
       return;
     }
 
-    // ── DEBUG: si hay un evento forzado desde el selector de pruebas,
-    // se activa directamente, saltándose la probabilidad normal.
-    // SOLO PARA PRUEBAS. Eliminar este bloque cuando se retire la función de debug.
-    if (debugForcedId) {
-      const forced = registry.find(e => e.id === debugForcedId);
-      debugForcedId = null;
-      if (forced) {
-        noEventStreak = 0;
-        active = forced;
-        pendingHandoff = true;
-        if (typeof trackEncounter === "function") trackEncounter(active.id);
-        showActiveEventAndContinue(onDone);
-        return;
-      }
-    }
-    // ── FIN DEBUG ──
-
     const guaranteed = noEventStreak >= PITY_STREAK;
     if (!guaranteed && Math.random() >= TRIGGER_CHANCE) {
       noEventStreak++;
@@ -201,10 +178,9 @@ const PokeEvents = (function () {
   }
 
   // Muestra la animación de aparición del evento activo y continúa la
-  // ronda cuando termina. Punto único de entrada usado tanto por el
-  // disparo normal como por el forzado desde el panel de debug (ver
-  // arriba en ambos), para no repetir la comprobación del caso especial
-  // de Mew en dos sitios (Regla nº2 de CLAUDE.md).
+  // ronda cuando termina. Punto único de entrada usado por el disparo
+  // normal de tryTrigger(), para no repetir la comprobación del caso
+  // especial de Mew en dos sitios (Regla nº2 de CLAUDE.md).
   //
   // El evento Mew es un caso especial: en vez de aplicar directamente su
   // propio efecto, "se transforma" en uno de otros 3 eventos elegidos al
@@ -303,12 +279,7 @@ const PokeEvents = (function () {
     return registry.slice();
   }
 
-  // ── DEBUG: fija el id del próximo evento a forzar. SOLO PARA PRUEBAS.
-  // Eliminar esta función cuando se retire la función de debug.
-  function debugForceNext(id) { debugForcedId = id; }
-  // ── FIN DEBUG ──
-
-  return { register, tryTrigger, beginRound, clearActive, applyToAnswers, applyToAudio, activeId, list, debugForceNext };
+  return { register, tryTrigger, beginRound, clearActive, applyToAnswers, applyToAudio, activeId, list };
 })();
 
 // Handler de mousemove activo mientras el jugador busca a Gengar (o null si
@@ -345,7 +316,7 @@ function clearGengarSearch() {
 }
 
 // Apaga TODOS los efectos visuales/de audio que pueda haber dejado un
-// Evento Pokémon (Weezing, Hypno, Gengar, Shiny, Blastoise, Porygon,
+// Evento Pokémon (Hypno, Gengar, Shiny, Blastoise, Porygon,
 // Electrode...), y cancela el evento activo a nivel interno (PokeEvents).
 // Se llama tanto al empezar cada ronda nueva (startRound) como en
 // cualquier punto en el que el jugador abandona la ronda en curso ANTES
@@ -362,7 +333,6 @@ function clearPokeEventVisuals() {
   document.getElementById('hypno-vignette').classList.remove('show');
   document.getElementById('app').classList.remove('hypno-warp-active');
   document.getElementById('shiny-color-overlay').classList.remove('show');
-  document.getElementById('weezing-smoke-overlay').classList.remove('show');
   document.getElementById('blastoise-rain-overlay').classList.remove('show');
   document.getElementById('porygon-glitch-overlay').classList.remove('show');
   stopPorygonTextGlitch();
@@ -519,16 +489,6 @@ PokeEvents.register({
     document.getElementById("hypno-overlay").classList.add("show");
     document.getElementById("hypno-vignette").classList.add("show");
     document.getElementById("app").classList.add("hypno-warp-active");
-  },
-});
-
-PokeEvents.register({
-  id: "weezing",
-  name: "Weezing",
-  description: "¡Weezing ha soltado una nube de humo tóxico! Se mueve por la pantalla y tapa las respuestas de vez en cuando, pero siguen siendo pulsables.",
-  pokemonId: 110,
-  onAnswers() {
-    document.getElementById("weezing-smoke-overlay").classList.add("show");
   },
 });
 
@@ -922,61 +882,3 @@ function reactBgPoke(wrap) {
   spawnParticles(wrap);
   setTimeout(() => wrap.classList.remove("poked"), 600);
 }
-
-// ══════════════════════════════════════════════════════════════════
-// DEBUG · SELECTOR DE EVENTOS POKÉMON (SOLO PARA PRUEBAS)
-// Permite forzar, desde un botón visible solo en Modo Historia, qué
-// Evento Pokémon se activará en la siguiente ronda, para poder probarlos
-// rápidamente sin depender de la probabilidad aleatoria.
-//
-// ELIMINAR POR COMPLETO este bloque (y sus referencias marcadas "DEBUG"
-// en el HTML, el CSS y dentro del módulo PokeEvents) cuando el juego
-// esté terminado.
-// ══════════════════════════════════════════════════════════════════
-function updateDebugEventButtonVisibility() {
-  const btn = document.getElementById("debug-event-btn");
-  if (!btn) return;
-  btn.style.display = (session.mode === GameMode.STORY) ? "inline-block" : "none";
-}
-
-/** [Herramienta de depuración] Abre el panel que permite forzar
- * manualmente un Evento Pokémon concreto, para probarlos sin depender
- * de que salgan al azar. */
-function openDebugEventPanel() {
-  const panel = document.getElementById("debug-event-panel");
-  const list = document.getElementById("debug-event-list");
-  if (!panel || !list || typeof PokeEvents === "undefined") return;
-
-  list.innerHTML = "";
-  PokeEvents.list().forEach(ev => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.textContent = `${ev.name}`;
-    btn.addEventListener("click", () => {
-      PokeEvents.debugForceNext(ev.id);
-      closeDebugEventPanel();
-      alert(`🧪 "${ev.name}" se activará en la próxima ronda.`);
-    });
-    list.appendChild(btn);
-  });
-
-  panel.classList.add("show");
-}
-
-/** [Herramienta de depuración] Cierra el panel de eventos de prueba. */
-function closeDebugEventPanel() {
-  const panel = document.getElementById("debug-event-panel");
-  if (panel) panel.classList.remove("show");
-}
-
-(function initDebugEventTester() {
-  const openBtn = document.getElementById("debug-event-btn");
-  const closeBtn = document.getElementById("debug-event-close-btn");
-  const panel = document.getElementById("debug-event-panel");
-  if (openBtn) openBtn.addEventListener("click", openDebugEventPanel);
-  if (closeBtn) closeBtn.addEventListener("click", closeDebugEventPanel);
-  if (panel) panel.addEventListener("click", (e) => { if (e.target === panel) closeDebugEventPanel(); });
-})();
-// ══════════════════════════════════════════════════════════════════
-// FIN DEBUG · SELECTOR DE EVENTOS POKÉMON
-// ══════════════════════════════════════════════════════════════════

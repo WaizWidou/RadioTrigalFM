@@ -489,6 +489,12 @@ const AVATAR_UNLOCKS = {
   caterpie:   { achId: "encounter_shiny_5"      },
   mewtwo:     { achId: "encounter_mewtwo_5"     },
   mew:        { achId: "encounter_mew_5"        },
+  espeon:     { achId: "perfect_colosseum_xd"   },
+  umbreon:    { achId: "perfect_colosseum_xd"   },
+  dusknoir:   { achId: "perfect_mystery_dungeon" },
+  grovyle:    { achId: "perfect_mystery_dungeon" },
+  wigglytuff: { achId: "perfect_mystery_dungeon" },
+  lucario:    { achId: "perfect_combat"          },
   meowth:     { level: 2  },
   psyduck:    { level: 2  },
   snubbull:   { level: 2  },
@@ -551,8 +557,9 @@ const AVATAR_UNLOCKS = {
   oshawott:   { level: 24 },
   tepig:      { level: 24 },
   flareon:    { level: 25 },
-  wigglytuff: { level: 26 },
+  cacnea:     { level: 25 },
   vaporeon:   { level: 26 },
+  whiscash:   { level: 26 },
   lapras:     { level: 27 },
   jolteon:    { level: 27 },
   zoroark:    { level: 28 },
@@ -580,9 +587,9 @@ const AVATAR_UNLOCKS = {
   solrock:    { level: 38 },
   sunflora:   { level: 39 },
   ninetales:  { level: 39 },
-  lucario:    { level: 40 },
+  aggron:     { level: 40 },
   flygon:     { level: 41 },
-  aggron:     { level: 42 },
+  salamence:  { level: 42 },
   volcarona:  { level: 43 },
   dragonite:  { level: 44 },
   tyranitar:  { level: 45 },
@@ -636,6 +643,13 @@ function addProfileXp(points) {
         toasts.push({ icon: "🔓", title: `¡${cfg.name} desbloqueado!` });
       }
     });
+    // Comprobar si el nuevo nivel desbloquea alguna categoría de Minijuegos
+    Object.keys(OTHER_UNLOCKS).forEach(key => {
+      const cfg = OTHER_UNLOCKS[key];
+      if (typeof cfg.level === "number" && cfg.level > before && cfg.level <= after.level) {
+        toasts.push({ icon: "🔓", title: `¡${cfg.name} desbloqueado!` });
+      }
+    });
     // Comprobar si el nuevo nivel desbloquea algún avatar de perfil nuevo
     Object.keys(AVATAR_UNLOCKS).forEach(id => {
       const cfg = AVATAR_UNLOCKS[id];
@@ -647,6 +661,7 @@ function addProfileXp(points) {
     queueAchievementToasts(toasts);
     playSFX(SFX.newmode);
     updateModeLocksUI();
+    updateOtherLocksUI();
     // La clasificación global de nivel de jugador se actualiza cada vez
     // que se sube de nivel (no en cada punto de xp ganado): ver leaderboard.js.
     Leaderboard.submitScore("level", profile.username, profile.avatarId, after.level, ensurePlayerId());
@@ -733,6 +748,8 @@ const ACHIEVEMENTS = [
   { id: "all_modes",              icon: "🗺️", title: "Explorador",             desc: "Completa al menos una partida en los modos Fácil, Normal y Difícil.", section: "mastery" },
   { id: "all_regions",            icon: "🌍", title: "Viajero regional",       desc: "Completa al menos una partida en todas las regiones disponibles.", section: "mastery" },
   { id: "perfect_combat",         icon: "⚔️", title: "As del combate",         desc: "Completa una partida perfecta en el modo Combate.", section: "mastery" },
+  { id: "perfect_colosseum_xd",   icon: "🌑", title: "Sombra perfecta",        desc: "Completa una partida perfecta en el minijuego de Pokémon Colosseum / XD.", section: "mastery" },
+  { id: "perfect_mystery_dungeon", icon: "🏰", title: "Mazmorra perfecta",     desc: "Completa una partida perfecta en el minijuego de Pokémon Mundo Misterioso.", section: "mastery" },
   { id: "sonidex_5",              icon: "🎼", title: "Primeras notas",         desc: "Desbloquea 5 fichas de la Sonidex.", section: "sonidex" },
   { id: "sonidex_10",             icon: "📀", title: "Coleccionista de sonidos", desc: "Desbloquea 10 fichas de la Sonidex.", section: "sonidex" },
   { id: "sonidex_20",             icon: "🎷", title: "Oído fino",              desc: "Desbloquea 20 fichas de la Sonidex.", section: "sonidex" },
@@ -778,8 +795,6 @@ const ACHIEVEMENTS = [
   { id: "encounter_venusaur",     icon: "🌿", title: "Aroma de Venusaur",      desc: "Haz que Venusaur aparezca 10 veces.", section: "encounters" },
   { id: "encounter_electrode_5",   icon: "💥", title: "Avistamiento: Electrode",  desc: "Haz que Electrode aparezca 5 veces.", section: "encounters" },
   { id: "encounter_electrode",    icon: "💥", title: "Cuenta atrás",           desc: "Haz que Electrode aparezca 10 veces.", section: "encounters" },
-  { id: "encounter_weezing_5",     icon: "☠️", title: "Avistamiento: Weezing",    desc: "Haz que Weezing aparezca 5 veces.", section: "encounters" },
-  { id: "encounter_weezing",      icon: "☠️", title: "Humo tóxico",            desc: "Haz que Weezing aparezca 10 veces.", section: "encounters" },
   { id: "encounter_porygon_5",     icon: "🖥️", title: "Avistamiento: Porygon",    desc: "Haz que Porygon aparezca 5 veces.", section: "encounters" },
   { id: "encounter_porygon",      icon: "🖥️", title: "Fallo digital",          desc: "Haz que Porygon aparezca 10 veces.", section: "encounters" },
   { id: "encounter_snorlax_5",     icon: "😴", title: "Avistamiento: Snorlax",    desc: "Haz que Snorlax aparezca 5 veces.", section: "encounters" },
@@ -841,6 +856,8 @@ const ACHIEVEMENT_CONDITIONS = {
   all_modes:                 s => ["easy","normal","hard"].every(m => s.modesPlayed.includes(m)),
   all_regions:               s => REGIONS.every(r => s.regionsPlayed.includes(r)),
   perfect_combat:            s => s.perfectCombatGame === true,
+  perfect_colosseum_xd:      s => s.perfectColosseumGame === true,
+  perfect_mystery_dungeon:   s => s.perfectMysteryDungeonGame === true,
   sonidex_5:                 s => sonidexUnlockedCountForList(s, songs) >= 5,
   sonidex_10:                s => sonidexUnlockedCountForList(s, songs) >= 10,
   sonidex_20:                s => sonidexUnlockedCountForList(s, songs) >= 20,
@@ -875,7 +892,7 @@ const ENCOUNTER_THRESHOLD_5 = 5;
 const ENCOUNTER_THRESHOLD = 10;
 const ENCOUNTER_CONDITION_IDS = [
   "charizard", "slowpoke", "rapidash", "ditto", "inkay", "hypno", "chansey",
-  "gengar", "pikachu", "blastoise", "venusaur", "electrode", "weezing",
+  "gengar", "pikachu", "blastoise", "venusaur", "electrode",
   "porygon", "snorlax", "jigglypuff", "shiny", "mewtwo", "mew",
 ];
 ENCOUNTER_CONDITION_IDS.forEach(id => {
@@ -891,8 +908,8 @@ function sonidexUnlockedCountForList(s, list) {
 
 // ── Modos desbloqueables mediante nivel de perfil o logros ──
 const MODE_UNLOCKS = {
-  hard:     { level: 3, btnId: "mode-hard",     name: "Modo Difícil",          reqTitle: "Nivel 3 de perfil" },
-  combat:   { level: 5, btnId: "mode-combat",   name: "Modo Combate",          reqTitle: "Nivel 5 de perfil" },
+  hard:     { level: 5, btnId: "mode-hard",     name: "Modo Difícil",          reqTitle: "Nivel 5 de perfil" },
+  combat:   { level: 8, btnId: "mode-combat",   name: "Modo Combate",          reqTitle: "Nivel 8 de perfil" },
   infinite: { achId: "all_regions", btnId: "mode-infinite", name: "Modo Desafío Infinito", reqTitle: "Viajero regional" },
 };
 
@@ -908,23 +925,25 @@ function isModeUnlocked(key) {
 
 
 
-// ── Categorías de Minijuegos desbloqueables mediante logros ──
+// ── Categorías de Minijuegos desbloqueables mediante nivel de perfil o logros ──
 const OTHER_UNLOCKS = {
-  "centro-pokemon":  { achId: "story_johto",   name: "Centro Pokémon",           reqTitle: "Historia: Johto" },
+  "centro-pokemon":  { level: 3,               name: "Centro Pokémon",           reqTitle: "Nivel 3 de perfil" },
   "laboratorios":    { achId: "games_10",      name: "Laboratorios",             reqTitle: "Aficionado" },
-  "bicicletas":      { achId: "streak_5",      name: "Bicicletas",               reqTitle: "En racha" },
-  "surf":            { achId: "correct_20",    name: "Surf",                     reqTitle: "Oído entrenado" },
-  "mystery-dungeon": { achId: "story_sinnoh",  name: "Pokémon Mundo Misterioso", reqTitle: "Historia: Sinnoh" },
+  "bicicletas":      { level: 10,              name: "Bicicletas",               reqTitle: "Nivel 10 de perfil" },
+  "surf":            { level: 14,              name: "Surf",                     reqTitle: "Nivel 14 de perfil" },
+  "mystery-dungeon": { achId: "story_hoenn",   name: "Pokémon Mundo Misterioso", reqTitle: "Historia: Hoenn" },
   "colosseum-xd":    { achId: "correct_100",   name: "Pokémon Colosseum / XD",   reqTitle: "Melómano" },
   "ranger":          { achId: "games_30",      name: "Pokémon Ranger",           reqTitle: "Entrenador dedicado" },
-  "title-screens":   { achId: "perfect_easy",  name: "Pantallas de Título",      reqTitle: "Fácil perfecto" },
+  "title-screens":   { level: 12,              name: "Pantallas de Título",      reqTitle: "Nivel 12 de perfil" },
 };
 
 /** Indica si una categoría de Minijuegos (definida en OTHER_UNLOCKS)
- * está desbloqueada según el logro asociado. */
+ * está desbloqueada: por nivel de perfil (cfg.level) o por logro
+ * (cfg.achId), según cómo esté configurada esa categoría. */
 function isOtherUnlocked(key) {
   const cfg = OTHER_UNLOCKS[key];
   if (!cfg) return true;
+  if (typeof cfg.level === "number") return computeLevelInfo(profile.xp).level >= cfg.level;
   return !!achievementsData.unlocked[cfg.achId];
 }
 
@@ -1068,6 +1087,12 @@ function trackGameFinished(pct, opts) {
       } else if (opts.region) {
         if (!s.perfectRegionsNormal) s.perfectRegionsNormal = [];
         if (!s.perfectRegionsNormal.includes(opts.region)) s.perfectRegionsNormal.push(opts.region);
+      }
+    } else if (opts.mode === GameMode.OTHER) {
+      if (opts.otherGame === "colosseum-xd") {
+        s.perfectColosseumGame = true;
+      } else if (opts.otherGame === "mystery-dungeon") {
+        s.perfectMysteryDungeonGame = true;
       }
     }
   }
@@ -1510,7 +1535,6 @@ function startRound() {
   document.getElementById('hypno-vignette').classList.remove('show');
   document.getElementById('app').classList.remove('hypno-warp-active');
   document.getElementById('shiny-color-overlay').classList.remove('show');
-  document.getElementById('weezing-smoke-overlay').classList.remove('show');
   document.getElementById('blastoise-rain-overlay').classList.remove('show');
   document.getElementById('porygon-glitch-overlay').classList.remove('show');
   stopPorygonTextGlitch();
@@ -1755,7 +1779,7 @@ function showResult() {
   document.getElementById('result-score-num').textContent = `${state.correct} / ${session.roundsTarget} · 💰 ${state.score} pts`;
   overlay.classList.add('show');
   if (state.correct >= 10) playSFX(SFX.victory);
-  trackGameFinished(pct, { mode: session.mode, region: session.normalRegion, correctCount: state.correct });
+  trackGameFinished(pct, { mode: session.mode, region: session.normalRegion, otherGame: session.otherGame, correctCount: state.correct });
 }
 
 /** Cierra la pantalla de resultado y vuelve a arrancar una partida con

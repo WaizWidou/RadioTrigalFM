@@ -157,7 +157,7 @@ Dos cosas independientes entre sí:
 
 1. **Módulo `PokeEvents`** (IIFE con API pública reducida): catálogo de
    ~16 Eventos Pokémon (Inkay, Porygon, Slowpoke, Gengar, Hypno,
-   Weezing, Chansey, Rapidash, Caterpie Shiny, Blastoise, Charizard,
+   Chansey, Rapidash, Caterpie Shiny, Blastoise, Charizard,
    Pikachu, Electrode, Venusaur, Ditto, Jigglypuff, Snorlax) y el motor
    que decide **cuándo** aparece uno. Contrato con el resto del juego
    (los únicos puntos de contacto, usados desde `game.js`):
@@ -172,8 +172,6 @@ Dos cosas independientes entre sí:
 2. **Pokémon de fondo**: construidos automáticamente a partir del mismo
    catálogo (`buildBgPokemon`, `addBgPokemon`, `initBgPokeWalk`,
    `isHillPokemonUnlocked` — se desbloquean vía logros de "encuentro").
-3. Panel de depuración para forzar un evento (`openDebugEventPanel` /
-   `closeDebugEventPanel`) — **temporal, marcado para eliminar**.
 
 ### `ui.js` — capa de interfaz
 Todo lo que "pinta cosas en pantalla" sin decidir reglas de juego:

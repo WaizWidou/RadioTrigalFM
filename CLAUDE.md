@@ -111,12 +111,12 @@ Si añades un campo nuevo a `settings`, `profile` o
 
 ## Regla nº7: código de depuración
 
-Hay bloques marcados explícitamente como temporales/debug (el botón
-"Forzar evento" en `index.html`/`game.js`, el panel de
-`pokemon.js`/`openDebugEventPanel`). Si tocas algo cercano, no los
-elimines por iniciativa propia salvo que te lo pidan explícitamente —
-pero tampoco los uses como referencia de "cómo se hacen las cosas aquí"
-al escribir código nuevo, ya que están marcados para eliminarse.
+Si en el futuro se añaden bloques marcados explícitamente como
+temporales/debug, no los elimines por iniciativa propia salvo que se
+pida explícitamente — pero tampoco los uses como referencia de "cómo se
+hacen las cosas aquí" al escribir código nuevo, ya que están marcados
+para eliminarse. (El panel "Forzar Evento Pokémon" que servía de ejemplo
+aquí ya se retiró — ver `CHANGELOG.md`.)
 
 ## Regla nº8: actualiza `CHANGELOG.md`
 

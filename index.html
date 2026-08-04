@@ -157,16 +157,7 @@
 <!-- Evento Pokémon Shiny: baña la pantalla en colores vivos y cambiantes -->
 <div id="shiny-color-overlay"></div>
 
-<!-- Filtro SVG oculto: distorsiona el humo de Weezing para darle bordes
-     irregulares de nube tóxica en vez de un simple resplandor difuso -->
 <svg width="0" height="0" style="position:absolute; overflow:hidden;">
-  <filter id="weezing-turbulence" x="-25%" y="-25%" width="150%" height="150%">
-    <feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" seed="7" result="weezing-noise">
-      <animate attributeName="baseFrequency" dur="18s" values="0.012 0.018;0.016 0.014;0.012 0.018" repeatCount="indefinite" />
-    </feTurbulence>
-    <feDisplacementMap in="SourceGraphic" in2="weezing-noise" scale="70" xChannelSelector="R" yChannelSelector="G" />
-  </filter>
-
   <!-- Evento Pokémon Hypno · Ondulación líquida: distorsiona TODO el
        contenido de #app con un ruido orgánico que fluctúa lentamente en
        frecuencia y en intensidad (scale), dando la sensación de que la
@@ -181,16 +172,6 @@
     </feDisplacementMap>
   </filter>
 </svg>
-
-<!-- Evento Pokémon Weezing: varias nubes de humo tóxico independientes,
-     cada una con su propia trayectoria, que se mueven por toda la pantalla -->
-<div id="weezing-smoke-overlay">
-  <div class="weezing-cloud c1"></div>
-  <div class="weezing-cloud c2"></div>
-  <div class="weezing-cloud c3"></div>
-  <div class="weezing-cloud c4"></div>
-  <div class="weezing-cloud c5"></div>
-</div>
 
 <!-- Evento Pokémon Porygon: fallo digital con scanlines, ruido y barras de glitch -->
 <div id="porygon-glitch-overlay">
@@ -292,25 +273,6 @@
     <div class="mew-choice-options" id="mew-choice-options"></div>
   </div>
 </div>
-
-<!-- ══════════════════════════════════════════════════════════════════
-     DEBUG · SELECTOR DE EVENTOS POKÉMON (SOLO PARA PRUEBAS)
-     Esto es una herramienta temporal para probar eventos rápidamente
-     durante el Modo Historia. ELIMINAR ESTE BLOQUE COMPLETO cuando el
-     juego esté terminado (ver también los bloques marcados "DEBUG" en
-     el CSS y en el bloque de JavaScript más abajo).
-     ══════════════════════════════════════════════════════════════════ -->
-<div id="debug-event-panel">
-  <div class="debug-event-box">
-    <div class="debug-event-title">🧪 Forzar Evento Pokémon</div>
-    <div class="debug-event-hint">Se activará en la siguiente ronda.</div>
-    <div class="debug-event-list" id="debug-event-list"></div>
-    <button type="button" class="debug-event-close-btn" id="debug-event-close-btn">Cerrar</button>
-  </div>
-</div>
-<!-- ══════════════════════════════════════════════════════════════════
-     FIN DEBUG · SELECTOR DE EVENTOS POKÉMON
-     ══════════════════════════════════════════════════════════════════ -->
 
 <div id="app">
 
@@ -481,6 +443,11 @@
         <span class="menu-btn-title">Surf</span>
         <small>Solo canciones y opciones de Surf</small>
       </button>
+      <button class="menu-btn" data-other="title-screens">
+        <span class="menu-btn-icon">🖼️</span>
+        <span class="menu-btn-title">Pantallas de Título</span>
+        <small>Solo canciones y opciones de Pantallas de Título</small>
+      </button>
       <button class="menu-btn" data-other="mystery-dungeon">
         <span class="menu-btn-icon">🌀</span>
         <span class="menu-btn-title">Pokémon Mundo Misterioso</span>
@@ -495,11 +462,6 @@
         <span class="menu-btn-icon">🧭</span>
         <span class="menu-btn-title">Pokémon Ranger</span>
         <small>Solo canciones y opciones de Ranger</small>
-      </button>
-      <button class="menu-btn" data-other="title-screens">
-        <span class="menu-btn-icon">🖼️</span>
-        <span class="menu-btn-title">Pantallas de Título</span>
-        <small>Solo canciones y opciones de Pantallas de Título</small>
       </button>
     </div>
   </section>
@@ -601,19 +563,19 @@
 
       <div class="guide-item">
         <div class="guide-item-title">🟢 Modo Fácil</div>
-        <div class="guide-item-desc">Suena una canción y solo tienes que acertar de qué <b>región</b> es (Kanto, Johto, Hoenn…). Es el modo más sencillo: ideal para empezar. Las partidas duran 10 rondas y tienes 3 vidas ❤️.</div>
+        <div class="guide-item-desc">Suena una canción y solo tienes que acertar de qué <b>región</b> es (Kanto, Johto, Hoenn…). Es el modo más sencillo: ideal para empezar. Las partidas duran 10 rondas; fallar no te elimina, solo corta tu racha, así que siempre juegas las 10 rondas completas.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🔵 Modo Normal</div>
-        <div class="guide-item-desc">Primero eliges una región y después tienes que adivinar el <b>título exacto</b> de la canción entre varias opciones de esa misma región. 10 rondas y 3 vidas.</div>
+        <div class="guide-item-desc">Primero eliges una región y después tienes que adivinar el <b>título exacto</b> de la canción entre varias opciones de esa misma región. 10 rondas; como en Fácil, fallar no termina la partida, solo corta tu racha.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🔴 Modo Difícil</div>
-        <div class="guide-item-desc">Las canciones pueden ser de <b>cualquier región</b>, se eligen entre 6 opciones y solo dispones de 10 segundos por ronda para responder. 10 rondas y 3 vidas. Se desbloquea al conseguir el logro «Explorador».</div>
+        <div class="guide-item-desc">Las canciones pueden ser de <b>cualquier región</b>, se eligen entre 6 opciones y solo dispones de 10 segundos por ronda para responder. 10 rondas, sin eliminación por fallo. Se desbloquea al alcanzar el <b>nivel 5 de perfil</b>.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">⚔️ Modo Combate</div>
-        <div class="guide-item-desc">Igual que el Difícil pero solo con música de combate (entrenadores, líderes, rivales…), también con 6 opciones. Se desbloquea completando al menos una partida en Fácil, Normal y Difícil (logro «Explorador»).</div>
+        <div class="guide-item-desc">Igual que el Difícil pero solo con música de combate (entrenadores, líderes, rivales…), también con 6 opciones. Se desbloquea al alcanzar el <b>nivel 8 de perfil</b>.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">♾️ Modo Desafío Infinito</div>
@@ -621,11 +583,11 @@
       </div>
       <div class="guide-item">
         <div class="guide-item-title">📖 Modo Historia</div>
-        <div class="guide-item-desc">Recorre todas las regiones en orden, de Kanto a Alola. En cada región juegas una fase de 10 rondas normales y, después, una fase de combate de 3 rondas contra un "enemigo poderoso". Tus vidas se recargan a 3 al empezar cada región, y la puntuación y la racha se acumulan durante todo el recorrido.</div>
+        <div class="guide-item-desc">Recorre todas las regiones en orden, de Kanto a Alola. En cada región juegas una fase de 10 rondas normales y, después, una fase de combate de 3 rondas contra un "enemigo poderoso". Aquí sí hay vidas ❤️: se recargan a 3 al empezar cada región y, al perderlas todas, termina la partida. La puntuación y la racha se acumulan durante todo el recorrido.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🕹️ Minijuegos</div>
-        <div class="guide-item-desc">Partidas cortas de 5 rondas centradas en una categoría concreta: Centros Pokémon, Laboratorios, Bicicletas, Surf, Pokémon Mundo Misterioso, Pokémon Colosseum/XD, Pokémon Ranger y Pantallas de Título. Cada categoría se desbloquea con un logro distinto (puedes ver cuál en la propia pantalla de Minijuegos).</div>
+        <div class="guide-item-desc">Partidas cortas de 5 rondas centradas en una categoría concreta: Centros Pokémon, Laboratorios, Bicicletas, Surf, Pantallas de Título, Pokémon Mundo Misterioso, Pokémon Colosseum/XD y Pokémon Ranger. Al igual que Fácil/Normal/Difícil/Combate, fallar no te elimina. Cada categoría se desbloquea al conseguir un logro concreto o al alcanzar un nivel de perfil determinado, según la categoría (puedes ver cuál en la propia pantalla de Minijuegos).</div>
       </div>
     </div>
 
@@ -641,30 +603,30 @@
       </div>
       <div class="guide-item">
         <div class="guide-item-title">❤️ Vidas</div>
-        <div class="guide-item-desc">Dispones de 3 corazones en la mayoría de modos: cada fallo resta una vida y, al perderlas todas, termina la partida. El Desafío Infinito es la excepción: normalmente cualquier fallo acaba la partida al instante.</div>
+        <div class="guide-item-desc">Solo el Modo Historia tiene corazones desde el principio (3, y se recargan al pasar de región): cada fallo resta uno y, al perderlos todos, termina la partida. En Fácil, Normal, Difícil, Combate y Minijuegos no hay vidas: fallar solo corta la racha y siempre juegas la partida completa. El Desafío Infinito tampoco tiene vidas por defecto —cualquier fallo la acaba al instante—, salvo que el evento Venusaur te conceda alguna durante la partida.</div>
       </div>
     </div>
 
     <div class="card guide-section">
       <div class="title" style="font-size:1.1rem;">🏅 Logros y contenido desbloqueable</div>
       <div class="guide-item-desc" style="margin-bottom:8px;">
-        Puedes consultar todos tus logros en la pantalla de Logros, agrupados por rachas, aciertos totales, partidas jugadas, regiones, Modo Historia, Sonidex y encuentros especiales con Pokémon. Los logros marcados con una ⭐ desbloquean, además de la insignia, alguna función nueva:
+        Puedes consultar todos tus logros en la pantalla de Logros, agrupados en 5 bloques: Progreso y rachas, Maestría y partidas perfectas, Sonidex, Modo Historia y Eventos Pokémon. Los logros marcados con una ⭐ desbloquean, además de la insignia, alguna función nueva:
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🎮 Modos de juego</div>
-        <div class="guide-item-desc">El Modo Difícil se desbloquea con «Explorador» (jugar una partida en Fácil, Normal y Difícil) y el Modo Combate con ese mismo logro; el Desafío Infinito se desbloquea con «Viajero regional» (jugar en todas las regiones).</div>
+        <div class="guide-item-desc">El Modo Difícil se desbloquea al alcanzar el nivel 5 de perfil y el Modo Combate al alcanzar el nivel 8; el Desafío Infinito se desbloquea con el logro «Viajero regional» (jugar en todas las regiones).</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🕹️ Categorías de Minijuegos</div>
-        <div class="guide-item-desc">Cada categoría de Minijuegos (Centros Pokémon, Laboratorios, Bicicletas, Surf, Mundo Misterioso, Colosseum/XD, Ranger, Pantallas de Título) se desbloquea al conseguir un logro concreto, indicado con un 🔒 en el botón mientras siga bloqueada.</div>
+        <div class="guide-item-desc">Cada categoría de Minijuegos (Centros Pokémon, Laboratorios, Bicicletas, Surf, Pantallas de Título, Mundo Misterioso, Colosseum/XD, Ranger) se desbloquea al alcanzar un nivel de perfil concreto o al conseguir un logro concreto, según la categoría, indicado con un 🔒 en el botón mientras siga bloqueada.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">✨ Eventos Pokémon</div>
-        <div class="guide-item-desc">Al completar el Modo Historia («Maestro de la Historia») se desbloquean los Eventos Pokémon sorpresa (Gengar, Hypno, Shiny, Weezing, Porygon, Electrode, Blastoise, Venusaur…) también en el Desafío Infinito. Los logros de "encuentro" (por ejemplo, hacer aparecer 5 veces a un Pokémon) desbloquean, uno a uno, que ese Pokémon pueda pasear por el fondo del menú.</div>
+        <div class="guide-item-desc">Al completar el Modo Historia («Maestro de la Historia») se desbloquean los Eventos Pokémon sorpresa (Gengar, Hypno, Shiny, Porygon, Electrode, Blastoise, Venusaur…) también en el Desafío Infinito. Los logros de "encuentro" (por ejemplo, hacer aparecer 5 veces a un Pokémon) desbloquean, uno a uno, que ese Pokémon pueda pasear por el fondo del menú, y también el avatar de perfil de ese Pokémon.</div>
       </div>
       <div class="guide-item">
         <div class="guide-item-title">🎼 Fichas de la Sonidex</div>
-        <div class="guide-item-desc">Además de logros individuales por número de fichas desbloqueadas (5, 10, 20, 50, 100, 200) y por completar la Sonidex de cada región, desbloquear fichas es también el camino para conseguir los logros de "Melómano" y compañía, que a su vez abren categorías de Minijuegos.</div>
+        <div class="guide-item-desc">Además de logros individuales por número de fichas desbloqueadas (5, 10, 20, 50, 100, 200) y por completar la Sonidex de cada región, cada acierto que suma para desbloquear una ficha también cuenta para tus logros de aciertos totales (como «Melómano»), y algunos de esos logros abren categorías de Minijuegos.</div>
       </div>
     </div>
 
@@ -674,11 +636,33 @@
         La Sonidex es tu colección de canciones. Cada canción tiene una ficha bloqueada 🔒 hasta que la aciertas <b>10 veces</b> en cualquier modo excepto el Fácil (en el que solo se adivina la región, no la canción). Al desbloquear una ficha podrás reproducir esa canción libremente desde la propia Sonidex.
       </div>
       <div class="guide-item-desc" style="margin-top:8px;">
-        Las fichas están organizadas por región (Kanto, Johto, Hoenn, Sinnoh, Teselia, Kalos y Alola), Música de Combate y todas las categorías de Minijuegos (Centros Pokémon, Laboratorios, Bicicletas, Surf, Mundo Misterioso, Pokémon Colosseum/XD, Pokémon Ranger y Pantallas de Título). La barra de progreso y el contador «X / Y canciones desbloqueadas» tienen en cuenta absolutamente todas las canciones del juego.
+        Las fichas están organizadas por región (Kanto, Johto, Hoenn, Sinnoh, Teselia, Kalos y Alola), Música de Combate y todas las categorías de Minijuegos (Centros Pokémon, Laboratorios, Bicicletas, Surf, Pantallas de Título, Pokémon Mundo Misterioso, Pokémon Colosseum/XD y Pokémon Ranger). La barra de progreso y el contador «X / Y canciones desbloqueadas» tienen en cuenta absolutamente todas las canciones del juego.
       </div>
       <div class="guide-item" style="margin-top:4px;">
         <div class="guide-item-title">🏙️ ¿Por qué no aparecen todas las ciudades?</div>
         <div class="guide-item-desc">Algunas ciudades comparten exactamente la misma melodía dentro del juego original, así que en la Sonidex solo aparece una ficha para representarlas y no una por cada ciudad. Por ejemplo, Ciudad Azulona y Ciudad Fucsia suenan con la misma canción, por lo que comparten una única ficha en lugar de tener una cada una.</div>
+      </div>
+    </div>
+
+    <div class="card guide-section">
+      <div class="title" style="font-size:1.1rem;">🧑‍🎤 Perfil, experiencia y avatares</div>
+      <div class="guide-item">
+        <div class="guide-item-title">📈 Experiencia y nivel</div>
+        <div class="guide-item-desc">Todos los puntos que ganas jugando (aciertos, rachas, eventos especiales…) se suman también como experiencia de tu perfil. Al acumular suficiente experiencia subes de nivel, y cada nivel necesita algo más que el anterior. Subir de nivel es lo que va desbloqueando, poco a poco, el Modo Difícil, el Modo Combate, varias categorías de Minijuegos y algunos avatares (mira los requisitos exactos en cada pantalla de desbloqueo).</div>
+      </div>
+      <div class="guide-item">
+        <div class="guide-item-title">🖼️ Avatares</div>
+        <div class="guide-item-desc">Puedes personalizar tu perfil eligiendo un avatar entre un catálogo muy amplio de Pokémon. Muchos están disponibles desde el principio; el resto se va desbloqueando al subir de nivel, al conseguir logros de "encuentro" con un Pokémon de un Evento Pokémon (5 apariciones), o al completar una partida perfecta en ciertos modos y minijuegos. Toca tu avatar en la barra de perfil para cambiarlo o para cambiar tu nombre de jugador.</div>
+      </div>
+    </div>
+
+    <div class="card guide-section">
+      <div class="title" style="font-size:1.1rem;">🏆 Clasificación Global</div>
+      <div class="guide-item-desc">
+        Desde el botón 🏆 de la pantalla principal puedes consultar tres tablas de clasificación online, con los mejores jugadores del mundo: nivel de perfil, mejor puntuación en Desafío Infinito y mejor puntuación en Modo Historia.
+      </div>
+      <div class="guide-item-desc" style="margin-top:8px;">
+        Tu puesto se actualiza en automático cada vez que superas tu propio récord anterior en alguna de esas tres categorías; no hace falta enviarlo a mano. Apareces con el nombre y el avatar de tu perfil, así que si quieres identificarte en la clasificación, personalízalos desde la barra de perfil.
       </div>
     </div>
   </section>
@@ -758,10 +742,6 @@
 
       <div class="song-question" id="song-question">Cargando…</div>
       <div class="small" id="mode-label" style="text-align:center;"></div>
-
-      <!-- DEBUG: botón para forzar un Evento Pokémon en la próxima ronda (SOLO PRUEBAS, ELIMINAR) -->
-      <button type="button" id="debug-event-btn" style="display:none;">🧪 Forzar evento</button>
-      <!-- FIN DEBUG botón -->
 
       <div class="small" id="audio-status" style="text-align:center;">Cargando…</div>
       <div class="small" id="song-city-reveal" style="text-align:center; display:none; font-weight:900; color:var(--yellow);"></div>

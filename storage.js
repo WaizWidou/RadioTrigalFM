@@ -224,14 +224,20 @@ function getAvatarUrl(avatarId) {
   return av ? av.url : AVATAR_CATALOG[0].url;
 }
 
+// Id del avatar preseleccionado para un jugador nuevo: tanto en `profile`
+// (más abajo) como en la pantalla de creación de perfil (pendingSetupAvatarId
+// en ui.js), que arranca mostrando este mismo avatar marcado por defecto
+// antes de que el jugador elija uno explícitamente.
+const DEFAULT_AVATAR_ID = "eevee";
+
 // Objeto con los datos del jugador. Igual que `settings`, se modifica "in
 // place" desde game.js (p.ej. al ganar puntos) y se persiste llamando a
 // saveProfile(). Valores por defecto para un jugador nuevo: sin nombre
 // (username vacío significa "todavía no se ha creado el perfil"), avatar
-// inicial = primero del catálogo, y 0 puntos de experiencia.
+// inicial = DEFAULT_AVATAR_ID, y 0 puntos de experiencia.
 const profile = {
   username: "",
-  avatarId: AVATAR_CATALOG[0].id,
+  avatarId: DEFAULT_AVATAR_ID,
   xp: 0,  // puntos totales acumulados en todas las partidas (determina el nivel)
   playerId: "",  // identificador anónimo y aleatorio, generado por ensurePlayerId(); NO identifica
                  // a la persona (no hay login), solo evita que leaderboard.js cree una entrada
@@ -312,6 +318,8 @@ function defaultAchStats() {
     perfectEasyGame: false,   // true si se ha terminado alguna partida perfecta en Modo Fácil
     perfectHardGame: false,   // true si se ha terminado alguna partida perfecta en Modo Difícil
     perfectCombatGame: false, // true si se ha terminado alguna partida perfecta en Modo Combate
+    perfectColosseumGame: false,     // true si se ha terminado una partida perfecta del minijuego Colosseum/XD
+    perfectMysteryDungeonGame: false, // true si se ha terminado una partida perfecta del minijuego Mundo Misterioso
     perfectRegionsNormal: [], // regiones (Modo Normal) completadas alguna vez con el 100% de aciertos
     bestHardCorrectInGame: 0, // máximo de respuestas correctas en una sola partida del Modo Difícil
     encounterCounts: {},      // { "charizard": 3, "pikachu": 1, ... } nº de apariciones de cada evento Pokémon

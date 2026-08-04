@@ -167,7 +167,7 @@ function showScreen(name, push=true) {
 
   // Si salimos del quiz hacia cualquier otra pantalla (botón Atrás, "Salir",
   // Game Over, cambio de fase/región del Modo Historia...) mientras había un
-  // Evento Pokémon activo (Weezing, Hypno...), su efecto visual no debe
+  // Evento Pokémon activo (Hypno, Gengar...), su efecto visual no debe
   // seguir viéndose fuera de la ronda. Se limpia aquí, de forma centralizada,
   // para cubrir TODOS los caminos de salida y no solo los que ya se tenían
   // en cuenta uno a uno.
@@ -657,10 +657,10 @@ const SONIDEX_GROUPS = [
   { title: "Laboratorios",         filter: s => s.group === "other" && s.other === "laboratorios" },
   { title: "Bicicletas",           filter: s => s.group === "other" && s.other === "bicicletas" },
   { title: "Música de Surf",       filter: s => s.group === "other" && s.other === "surf" },
+  { title: "Pantallas de Título",  filter: s => s.group === "other" && s.other === "title-screens" },
   { title: "Mundo Misterioso",     filter: s => s.group === "other" && s.other === "mystery-dungeon" },
   { title: "Pokémon Colosseum / XD", filter: s => s.group === "other" && s.other === "colosseum-xd" },
   { title: "Pokémon Ranger",       filter: s => s.group === "other" && s.other === "ranger" },
-  { title: "Pantallas de Título",  filter: s => s.group === "other" && s.other === "title-screens" },
 ];
 
 /** Construye la tarjeta (carátula + botón reproducir/detener) de una
@@ -1136,9 +1136,6 @@ function setModeLabel() {
       : `📖 Modo Historia · Región: ${session.normalRegion}`;
   }
   if (session.mode === GameMode.NORMAL && session.normalRegion === "Combate") el.textContent = "Modo: Combate · 6 opciones";
-
-  // DEBUG: el botón de forzar evento solo tiene sentido en Modo Historia. Eliminar esta línea junto con el resto de la función de debug.
-  updateDebugEventButtonVisibility();
 }
 
 /** Convierte la clave interna de una categoría de Minijuegos
@@ -1628,7 +1625,7 @@ const profileSetupNameInput = document.getElementById('profile-setup-name');
 const profileSetupAvatarGrid = document.getElementById('profile-setup-avatar-grid');
 const profileSetupConfirmBtn = document.getElementById('profile-setup-confirm');
 
-let pendingSetupAvatarId = AVATAR_CATALOG[0].id;
+let pendingSetupAvatarId = DEFAULT_AVATAR_ID;
 
 /** Habilita el botón "Empezar a jugar" de la pantalla de configuración
  * inicial solo cuando el jugador ha escrito un nombre. */
@@ -1641,7 +1638,7 @@ function updateSetupConfirmState() {
  * jugador todavía no tiene uno guardado; no hace nada si ya existe. */
 function showProfileSetupIfNeeded() {
   if (hasProfile()) return;
-  pendingSetupAvatarId = AVATAR_CATALOG[0].id;
+  pendingSetupAvatarId = DEFAULT_AVATAR_ID;
   profileSetupNameInput.value = "";
   renderAvatarGrid(profileSetupAvatarGrid, pendingSetupAvatarId, (id) => { pendingSetupAvatarId = id; });
   updateSetupConfirmState();

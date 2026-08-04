@@ -16,7 +16,124 @@ cada versión agrupa sus cambios en `Añadido`, `Cambiado`, `Corregido` y
 
 ## [Unreleased]
 
+### Cambiado
+- **Revisión completa de la Guía de Juego (`index.html`, pantalla de
+  Ajustes → Guía).** Corregidos varios datos que habían quedado
+  desactualizados por cambios anteriores:
+  - Modo Fácil/Normal/Difícil/Combate/Minijuegos ya no dicen tener
+    "3 vidas": esos modos nunca han tenido sistema de eliminación
+    (`loseLife()` solo actúa en Modo Historia), un fallo solo corta la
+    racha. La sección "❤️ Vidas" se reescribe para reflejar que solo
+    Modo Historia tiene corazones desde el principio, y que el Desafío
+    Infinito solo los tiene si el evento Venusaur concede alguno.
+  - Modo Difícil y Modo Combate ya no dicen desbloquearse con el logro
+    «Explorador»: ahora se desbloquean por nivel de perfil (5 y 8),
+    como en `MODE_UNLOCKS` (`game.js`).
+  - La sección de Minijuegos ya no dice que todas las categorías se
+    desbloquean "con un logro": la mitad se desbloquean por nivel de
+    perfil (`OTHER_UNLOCKS`, `game.js`).
+  - Las 3 menciones al orden de las categorías de Minijuegos se
+    actualizan para reflejar el orden real de la pantalla (Pantallas
+    de Título entre Surf y Mundo Misterioso).
+  - La lista de secciones de Logros pasa de una enumeración vaga a los
+    5 bloques reales (`ACHIEVEMENT_SECTIONS`, `game.js`), incluyendo
+    "Maestría y partidas perfectas", que no se mencionaba.
+  - Añadidas 3 secciones que faltaban por completo: **Experiencia y
+    nivel de perfil** (de dónde sale la XP y qué desbloquea), **Avatares**
+    (cómo se desbloquean) y **Clasificación Global** (las 3 categorías
+    online y cuándo se actualiza el puesto del jugador).
+- **`SONIDEX_GROUPS` (`ui.js`) sincronizado con el orden real de la
+  pantalla de Minijuegos.** Tras mover antes el botón de "Pantallas de
+  Título" en `index.html`, el array de categorías de la Sonidex había
+  quedado desincronizado con su propio comentario ("mismo orden que en
+  la pantalla de Minijuegos"); se reordena para que vuelva a coincidir.
+- **Orden de las categorías de Minijuegos en pantalla.** El botón
+  "Pantallas de Título" (`index.html`, `screen-other-games`) se mueve
+  para quedar entre "Surf" y "Pokémon Mundo Misterioso" (antes era el
+  último de la lista). Solo cambia el orden visual de los botones; no
+  afecta a lógica, desbloqueos ni datos guardados.
+- **Categorías de Minijuegos: ahora pueden desbloquearse por nivel de
+  perfil, no solo por logro.** `isOtherUnlocked()` (`game.js`) admite
+  ahora, igual que `isModeUnlocked()`/`isAvatarUnlocked()`, una entrada
+  `{ level }` además de `{ achId }` en `OTHER_UNLOCKS`. `addProfileXp()`
+  comprueba también `OTHER_UNLOCKS` al subir de nivel (aviso "¡X
+  desbloqueado!" + refresco de candados vía `updateOtherLocksUI()`),
+  cosa que antes solo hacía para `MODE_UNLOCKS`.
+- **Requisitos de desbloqueo de 2 modos y 4 categorías de Minijuegos.**
+  En `MODE_UNLOCKS`: Modo Difícil pasa de nivel 3 a nivel 5, Modo
+  Combate de nivel 5 a nivel 8. En `OTHER_UNLOCKS`: Centro Pokémon pasa
+  del logro "Historia: Johto" a nivel 3, Bicicletas pasa del logro "En
+  racha" a nivel 10, Pantallas de Título pasa del logro "Fácil
+  perfecto" a nivel 12, Surf pasa del logro "Oído entrenado" a nivel
+  14, y Pokémon Mundo Misterioso pasa del logro "Historia: Sinnoh" al
+  logro "Historia: Hoenn" (`story_hoenn`). Los logros que antes servían
+  de requisito (`story_johto`, `streak_5`, `perfect_easy`,
+  `correct_20`, `story_sinnoh`) siguen existiendo como logros propios
+  en `ACHIEVEMENTS`, solo dejan de estar ligados a desbloquear estas
+  categorías/modos.
+- **Lucario se desbloquea ahora con un logro, no por nivel.** En
+  `AVATAR_UNLOCKS` (`game.js`), Lucario pasa de requerir nivel 40 (lo
+  compartía con Aggron, que se queda solo en ese nivel) a requerir el
+  logro `perfect_combat` ("As del combate": partida perfecta en Modo
+  Combate).
+- **Avatar por defecto de un jugador nuevo: Eevee en vez de Pikachu.**
+  Nueva constante `DEFAULT_AVATAR_ID` (`storage.js`, valor `"eevee"`),
+  usada tanto en el valor inicial de `profile.avatarId` como en
+  `pendingSetupAvatarId` (`ui.js`), que es el avatar que aparece
+  premarcado en la pantalla de creación de perfil (nombre + avatar) la
+  primera vez que se abre el juego. Antes ambos usaban
+  `AVATAR_CATALOG[0].id`, que apuntaba a Pikachu por ser el primero del
+  catálogo.
+- **Ajuste de niveles de 4 avatares.** En `AVATAR_UNLOCKS` (`game.js`):
+  Cacnea pasa a requerir nivel 25 (antes disponible desde el
+  principio, comparte nivel con Flareon), Whiscash pasa a requerir
+  nivel 26 (antes disponible desde el principio, comparte nivel con
+  Vaporeon), Aggron pasa del nivel 42 al 40 (comparte nivel con
+  Lucario) y Salamence pasa a requerir nivel 42 (antes disponible
+  desde el principio, ocupa el hueco que deja Aggron).
+
+### Eliminado
+- **Panel de depuración "Forzar Evento Pokémon" del Modo Historia.** Se
+  retira por completo la herramienta temporal que permitía al jugador
+  elegir manualmente el próximo Evento Pokémon en vez de dejarlo al
+  azar: el botón "🧪 Forzar evento" y el overlay del selector
+  (`index.html`), sus estilos (`styles.css`), la variable
+  `debugForcedId` y la función `debugForceNext()` junto con el bloque
+  que la consultaba en `tryTrigger()` (`pokemon.js`), las funciones
+  `updateDebugEventButtonVisibility()` / `openDebugEventPanel()` /
+  `closeDebugEventPanel()` y su inicialización (`pokemon.js`), y la
+  llamada a `updateDebugEventButtonVisibility()` desde `ui.js`. No
+  afecta a la probabilidad ni al comportamiento normal de los Eventos
+  Pokémon, solo elimina la vía de forzarlos manualmente.
+- **Evento Pokémon Weezing.** Se retira por completo del catálogo de
+  `PokeEvents` (`pokemon.js`), junto con su overlay de humo tóxico y
+  filtro SVG de turbulencia (`index.html`), sus estilos y animaciones
+  (`styles.css`), y sus dos logros de "encuentro" — "Avistamiento:
+  Weezing" (`encounter_weezing_5`) y "Humo tóxico" (`encounter_weezing`)
+  — de la sección "Eventos Pokémon" en la pantalla de Logros
+  (`game.js`). También se quita de las menciones informativas en la
+  guía del juego (`index.html`) y de comentarios de código que lo
+  listaban como ejemplo. Los jugadores que ya tuvieran esos logros
+  desbloqueados no los pierden (`achievementsData.unlocked` no se
+  toca), pero dejan de aparecer en la lista de logros a partir de
+  ahora.
+
 ### Añadido
+- **2 nuevos logros de partida perfecta en Minijuegos.** `perfect_colosseum_xd`
+  ("Sombra perfecta") se desbloquea al completar una partida perfecta
+  (100 % de aciertos) en el minijuego Pokémon Colosseum/XD, y
+  `perfect_mystery_dungeon` ("Mazmorra perfecta") al completarla en el
+  minijuego Pokémon Mundo Misterioso. `trackGameFinished()` (`game.js`)
+  ahora recibe también `otherGame` desde `showResult()` y, si la
+  partida es perfecta y el modo es `GameMode.OTHER`, marca la
+  estadística correspondiente (`perfectColosseumGame`/
+  `perfectMysteryDungeonGame`, nuevos campos en `defaultAchStats()`,
+  `storage.js`) según `session.otherGame`. `perfect_colosseum_xd`
+  desbloquea los avatares de Espeon y Umbreon; `perfect_mystery_dungeon`
+  desbloquea los de Dusknoir, Grovyle y Wigglytuff (nuevas entradas en
+  `AVATAR_UNLOCKS`, `game.js`). Wigglytuff pierde su desbloqueo por
+  nivel (antes nivel 26): a partir de ahora solo se desbloquea con este
+  logro nuevo.
 - **Avatar de Volcarona.** Se amplía `AVATAR_CATALOG` (`storage.js`) con
   un retrato estilo Pokémon Mundo Misterioso (PMDCollab/SpriteCollab)
   de Volcarona, para poder usarlo como recompensa de nivel 43 (ver más
