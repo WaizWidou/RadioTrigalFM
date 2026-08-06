@@ -44,6 +44,7 @@ const settings = {
   darkMode: true,      // true = tema oscuro, false = tema claro
   animatedBg: true,   // Opciones gráficas: cielo/nubes/Pokémon de fondo
   particles: true,    // Opciones gráficas: chispas al acertar / logros
+  language: "es",     // idioma de los menús: "es" (Español) o "en" (English) — ver i18n.js
 };
 
 /** Carga las opciones del jugador (volumen, modo oscuro, fondo animado,
@@ -65,6 +66,7 @@ function loadSettings() {
     if (typeof obj.darkMode === "boolean") settings.darkMode = obj.darkMode;
     if (typeof obj.animatedBg === "boolean") settings.animatedBg = obj.animatedBg;
     if (typeof obj.particles === "boolean") settings.particles = obj.particles;
+    if (obj.language === "es" || obj.language === "en") settings.language = obj.language;
   } catch(e) {}
 }
 /** Persiste el objeto `settings` completo en localStorage. */

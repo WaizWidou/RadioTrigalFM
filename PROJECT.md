@@ -31,7 +31,8 @@ la región o el título exacto, según el modo. Hay:
 
 ```html
 <script src="storage.js"></script>
-<script src="leaderboard.js"></script>
+<script src="i18n.js"></script>
+<script type="module" src="leaderboard.js"></script>
 <script src="audio.js"></script>
 <script src="pokemon.js"></script>
 <script src="ui.js"></script>
@@ -42,23 +43,33 @@ Este orden **no es arbitrario** y no debe cambiarse sin entender por qué:
 
 1. `storage.js` no depende de nadie. Define `settings`, `profile`,
    `achievementsData` y sus `loadX()/saveX()` antes de que nadie los use.
-2. `leaderboard.js` habla con Firebase/Firestore y no depende de nada
+2. `i18n.js` usa `settings.language` (de `storage.js`) dentro de `t()`,
+   así que necesita ir después. Va justo después de `storage.js` porque
+   `leaderboard.js`, `audio.js`, `pokemon.js`, `ui.js` y `game.js`
+   pueden querer usar `t()`/`applyTranslations()` (p. ej. para textos
+   dinámicos), así que conviene que esté disponible cuanto antes.
+3. `leaderboard.js` habla con Firebase/Firestore y no depende de nada
    más del propio proyecto (solo del SDK de Firebase, que importa él
-   mismo). Va justo después de `storage.js` por orden lógico, aunque al
+   mismo). Va justo después de `i18n.js` por orden lógico, aunque al
    ser `<script type="module">` en realidad se ejecuta un poco más
    tarde que los scripts clásicos que le siguen — no supone ningún
    problema porque nadie lo usa durante la carga inicial, solo dentro
    de manejadores de eventos posteriores (ver su cabecera para el
    detalle).
-3. `audio.js` usa `settings` (dentro de funciones, no al cargarse).
-4. `pokemon.js` usa `SFX` (de audio.js) **inmediatamente al registrarse**
+4. `audio.js` usa `settings` (dentro de funciones, no al cargarse).
+5. `pokemon.js` usa `SFX` (de audio.js) **inmediatamente al registrarse**
    el catálogo de eventos (el evento Shiny referencia `SFX.shiny` al
    declarar el objeto del evento), así que audio.js debe ir antes.
-5. `ui.js` usa datos/funciones de los anteriores
-   (`settings`/`profile`/`AVATAR_CATALOG`, `Leaderboard.fetchTop`,
-   `playSFX`/`SFX`/`menuAudio`, `PokeEvents`/`bgPokeLayer`).
-6. `game.js` es el último: usa funciones de todos los anteriores en su
-   bloque INIT final (`loadSettings()`, `buildBgPokemon()`,
+6. `ui.js` usa datos/funciones de los anteriores
+   (`settings`/`profile`/`AVATAR_CATALOG`, `t`/`applyTranslations`,
+   `Leaderboard.fetchTop`, `playSFX`/`SFX`/`menuAudio`,
+   `PokeEvents`/`bgPokeLayer`); además define aquí
+   `applyLanguageSwitchUI()`/`refreshLanguageDependentUI()`, que
+   `i18n.js` (`setLanguage()`) y `game.js` (INIT) invocan hacia
+   adelante/atrás respectivamente.
+7. `game.js` es el último: usa funciones de todos los anteriores en su
+   bloque INIT final (`loadSettings()`, `applyTranslations()`,
+   `applyLanguageSwitchUI()`, `buildBgPokemon()`,
    `renderProfileBar()`...) y en toda su lógica de partida (incluye
    `Leaderboard.submitScore()` al superar un récord de nivel de
    jugador, Desafío Infinito o Modo Historia).
@@ -69,7 +80,7 @@ o `session`, que se definen en `game.js`, cargado después) son seguras
 se ejecutan más tarde (clics, timers), nunca durante la carga inicial
 del script.
 
-## 3. Los ocho archivos
+## 3. Los nueve archivos
 
 ### `index.html`
 Solo marcado: splash screen, overlays (perfil, Modo Historia, info de
@@ -102,6 +113,37 @@ si falla (modo incógnito, storage deshabilitado...), simplemente no se
 guarda/carga nada y se mantienen los valores por defecto. La *lógica de
 negocio* que usa estos datos (calcular nivel a partir de xp, comprobar
 si se desbloquea un logro...) vive en `game.js`, no aquí.
+
+### `i18n.js` — traducciones (Español/English)
+Única fuente de verdad sobre **los textos traducibles de la interfaz**
+y sobre cómo se aplican. Expone:
+
+- `I18N`: diccionario `{es: {clave: texto}, en: {clave: texto}}` con
+  todas las cadenas traducibles del juego.
+- `t(key, vars)`: devuelve el texto de `key` en `settings.language`
+  (de `storage.js`), sustituyendo placeholders `{nombre}` por los
+  valores de `vars`; si falta la clave en el idioma actual cae a
+  español, y si no existe en ningún idioma devuelve la propia `key`
+  (para detectar a simple vista un texto sin traducir).
+- `applyTranslations()`: aplica el idioma actual a todo el marcado
+  estático de `index.html` marcado con `data-i18n` (texto),
+  `data-i18n-html`, `data-i18n-placeholder`, `data-i18n-title` o
+  `data-i18n-aria`.
+- `setLanguage(lang)`: cambia `settings.language`, lo persiste
+  (`saveSettings()`, de `storage.js`) y llama a `applyTranslations()`
+  y, si existe, a `refreshLanguageDependentUI()` (definida en `ui.js`)
+  para refrescar también los textos que `ui.js`/`game.js` generan a
+  mano en pantallas ya renderizadas (resumen de Logros/Sonidex en
+  Inicio, Clasificaciones, cabecera de la ronda...).
+
+`i18n.js` no decide reglas de juego ni pinta overlays/pantallas nuevas:
+solo traduce. El *interruptor* visible (los botones Español/English de
+Opciones) vive en `ui.js` (`applyLanguageSwitchUI()`, que marca cuál
+está activo, y los listeners que llaman a `setLanguage()`), y el
+arranque con el idioma guardado ya aplicado (`applyTranslations()` +
+`applyLanguageSwitchUI()`, para no tener que cambiar de idioma a mano
+para verlo reflejado) se dispara desde el bloque INIT de `game.js`,
+justo después de `loadSettings()`.
 
 ### `leaderboard.js` — adaptador de clasificación global
 Única fuente de verdad sobre **cómo se habla con Firebase/Firestore**,
@@ -171,7 +213,12 @@ Dos cosas independientes entre sí:
    (lógica) y `ui.js` (render), entrelazados con vidas/puntuación.
 2. **Pokémon de fondo**: construidos automáticamente a partir del mismo
    catálogo (`buildBgPokemon`, `addBgPokemon`, `initBgPokeWalk`,
-   `isHillPokemonUnlocked` — se desbloquean vía logros de "encuentro").
+   `isHillPokemonUnlocked` — se desbloquean vía logros de "encuentro" a
+   las 10 apariciones). Un segundo logro, más difícil, a las 20
+   apariciones (`encounter_<id>_20`) no añade un Pokémon nuevo sino que
+   le cambia el sprite al shiny (`isHillPokemonShinyUnlocked`,
+   `hillPokemonSpriteInfo`, `refreshBgPokemonSprite` — caso especial: el
+   propio Caterpie Shiny evoluciona ahí a un Metapod Shiny).
 
 ### `ui.js` — capa de interfaz
 Todo lo que "pinta cosas en pantalla" sin decidir reglas de juego:
@@ -231,13 +278,16 @@ este orden dentro del archivo):
 9. **Modo Historia** (recorrido): `startStoryMode`,
    `handleStoryStageComplete`, `storyFinish`.
 10. **INIT**: bloque que arranca la app al cargar la página (carga
-    settings/achievements/profile, renderiza estado inicial, valida que
-    haya canciones suficientes).
+    settings/achievements/profile, aplica el idioma guardado con
+    `applyTranslations()`/`applyLanguageSwitchUI()`, renderiza estado
+    inicial, valida que haya canciones suficientes).
 
 ## 4. Flujo de datos resumido
 
 ```
 storage.js  ──(settings, profile, achievementsData)──▶  game.js decide
+                                                          │
+i18n.js     ──(t, applyTranslations, setLanguage)─────────┤
                                                           │
 audio.js    ──(SFX, playSFX, audio element)──────────────┤
                                                           │
@@ -250,8 +300,9 @@ pokemon.js  ──(PokeEvents.tryTrigger/applyToAnswers/──────┤
 
 `game.js` es el único que **decide** (puntos, vidas, logros, qué evento
 toca). `ui.js` es el único que **pinta**. `storage.js` es el único que
-**persiste** localmente. `leaderboard.js` es el único que **habla con
-el backend** de la clasificación global. `audio.js` es el único que
-**reproduce sonido**. `pokemon.js` es el único que **decide qué Evento
-Pokémon aparece y cuándo** (aunque su *efecto* se reparta entre game.js
-y ui.js).
+**persiste** localmente. `i18n.js` es el único que **traduce** (sabe
+qué texto corresponde a cada idioma). `leaderboard.js` es el único que
+**habla con el backend** de la clasificación global. `audio.js` es el
+único que **reproduce sonido**. `pokemon.js` es el único que **decide
+qué Evento Pokémon aparece y cuándo** (aunque su *efecto* se reparta
+entre game.js y ui.js).

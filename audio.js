@@ -57,7 +57,10 @@ const MENU_SONGS=[
  "songs/general/pokemusic4.mp3",
  "songs/general/pokemusic5.mp3",
  "songs/general/pokemusic6.mp3",
- "songs/general/pokemusic7.mp3"
+ "songs/general/pokemusic7.mp3",
+ "songs/general/pokemusic8.mp3",
+ "songs/general/pokemusic9.mp3",
+ "songs/general/pokemusic10.mp3"
 ];
 // Los navegadores bloquean el autoplay de audio CON sonido, pero permiten
 // autoplay si empieza silenciado. Arrancamos así y desactivamos el silencio

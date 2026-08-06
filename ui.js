@@ -99,12 +99,12 @@ function renderAvatarGrid(gridEl, selectedId, onSelect) {
     btn.className = "profile-avatar-option"
       + (av.id === selectedId ? " selected" : "")
       + (unlocked ? "" : " locked");
-    btn.title = unlocked ? av.name : `${av.name} (bloqueado — requiere ${avatarLockRequirementText(av.id)})`;
+    btn.title = unlocked ? av.name : t("avatar.lockedTitle", { name: av.name, req: avatarLockRequirementText(av.id) });
     btn.innerHTML = `<img src="${av.url}" alt="${av.name}" loading="lazy" onerror="this.closest('.profile-avatar-option').style.display='none'">`
       + (unlocked ? "" : `<span class="avatar-lock-badge">🔒</span>`);
     btn.addEventListener("click", () => {
       if (!unlocked) {
-        queueAchievementToasts([{ icon: "🔒", title: `Consigue ${avatarLockRequirementText(av.id)} para desbloquear este avatar` }]);
+        queueAchievementToasts([{ icon: "🔒", label: t("lock.badge"), title: t("avatar.lockedToast", { req: avatarLockRequirementText(av.id) }) }]);
         return;
       }
       gridEl.querySelectorAll(".profile-avatar-option.selected").forEach(el => el.classList.remove("selected"));
@@ -123,7 +123,7 @@ function renderProfileBar() {
   const name = document.getElementById("profile-bar-name");
   const levelBadge = document.getElementById("profile-bar-level-badge");
   if (img) img.src = getAvatarUrl(profile.avatarId);
-  if (name) name.textContent = profile.username || "Entrenador";
+  if (name) name.textContent = profile.username || t("common.trainerDefault");
   if (levelBadge) levelBadge.textContent = computeLevelInfo(profile.xp).level;
 }
 
@@ -135,6 +135,7 @@ const screens = {
   mainModes: document.getElementById("screen-main-modes"),
   regionSelect: document.getElementById("screen-region-select"),
   otherGames: document.getElementById("screen-other-games"),
+  openingsLangSelect: document.getElementById("screen-openings-lang-select"),
   options: document.getElementById("screen-options"),
   achievements: document.getElementById("screen-achievements"),
   sonidex: document.getElementById("screen-sonidex"),
@@ -295,8 +296,8 @@ function updateLocksUI(unlocksMap, isUnlockedFn, getBtn) {
         btn.appendChild(reqEl);
       }
       reqEl.textContent = "🔒 " + lockReqText(cfg,
-        level => `Se desbloquea al alcanzar el nivel ${level} de perfil`,
-        title => `Desbloquea con el logro «${title}»`);
+        level => t("lock.levelReqBadge", { level }),
+        title => t("lock.achievementReqBadge", { title }));
     } else if (reqEl) {
       reqEl.remove();
     }
@@ -320,9 +321,9 @@ function showLockedMessage(unlocksMap, key) {
   const cfg = unlocksMap[key];
   if (!cfg) return;
   const title = lockReqText(cfg,
-    level => `Alcanza el nivel ${level} de perfil para desbloquear`,
-    reqTitle => `Consigue «${reqTitle}» para desbloquear`);
-  queueAchievementToasts([{ icon: "🔒", title }]);
+    level => t("lock.levelReqToast", { level }),
+    reqTitle => t("lock.achievementReqToast", { title: reqTitle }));
+  queueAchievementToasts([{ icon: "🔒", label: t("lock.badge"), title }]);
 }
 /** Aviso emergente al intentar entrar en un modo de juego todavía
  * bloqueado. */
@@ -339,7 +340,12 @@ let achToastQueue = [];
 let achToastShowing = false;
 /** Añade uno o varios avisos (logro, subida de nivel, modo desbloqueado...)
  * a la cola de notificaciones y arranca su procesado si no había ya uno
- * en pantalla. */
+ * en pantalla. Cada aviso puede traer su propia `label` (el texto
+ * pequeño de arriba, p. ej. "Logro desbloqueado" o "Subida de nivel");
+ * si no la trae, se usa "Aviso" para no dar a entender que todo es un
+ * logro conseguido. También puede traer una `image` (URL) en vez de
+ * `icon` (emoji) — usado por el desbloqueo de avatar, para mostrar la
+ * imagen real del avatar en vez de un emoticono genérico. */
 function queueAchievementToasts(list) {
   achToastQueue.push(...list);
   processAchToastQueue();
@@ -352,7 +358,11 @@ function processAchToastQueue() {
   achToastShowing = true;
   const a = achToastQueue.shift();
   const toast = document.getElementById("achievement-toast");
-  document.getElementById("ach-toast-icon").textContent = a.icon;
+  document.getElementById("ach-toast-icon").innerHTML = a.image
+    ? `<img src="${a.image}" alt="">`
+    : "";
+  if (!a.image) document.getElementById("ach-toast-icon").textContent = a.icon;
+  document.getElementById("ach-toast-label").textContent = a.label || "Aviso";
   document.getElementById("ach-toast-title").textContent = a.title;
   toast.classList.add("show");
   spawnAchievementParticles();
@@ -423,7 +433,8 @@ const achFeatureBox = document.getElementById("ach-feature-box");
  * desbloquea un logro concreto, al pulsar sobre él en la pantalla de
  * Logros. */
 function showAchFeatureInfo(achievement, feats) {
-  document.getElementById("ach-feature-title").textContent = `«${achievement.title}» desbloquea:`;
+  const achTitle = tData(`achv.${achievement.id}.title`, achievement.title);
+  document.getElementById("ach-feature-title").textContent = `«${achTitle}» ${t("feature.unlocksLabel")}`;
   document.getElementById("ach-feature-list").innerHTML = feats.map(f => `
     <div class="ach-feature-item">
       <span>${f.icon}</span>
@@ -449,22 +460,22 @@ function renderStreaksCard() {
   const wrap = document.getElementById("streaks-list");
   let html = "";
 
-  html += `<div class="streak-group-title">Modo fácil</div>`;
-  html += `<div class="streak-row"><div class="streak-name">🟢 Fácil</div><div class="streak-value">🔥 ${s.bestStreakEasy || 0}</div></div>`;
+  html += `<div class="streak-group-title">${t("streaks.easyMode")}</div>`;
+  html += `<div class="streak-row"><div class="streak-name">${t("streaks.easyLabel")}</div><div class="streak-value">🔥 ${s.bestStreakEasy || 0}</div></div>`;
 
-  html += `<div class="streak-group-title">Modo difícil</div>`;
-  html += `<div class="streak-row"><div class="streak-name">🔴 Difícil</div><div class="streak-value">🔥 ${s.bestStreakHard || 0}</div></div>`;
+  html += `<div class="streak-group-title">${t("streaks.hardMode")}</div>`;
+  html += `<div class="streak-row"><div class="streak-name">${t("streaks.hardLabel")}</div><div class="streak-value">🔥 ${s.bestStreakHard || 0}</div></div>`;
 
-  html += `<div class="streak-group-title">Modo combate</div>`;
-  html += `<div class="streak-row"><div class="streak-name">⚔️ Combate</div><div class="streak-value">🔥 ${(s.bestStreakByRegion && s.bestStreakByRegion["Combate"]) || 0}</div></div>`;
+  html += `<div class="streak-group-title">${t("streaks.combatMode")}</div>`;
+  html += `<div class="streak-row"><div class="streak-name">${t("streaks.combatLabel")}</div><div class="streak-value">🔥 ${(s.bestStreakByRegion && s.bestStreakByRegion["Combate"]) || 0}</div></div>`;
 
-  html += `<div class="streak-group-title">Desafío infinito</div>`;
-  html += `<div class="streak-row"><div class="streak-name">♾️ Desafío</div><div class="streak-value">🔥 ${s.bestStreakInfinite || 0}</div></div>`;
+  html += `<div class="streak-group-title">${t("streaks.infiniteMode")}</div>`;
+  html += `<div class="streak-row"><div class="streak-name">${t("streaks.infiniteLabel")}</div><div class="streak-value">🔥 ${s.bestStreakInfinite || 0}</div></div>`;
 
-  html += `<div class="streak-group-title">Modo normal · por región</div>`;
+  html += `<div class="streak-group-title">${t("streaks.normalByRegion")}</div>`;
   REGIONS.forEach(r => {
     const best = (s.bestStreakByRegion && s.bestStreakByRegion[r]) || 0;
-    html += `<div class="streak-row"><div class="streak-name">🗺️ ${r}</div><div class="streak-value">🔥 ${best}</div></div>`;
+    html += `<div class="streak-row"><div class="streak-name">🗺️ ${regionDisplayName(r)}</div><div class="streak-value">🔥 ${best}</div></div>`;
   });
 
   wrap.innerHTML = html;
@@ -475,12 +486,14 @@ function renderStreaksCard() {
  * sección de renderAchievementsScreen(). No añade listeners: quien llama
  * decide si hace falta engancharlos (p. ej. el aviso de función especial). */
 function achievementItemHTML(a, unlockedAt, feats) {
+  const title = tData(`achv.${a.id}.title`, a.title);
+  const desc = tData(`achv.${a.id}.desc`, a.desc);
   return `
-    <div class="ach-icon">${unlockedAt ? a.icon : "🔒"}${feats.length ? '<span class="ach-star-badge" title="Desbloquea una función especial">⭐</span>' : ""}</div>
+    <div class="ach-icon">${unlockedAt ? a.icon : "🔒"}${feats.length ? `<span class="ach-star-badge" title="${t("ach.starBadgeTooltip")}">⭐</span>` : ""}</div>
     <div class="ach-info">
-      <div class="ach-title">${a.title}</div>
-      <div class="ach-desc">${a.desc}</div>
-      ${unlockedAt ? `<div class="ach-date">Desbloqueado el ${new Date(unlockedAt).toLocaleDateString('es-ES')}</div>` : ""}
+      <div class="ach-title">${title}</div>
+      <div class="ach-desc">${desc}</div>
+      ${unlockedAt ? `<div class="ach-date">${t("ach.unlockedOn", { date: new Date(unlockedAt).toLocaleDateString(settings.language === "en" ? "en-US" : "es-ES") })}</div>` : ""}
     </div>
   `;
 }
@@ -514,7 +527,7 @@ function renderAchievementsScreen() {
     details.innerHTML = `
       <summary class="ach-section-summary">
         <span class="ach-section-icon">${sec.icon}</span>
-        <span class="ach-section-title">${sec.title}</span>
+        <span class="ach-section-title">${tData(`achSection.${sec.id}.title`, sec.title)}</span>
         <span class="ach-section-count">${sectionUnlocked} / ${items.length}</span>
         <span class="ach-section-chevron">▾</span>
       </summary>
@@ -530,7 +543,7 @@ function renderAchievementsScreen() {
     list.appendChild(details);
   });
 
-  document.getElementById("ach-progress-subtitle").textContent = `${unlockedCount} / ${ACHIEVEMENTS.length} desbloqueados`;
+  document.getElementById("ach-progress-subtitle").textContent = t("achievements.progress", { n: unlockedCount, total: ACHIEVEMENTS.length });
   document.getElementById("ach-progress-bar-fill").style.width = (unlockedCount / ACHIEVEMENTS.length * 100) + "%";
 }
 /** Actualiza el resumen "X / Y desbloqueados" que se muestra en la
@@ -538,7 +551,7 @@ function renderAchievementsScreen() {
 function updateHomeAchievementSummary() {
   const unlockedCount = Object.keys(achievementsData.unlocked).length;
   const el = document.getElementById("home-ach-summary");
-  if (el) el.textContent = `${unlockedCount} / ${ACHIEVEMENTS.length} desbloqueados`;
+  if (el) el.textContent = t("achievements.progress", { n: unlockedCount, total: ACHIEVEMENTS.length });
 }
 
 // ═══════════════════════════════════════════════
@@ -605,7 +618,7 @@ function renderLeaderboardScreen() {
   }
 
   const tab = LEADERBOARD_TABS[leaderboardActiveCategory];
-  statusEl.textContent = "Cargando clasificación…";
+  statusEl.textContent = t("leaderboard.loading");
   listEl.innerHTML = "";
 
   const requestToken = ++leaderboardRenderToken;
@@ -613,11 +626,11 @@ function renderLeaderboardScreen() {
     if (requestToken !== leaderboardRenderToken) return; // respuesta obsoleta, ya no aplica
 
     if (top === null) {
-      statusEl.textContent = "⚠️ No se ha podido cargar la clasificación. Inténtalo más tarde.";
+      statusEl.textContent = t("leaderboard.error");
       return;
     }
     if (top.length === 0) {
-      statusEl.textContent = "Todavía no hay clasificación global disponible.";
+      statusEl.textContent = t("leaderboard.empty");
       return;
     }
     statusEl.textContent = "";
@@ -658,6 +671,7 @@ const SONIDEX_GROUPS = [
   { title: "Bicicletas",           filter: s => s.group === "other" && s.other === "bicicletas" },
   { title: "Música de Surf",       filter: s => s.group === "other" && s.other === "surf" },
   { title: "Pantallas de Título",  filter: s => s.group === "other" && s.other === "title-screens" },
+  { title: "Openings del Anime",   filter: s => s.group === "other" && s.other === "openings-anime" },
   { title: "Mundo Misterioso",     filter: s => s.group === "other" && s.other === "mystery-dungeon" },
   { title: "Pokémon Colosseum / XD", filter: s => s.group === "other" && s.other === "colosseum-xd" },
   { title: "Pokémon Ranger",       filter: s => s.group === "other" && s.other === "ranger" },
@@ -679,7 +693,7 @@ function sonidexSongCard(song) {
   if (unlocked) {
     const img = new Image();
     img.className = "sonidex-img";
-    img.alt = song.title;
+    img.alt = songDisplayName(song);
     img.onerror = () => { img.outerHTML = `<div class="sonidex-img-locked">🎵</div>`; };
     img.src = song.image;
     imgWrap.appendChild(img);
@@ -690,7 +704,7 @@ function sonidexSongCard(song) {
 
   const titleEl = document.createElement("div");
   titleEl.className = "sonidex-title";
-  titleEl.textContent = unlocked ? song.title : "???";
+  titleEl.textContent = unlocked ? songDisplayName(song) : "???";
   div.appendChild(titleEl);
 
   if (!unlocked) {
@@ -707,13 +721,13 @@ function sonidexSongCard(song) {
     playBtn.type = "button";
     playBtn.className = "sonidex-play-btn";
     playBtn.innerHTML = "▶️";
-    playBtn.setAttribute("aria-label", `Reproducir ${song.title}`);
+    playBtn.setAttribute("aria-label", `Reproducir ${songDisplayName(song)}`);
 
     const stopBtn = document.createElement("button");
     stopBtn.type = "button";
     stopBtn.className = "sonidex-stop-btn";
     stopBtn.innerHTML = "⏹️";
-    stopBtn.setAttribute("aria-label", `Detener ${song.title}`);
+    stopBtn.setAttribute("aria-label", `Detener ${songDisplayName(song)}`);
     stopBtn.style.display = "none";
 
     playBtn.addEventListener("click", (e) => {
@@ -764,7 +778,7 @@ function renderSonidexScreen() {
 
     const titleEl = document.createElement("div");
     titleEl.className = "sonidex-group-title";
-    titleEl.innerHTML = `${group.title} <span class="count">(${unlockedInGroup} / ${groupSongs.length})</span>`;
+    titleEl.innerHTML = `${regionDisplayName(group.title)} <span class="count">(${unlockedInGroup} / ${groupSongs.length})</span>`;
     card.appendChild(titleEl);
 
     const grid = document.createElement("div");
@@ -775,7 +789,7 @@ function renderSonidexScreen() {
     wrap.appendChild(card);
   });
 
-  document.getElementById("sonidex-progress-subtitle").textContent = `${totalUnlocked} / ${totalSongs} canciones desbloqueadas`;
+  document.getElementById("sonidex-progress-subtitle").textContent = t("sonidex.progress", { n: totalUnlocked, total: totalSongs });
   document.getElementById("sonidex-progress-bar-fill").style.width = (totalSongs ? (totalUnlocked / totalSongs * 100) : 0) + "%";
   updateHomeSonidexSummary(totalUnlocked, totalSongs);
 }
@@ -795,7 +809,7 @@ function updateHomeSonidexSummary(unlockedArg, totalArg) {
     totalCount = songs.length;
     unlockedCount = songs.filter(isSongUnlocked).length;
   }
-  el.textContent = `${unlockedCount} / ${totalCount} desbloqueadas`;
+  el.textContent = t("sonidex.progressShort", { n: unlockedCount, total: totalCount });
 }
 
 // ═══════════════════════════════════════════════
@@ -1125,27 +1139,57 @@ setTimeout(() => { resizeWave(); drawWave(); }, 100);
  * configuración está activa (región, dificultad, minijuego...). */
 function setModeLabel() {
   const el = document.getElementById("mode-label");
-  if (session.mode === GameMode.EASY) el.textContent = "Modo: Fácil · Adivina la región";
-  else if (session.mode === GameMode.NORMAL) el.textContent = `Modo: Normal · Región: ${session.normalRegion}`;
-  else if (session.mode === GameMode.HARD) el.textContent = "Modo: Difícil · 6 opciones · 10s por ronda";
-  else if (session.mode === GameMode.OTHER) el.textContent = `Modo: Minijuegos · ${prettyOther(session.otherGame)}`;
-  else if (session.mode === GameMode.INFINITE) el.textContent = "Modo: Desafío Infinito · 6 opciones · Un fallo termina la partida";
+  if (session.mode === GameMode.EASY) el.textContent = t("quiz.modeEasy");
+  else if (session.mode === GameMode.NORMAL) el.textContent = t("quiz.modeNormalRegion", { region: regionDisplayName(session.normalRegion) });
+  else if (session.mode === GameMode.HARD) el.textContent = t("quiz.modeHard");
+  else if (session.mode === GameMode.OTHER) el.textContent = t("quiz.modeOther", { game: prettyOther(session.otherGame) });
+  else if (session.mode === GameMode.INFINITE) el.textContent = t("quiz.modeInfinite");
   else if (session.mode === GameMode.STORY) {
     el.textContent = (session.normalRegion === "Combate")
-      ? "📖 Modo Historia · ⚔️ Enemigo poderoso"
-      : `📖 Modo Historia · Región: ${session.normalRegion}`;
+      ? t("quiz.modeStoryEnemy")
+      : t("quiz.modeStoryRegion", { region: regionDisplayName(session.normalRegion) });
   }
-  if (session.mode === GameMode.NORMAL && session.normalRegion === "Combate") el.textContent = "Modo: Combate · 6 opciones";
+  if (session.mode === GameMode.NORMAL && session.normalRegion === "Combate") el.textContent = t("quiz.modeCombat");
+}
+
+/** Muestra u oculta el botón de "Pista visual" según el modo activo (solo
+ * disponible en Fácil, Normal —incluido Combate— e Historia) y lo deja
+ * listo (habilitado, con su texto por defecto) para la ronda que empieza.
+ * Se llama una vez por ronda desde startRound(); la decisión de en qué
+ * modos existe la pista es puramente de presentación, igual que el resto
+ * de setModeLabel(). */
+function resetHintButton() {
+  const btn = document.getElementById("hint-btn");
+  if (!btn) return;
+  const allowed = session.mode === GameMode.EASY
+    || session.mode === GameMode.NORMAL
+    || session.mode === GameMode.STORY;
+  btn.style.display = allowed ? "inline-flex" : "none";
+  btn.disabled = false;
+  btn.innerHTML = `${t("quiz.hint")} <span class="hint-btn-cost">${t("quiz.hintCost")}</span>`;
+}
+
+/** Refleja en el botón de "Pista visual" que ya se ha usado esta ronda
+ * (deshabilitado + texto de confirmación), tras decidirlo game.js. */
+function markHintButtonUsed() {
+  const btn = document.getElementById("hint-btn");
+  if (!btn) return;
+  btn.disabled = true;
+  btn.innerHTML = `${t("quiz.hintUsed")} <span class="hint-btn-cost">${t("quiz.hintCost")}</span>`;
 }
 
 /** Convierte la clave interna de una categoría de Minijuegos
  * ("mystery-dungeon", "colosseum-xd"...) en su nombre legible. */
 function prettyOther(key){
-  if (key === "mystery-dungeon") return "Pokémon Mundo Misterioso";
-  if (key === "colosseum-xd") return "Pokémon Colosseum / XD";
-  if (key === "ranger") return "Pokémon Ranger";
-  if (key === "bicicletas") return "Bicicletas";
-  if (key === "title-screens") return "Pantallas de Título";
+  if (key === "centro-pokemon") return t("other.centro.title");
+  if (key === "laboratorios") return t("other.lab.title");
+  if (key === "surf") return t("other.surf.title");
+  if (key === "mystery-dungeon") return t("other.mysterydungeon.title");
+  if (key === "colosseum-xd") return t("other.colosseum.title");
+  if (key === "ranger") return t("other.ranger.title");
+  if (key === "bicicletas") return t("other.bike.title");
+  if (key === "title-screens") return t("other.titlescreens.title");
+  if (key === "openings-anime") return t("other.openinganime.title");
   return key;
 }
 
@@ -1312,9 +1356,11 @@ function startJigglypuffSinging() {
     jigglypuffBlinkRevealTimeout = setTimeout(() => {
       jigglypuffBlinkRevealTimeout = null;
       if (state.currentSong !== songAtStart || state.answered) return;
-      const answerText = session.questionType === "region" ? state.currentSong.region : state.currentSong.title;
+      // dataset.correct en vez del texto del botón: en EASY el texto
+      // puede estar traducido (p. ej. "Unova" en vez de "Teselia") y
+      // dejaría de coincidir con la clave interna de la región.
       document.querySelectorAll('.answer-btn').forEach(b => {
-        if (b.textContent === answerText) b.classList.add('jigglypuff-glow');
+        if (b.dataset.correct === "1") b.classList.add('jigglypuff-glow');
       });
     }, JIGGLYPUFF_BLINK_REVEAL_MS);
   }, Math.max(0, JIGGLYPUFF_SONG_MS - JIGGLYPUFF_FINAL_BLINK_MS));
@@ -1527,7 +1573,7 @@ const particlesToggle = document.getElementById("particles-toggle");
 function applyTheme(){
   document.body.classList.toggle("light", !settings.darkMode);
   darkToggle.checked = settings.darkMode;
-  darkToggle.nextElementSibling.textContent = settings.darkMode ? "Activado" : "Desactivado";
+  darkToggle.nextElementSibling.textContent = settings.darkMode ? t("options.toggleOn") : t("options.toggleOff");
   initBG(); // reajustar partículas con la nueva paleta
 }
 
@@ -1541,11 +1587,11 @@ function applyAudioVolumes(){
 function applyGraphicsSettings(){
   if (bgToggle) {
     bgToggle.checked = settings.animatedBg;
-    bgToggle.nextElementSibling.textContent = settings.animatedBg ? "Activado" : "Desactivado";
+    bgToggle.nextElementSibling.textContent = settings.animatedBg ? t("options.toggleOn") : t("options.toggleOff");
   }
   if (particlesToggle) {
     particlesToggle.checked = settings.particles;
-    particlesToggle.nextElementSibling.textContent = settings.particles ? "Activado" : "Desactivado";
+    particlesToggle.nextElementSibling.textContent = settings.particles ? t("options.toggleOn") : t("options.toggleOff");
   }
   if (bgCanvas) bgCanvas.style.display = settings.animatedBg ? "" : "none";
   if (bgPokeLayer) bgPokeLayer.style.display = settings.animatedBg ? "" : "none";
@@ -1579,6 +1625,64 @@ if (particlesToggle) {
     applyGraphicsSettings();
     saveSettings();
   });
+}
+
+// ── Selector de idioma de los menús ──
+const langEsBtn = document.getElementById("lang-es-btn");
+const langEnBtn = document.getElementById("lang-en-btn");
+
+/** Refleja en los dos botones del selector de idioma cuál está activo
+ * ahora mismo (según `settings.language`). */
+function applyLanguageSwitchUI(){
+  if (langEsBtn) langEsBtn.classList.toggle("active", settings.language === "es");
+  if (langEnBtn) langEnBtn.classList.toggle("active", settings.language === "en");
+}
+if (langEsBtn) langEsBtn.addEventListener("click", () => { setLanguage("es"); applyLanguageSwitchUI(); });
+if (langEnBtn) langEnBtn.addEventListener("click", () => { setLanguage("en"); applyLanguageSwitchUI(); });
+
+/** Refresca el nombre visible de las tarjetas de región del Modo Normal
+ * (pantalla `#screen-region-select`, generadas una única vez en game.js
+ * al arrancar la app con `regionDisplayName()` ya aplicado en ese
+ * momento). Si el jugador cambia de idioma después de que esas tarjetas
+ * ya estén pintadas, hay que repintar aquí el texto visible; la clave
+ * interna de la región (`REGIONS`, `session.normalRegion`...) no se
+ * toca. Se apoya en que las tarjetas se crean en el mismo orden que
+ * `REGIONS` (ver game.js) para saber a qué región corresponde cada una. */
+function refreshRegionPillNames(){
+  const names = document.querySelectorAll("#region-pills .region-card-name");
+  names.forEach((el, i) => { el.textContent = regionDisplayName(REGIONS[i]); });
+}
+
+/** Punto de enganche que llama i18n.js (`setLanguage()`) tras cambiar el
+ * idioma: además de re-aplicar el marcado estático (`applyTranslations`,
+ * ya hecho por i18n.js), refresca aquí los textos que ui.js/game.js
+ * generan a mano y que pudieran estar ya pintados en pantalla con el
+ * idioma anterior (toggles de Opciones, resumen de Logros/Sonidex en
+ * Inicio, pantalla de Clasificaciones, cabecera de la ronda en curso...). */
+function refreshLanguageDependentUI(){
+  applyLanguageSwitchUI();
+  applyTheme();
+  applyGraphicsSettings();
+  if (typeof updateHomeAchievementSummary === "function") updateHomeAchievementSummary();
+  if (typeof updateHomeSonidexSummary === "function") updateHomeSonidexSummary();
+  if (typeof updateModeLocksUI === "function") updateModeLocksUI();
+  if (typeof updateOtherLocksUI === "function") updateOtherLocksUI();
+  refreshRegionPillNames();
+  if (document.getElementById("profile-overlay").classList.contains("show") && typeof renderProfileStats === "function") {
+    renderProfileStats();
+  }
+  if (document.getElementById("screen-achievements").classList.contains("show") && typeof renderAchievementsScreen === "function") {
+    renderAchievementsScreen();
+  }
+  if (document.getElementById("screen-sonidex").classList.contains("show") && typeof renderSonidexScreen === "function") {
+    renderSonidexScreen();
+  }
+  if (document.getElementById("screen-leaderboard").classList.contains("show") && typeof renderLeaderboardScreen === "function") {
+    renderLeaderboardScreen();
+  }
+  if (document.getElementById("screen-quiz").classList.contains("show") && typeof setModeLabel === "function") {
+    setModeLabel();
+  }
 }
 
 // Unlock audio on first interaction (mobile / políticas de autoplay)
@@ -1682,7 +1786,7 @@ function renderProfileLevelUI() {
   if (badge) badge.textContent = info.level;
   if (numEl) numEl.textContent = info.level;
   if (barFill) barFill.style.width = Math.min(100, Math.round((info.xpIntoLevel / info.xpForNextLevel) * 100)) + '%';
-  if (label) label.textContent = `${info.xpIntoLevel} / ${info.xpForNextLevel} XP para el nivel ${info.level + 1}`;
+  if (label) label.textContent = t("profile.xpLabel", { into: info.xpIntoLevel, need: info.xpForNextLevel, next: info.level + 1 });
 }
 
 /** Reconstruye la lista de estadísticas del modal de perfil (puntos
@@ -1691,17 +1795,18 @@ function renderProfileLevelUI() {
 function renderProfileStats() {
   const s = achievementsData.stats;
   const unlockedCount = Object.keys(achievementsData.unlocked).length;
+  const pts = t("common.pts");
   const rows = [
-    { label: "💰 Puntos totales", value: profile.xp || 0 },
-    { label: "🏅 Logros desbloqueados", value: `${unlockedCount} / ${ACHIEVEMENTS.length}` },
-    { label: "🎮 Partidas jugadas", value: s.gamesPlayed || 0 },
-    { label: "✅ Respuestas correctas", value: s.totalCorrect || 0 },
-    { label: "🔥 Mejor racha", value: s.bestStreak || 0 },
-    { label: "♾️ Récord Desafío Infinito", value: `${s.bestInfiniteScore || 0} pts` },
-    { label: "📖 Récord Modo Historia", value: `${s.bestStoryScore || 0} pts` },
-    { label: "🎯 Partidas perfectas", value: s.perfectGamesCount || 0 },
+    { label: t("profile.stats.totalPoints"), value: profile.xp || 0 },
+    { label: t("profile.stats.achievementsUnlocked"), value: `${unlockedCount} / ${ACHIEVEMENTS.length}` },
+    { label: t("profile.stats.gamesPlayed"), value: s.gamesPlayed || 0 },
+    { label: t("profile.stats.correctAnswers"), value: s.totalCorrect || 0 },
+    { label: t("profile.stats.bestStreak"), value: s.bestStreak || 0 },
+    { label: t("profile.stats.infiniteRecord"), value: `${s.bestInfiniteScore || 0} ${pts}` },
+    { label: t("profile.stats.storyRecord"), value: `${s.bestStoryScore || 0} ${pts}` },
+    { label: t("profile.stats.perfectGames"), value: s.perfectGamesCount || 0 },
   ];
-  profileStatsList.innerHTML = `<div class="profile-stats-title">Estadísticas</div>` +
+  profileStatsList.innerHTML = `<div class="profile-stats-title">${t("profile.stats.title")}</div>` +
     rows.map(r => `<div class="streak-row"><div class="streak-name">${r.label}</div><div class="streak-value">${r.value}</div></div>`).join("");
   renderProfileLevelUI();
 }
@@ -1710,7 +1815,7 @@ function renderProfileStats() {
  * actuales y lo muestra en pantalla. */
 function openProfileModal() {
   profileModalAvatarImg.src = getAvatarUrl(profile.avatarId);
-  profileModalName.textContent = profile.username || "Entrenador";
+  profileModalName.textContent = profile.username || t("common.trainerDefault");
   profileModalNameInput.style.display = 'none';
   profileModalNameInput.value = profile.username || "";
   profileModalName.style.display = '';
@@ -1742,7 +1847,7 @@ function commitProfileNameEdit() {
     saveProfile();
     renderProfileBar();
   }
-  profileModalName.textContent = profile.username || "Entrenador";
+  profileModalName.textContent = profile.username || t("common.trainerDefault");
   profileModalNameInput.style.display = 'none';
   profileModalName.style.display = '';
 }
@@ -1835,9 +1940,9 @@ let storyOverlayAction = null; // acción a ejecutar cuando el jugador toque sto
 // arranca las 10 rondas normales de esa región.
 function storyShowRegionSplash() {
   const region = REGIONS[session.storyRegionIndex];
-  storyOverlayTitle.textContent = region;
-  storyOverlaySubtitle.textContent = "MODO HISTORIA";
-  storyOverlayTap.textContent = "Toca la pantalla para comenzar";
+  storyOverlayTitle.textContent = regionDisplayName(region);
+  storyOverlaySubtitle.textContent = t("story.subtitleMain");
+  storyOverlayTap.textContent = t("story.tapStart");
   storyOverlayBall.src = STORY_BALL_NORMAL;
   storyOverlay.classList.remove('combat');
   storyOverlayAction = () => {
@@ -1854,9 +1959,9 @@ function storyShowRegionSplash() {
 
 // Pantalla de aviso de enemigo: al tocar, arranca las 3 rondas de combate.
 function storyShowEnemyScreen() {
-  storyOverlayTitle.textContent = "Ha aparecido un enemigo poderoso";
-  storyOverlaySubtitle.textContent = "COMBATE";
-  storyOverlayTap.textContent = "Toca la pantalla para luchar";
+  storyOverlayTitle.textContent = t("story.enemyTitle");
+  storyOverlaySubtitle.textContent = t("story.subtitleCombat");
+  storyOverlayTap.textContent = t("story.tapFight");
   storyOverlayBall.src = STORY_BALL_COMBAT;
   storyOverlay.classList.add('combat');
   storyOverlayAction = () => {
@@ -1895,12 +2000,14 @@ function renderPokeEventsInfo() {
   listEl.innerHTML = PokeEvents.list().map(ev => {
     const spritePath = ev.shiny ? `shiny/${ev.pokemonId}` : `${ev.pokemonId}`;
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${spritePath}.png`;
+    const name = tData(`pokeEvent.${ev.id}.name`, ev.name);
+    const description = tData(`pokeEvent.${ev.id}.desc`, ev.description);
     return `
       <div class="poke-event-info-item">
-        <img class="poke-event-info-icon" src="${spriteUrl}" alt="${ev.name}" loading="lazy">
+        <img class="poke-event-info-icon" src="${spriteUrl}" alt="${name}" loading="lazy">
         <div class="poke-event-info-text">
-          <div class="guide-item-title">${ev.name}</div>
-          <div class="guide-item-desc">${ev.description}</div>
+          <div class="guide-item-title">${name}</div>
+          <div class="guide-item-desc">${description}</div>
         </div>
       </div>`;
   }).join('');
@@ -1938,7 +2045,7 @@ if (pokeEventsInfoOverlay) {
 // desaparece con otra animación; entonces se ejecuta onDone (pasar a la
 // siguiente región o finalizar el recorrido).
 function storyShowRegionComplete(regionName, onDone) {
-  storyCompleteTitle.textContent = `${regionName} Completado`;
+  storyCompleteTitle.textContent = t("story.regionCompleted", { region: regionDisplayName(regionName) });
   storyCompleteBall.src = STORY_BALL_NORMAL;
   storyCompleteOverlay.classList.remove('gameover');
   storyCompleteOverlay.classList.add('show');

@@ -163,9 +163,10 @@ const PokeEvents = (function () {
     setTimeout(() => {
       const spritePath = ev.shiny ? `shiny/${ev.pokemonId}` : `${ev.pokemonId}`;
       sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${spritePath}.png`;
-      sprite.alt = ev.name;
-      name.textContent = ev.name;
-      desc.textContent = ev.description;
+      const evName = tData(`pokeEvent.${ev.id}.name`, ev.name);
+      sprite.alt = evName;
+      name.textContent = evName;
+      desc.textContent = tData(`pokeEvent.${ev.id}.desc`, ev.description);
 
       overlay.classList.add("show");
       playSFX(ev.sfx || SFX.event);
@@ -714,10 +715,36 @@ PokeEvents.register({
 // eventos cambia, el fondo se actualiza solo, sin tocar nada aquí.
 const bgPokeLayer = document.getElementById("bg-pokemon-layer");
 
+// Un Pokémon de las colinas "brilla" (usa su sprite shiny) si el jugador ya
+// ha conseguido el logro de 20 apariciones de su evento
+// («encounter_<id>_20»). Es un desbloqueo puramente visual: no afecta a
+// isHillPokemonUnlocked() (que sigue dependiendo solo del logro de 10), así
+// que el Pokémon lleva paseando desde antes y esto solo cambia su sprite.
+function isHillPokemonShinyUnlocked(ev) {
+  const achId = "encounter_" + ev.id + "_20";
+  return typeof achievementsData !== "undefined" && !!(achievementsData.unlocked && achievementsData.unlocked[achId]);
+}
+
+/** Nº de Pokédex y variante (normal/shiny) que corresponde usar para el
+ * sprite de las colinas de un evento, teniendo en cuenta si ya se
+ * consiguió su logro de 20 apariciones. Caso especial: el propio evento
+ * Caterpie Shiny (`id: "shiny"`) ya usa de por sí el sprite shiny de
+ * Caterpie (ev.shiny === true), así que su logro de 20 apariciones no lo
+ * "vuelve a hacer shiny" (ya lo es) sino que lo hace evolucionar: su
+ * Pokémon de las colinas pasa a ser un Metapod Shiny (nº de Pokédex 11).
+ */
+function hillPokemonSpriteInfo(ev) {
+  if (ev.id === "shiny" && isHillPokemonShinyUnlocked(ev)) {
+    return { pokemonId: 11, shiny: true }; // Metapod Shiny
+  }
+  return { pokemonId: ev.pokemonId, shiny: ev.shiny || isHillPokemonShinyUnlocked(ev) };
+}
+
 /** URL del sprite (normal o shiny) de un Pokémon de evento, usado para
  * los Pokémon que pasean por las colinas del fondo. */
 function bgPokeSpriteUrl(ev) {
-  const path = ev.shiny ? `shiny/${ev.pokemonId}` : `${ev.pokemonId}`;
+  const { pokemonId, shiny } = hillPokemonSpriteInfo(ev);
+  const path = shiny ? `shiny/${pokemonId}` : `${pokemonId}`;
   return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${path}.png`;
 }
 
@@ -784,7 +811,8 @@ function buildBgPokeElement(ev, bandCls, leftPct) {
   const flip = Math.random() < 0.5;
 
   const wrap = document.createElement("div");
-  wrap.className = `bg-poke ${bandCls}${flip ? " flip" : ""}${ev.shiny ? " is-shiny" : ""}`;
+  wrap.className = `bg-poke ${bandCls}${flip ? " flip" : ""}${hillPokemonSpriteInfo(ev).shiny ? " is-shiny" : ""}`;
+  wrap.dataset.eventId = ev.id; // permite localizarlo luego (ver refreshBgPokemonSprite)
   wrap.style.left = leftPct.toFixed(2) + "%";
   wrap.style.bottom = bottom.toFixed(1) + "vh";
   wrap.style.setProperty("--delay", rand(0, 2.4).toFixed(2) + "s");
@@ -870,6 +898,20 @@ function addBgPokemon(ev) {
   const wrap = buildBgPokeElement(ev, bandCls, left);
   bgPokeLayer.appendChild(wrap);
   initBgPokeWalk(wrap, bandCls);
+}
+
+// Actualiza el sprite de un Pokémon que YA está paseando por las colinas
+// cuando se desbloquea su logro de 20 apariciones («encounter_<id>_20»),
+// sin reconstruir el resto del fondo ni interrumpir su paseo en curso (a
+// diferencia de addBgPokemon(), que añade un Pokémon nuevo que antes no
+// estaba: aquí el Pokémon ya estaba, solo cambia su imagen a shiny).
+function refreshBgPokemonSprite(ev) {
+  if (!bgPokeLayer || !ev) return;
+  const wrap = bgPokeLayer.querySelector(`.bg-poke[data-event-id="${ev.id}"]`);
+  if (!wrap) return;
+  const img = wrap.querySelector(".bg-poke-sprite");
+  if (img) img.src = bgPokeSpriteUrl(ev);
+  wrap.classList.add("is-shiny");
 }
 
 // Reacción visual al tocar un Pokémon de las colinas: un saltito con

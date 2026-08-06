@@ -74,6 +74,7 @@
 //     colosseum-xd/ ...
 //     ranger/ ...
 //     title/ ...
+//     openings-anime/ ...
 // images/
 // sounds/
 //
@@ -99,6 +100,10 @@ const songs = [
   { title: "Meseta Añil",  file: "songs/main/kanto/liga-kanto.mp3",     image: "images/liga-kanto.png",   group: "main",  region: "Kanto" },
   { title: "SS Anne",  file: "songs/main/kanto/ss-anne.mp3",     image: "images/ss-anne.png",   group: "main",  region: "Kanto" },
   { title: "Bosque Verde",  file: "songs/main/kanto/bosque-verde.mp3",     image: "images/bosque-verde.png",   group: "main",  region: "Kanto" },
+  { title: "Casino Rocket", file: "songs/main/kanto/casino-kanto.mp3", image: "images/casino-kanto.png", group: "main", region: "Kanto" },
+  { title: "Mansión Pokémon", file: "songs/main/kanto/mansion-pokemon.mp3", image: "images/mansion-pokemon.png", group: "main", region: "Kanto" },
+  { title: "Silph S.A.", file: "songs/main/kanto/silph-sa.mp3", image: "images/silph-sa.png", group: "main", region: "Kanto" },
+  { title: "Torre Pokémon", file: "songs/main/kanto/torre-pokemon.mp3", image: "images/torre-pokemon.png", group: "main", region: "Kanto" },
   { title: "Pueblo Primavera",  file: "songs/main/johto/pueblo-primavera.mp3",     image: "images/pueblo-primavera.png",   group: "main",  region: "Johto" },
   { title: "Ciudad Cerezo",  file: "songs/main/johto/ciudad-cerezo.mp3",     image: "images/ciudad-cerezo.png",   group: "main",  region: "Johto" },
   { title: "Ciudad Malva",  file: "songs/main/johto/ciudad-malva.mp3",     image: "images/ciudad-malva.png",   group: "main",  region: "Johto" },
@@ -111,6 +116,11 @@ const songs = [
   { title: "Torre Quemada",  file: "songs/main/johto/torre-quemada.mp3",     image: "images/torre-quemada.png",   group: "main",  region: "Johto" },
   { title: "Faro Ciudad Olivo",  file: "songs/main/johto/faro-johto.mp3",     image: "images/faro-johto.png",   group: "main",  region: "Johto" },
   { title: "Parque Nacional",  file: "songs/main/johto/parque-nacional.mp3",     image: "images/parque-nacional.png",   group: "main",  region: "Johto" },
+  { title: "Casino de Ciudad Trigal", file: "songs/main/johto/casino-johto.mp3", image: "images/casino-johto.png", group: "main", region: "Johto" },
+  { title: "Chicas Kimono", file: "songs/main/johto/chicas-komono.mp3", image: "images/chicas-komono.png", group: "main", region: "Johto" },
+  { title: "Ruinas Alfa", file: "songs/main/johto/ruinas-alpha.mp3", image: "images/ruinas-alpha.png", group: "main", region: "Johto" },
+  { title: "Ruinas Sinjoh", file: "songs/main/johto/ruinas-sinjoh.mp3", image: "images/ruinas-sinjoh.png", group: "main", region: "Johto" },
+  { title: "Ruta Helada", file: "songs/main/johto/ruta-helada.mp3", image: "images/ruta-helada.png", group: "main", region: "Johto" },
   { title: "Villa Raíz",  file: "songs/main/hoenn/villa-raiz.mp3",     image: "images/villa-raiz.png",   group: "main",  region: "Hoenn" },
   { title: "Pueblo Escaso",  file: "songs/main/hoenn/pueblo-escaso.mp3",     image: "images/pueblo-escaso.png",   group: "main",  region: "Hoenn" },
   { title: "Ciudad Férrica",  file: "songs/main/hoenn/ciudad-ferrica.mp3",     image: "images/ciudad-ferrica.png",   group: "main",  region: "Hoenn" },
@@ -126,6 +136,16 @@ const songs = [
   { title: "Museo Oceánico",  file: "songs/main/hoenn/museo-oceanico.mp3",     image: "images/museo-oceanico.png",   group: "main",  region: "Hoenn" },
   { title: "Monte Pírico",  file: "songs/main/hoenn/monte-pirico.mp3",     image: "images/monte-pirico.png",   group: "main",  region: "Hoenn" },
   { title: "Frente de Batalla",  file: "songs/main/hoenn/frente-de-batalla.mp3",     image: "images/frente-de-batalla.png",   group: "main",  region: "Hoenn" },
+  { title: "Barco del Sr. Arenque", file: "songs/main/hoenn/barco-sr-arenque.mp3", image: "images/barco-sr-arenque.png", group: "main", region: "Hoenn" },
+  { title: "Buceo", file: "songs/main/hoenn/buceo-hoenn.mp3", image: "images/buceo-hoenn.png", group: "main", region: "Hoenn" },
+  { title: "Cámara Sellada", file: "songs/main/hoenn/camara-sellada.mp3", image: "images/camara-sellada.png", group: "main", region: "Hoenn" },
+  { title: "Cascada Meteoro", file: "songs/main/hoenn/cascada-meteoro.mp3", image: "images/cascada-meteoro.png", group: "main", region: "Hoenn" },
+  { title: "Concurso Pokémon", file: "songs/main/hoenn/concurso-pokemon.mp3", image: "images/concurso-pokemon.png", group: "main", region: "Hoenn" },
+  { title: "Desierto de Hoenn", file: "songs/main/hoenn/desierto-hoenn.mp3", image: "images/desierto-hoenn.png", group: "main", region: "Hoenn" },
+  { title: "Guarida del Team Aqua/Magma", file: "songs/main/hoenn/guarida-equipo-aqua-magma.mp3", image: "images/guarida-equipo-aqua-magma.png", group: "main", region: "Hoenn" },
+  { title: "Interior del Monte Pírico", file: "songs/main/hoenn/monte-perico-interior.mp3", image: "images/monte-perico-interior.png", group: "main", region: "Hoenn" },
+  { title: "Nao Abandonada", file: "songs/main/hoenn/nao-abandonada.mp3", image: "images/nao-abandonada.png", group: "main", region: "Hoenn" },
+  { title: "Pilar Celeste", file: "songs/main/hoenn/pilar-celeste.mp3", image: "images/pilar-celeste.png", group: "main", region: "Hoenn" },
   { title: "Ciudad Canal",  file: "songs/main/sinnoh/ciudad-canal.mp3",     image: "images/ciudad-canal.png",   group: "main",  region: "Sinnoh" },
   { title: "Ciudad Corazón",  file: "songs/main/sinnoh/ciudad-corazon.mp3",     image: "images/ciudad-corazon.png",   group: "main",  region: "Sinnoh" },
   { title: "Ciudad Jubileo",  file: "songs/main/sinnoh/ciudad-jubileo.mp3",     image: "images/ciudad-jubileo.png",   group: "main",  region: "Sinnoh" },
@@ -142,6 +162,9 @@ const songs = [
   { title: "Subsuelo",  file: "songs/main/sinnoh/subsuelo.mp3",     image: "images/subsuelo.png",   group: "main",  region: "Sinnoh" },
   { title: "Bosque Vetusto",  file: "songs/main/sinnoh/bosque-vetusto.mp3",     image: "images/bosque-vetusto.png",   group: "main",  region: "Sinnoh" },
   { title: "Pueblo Sosiego",  file: "songs/main/sinnoh/pueblo-sosiego.mp3",     image: "images/pueblo-sosiego.png",   group: "main",  region: "Sinnoh" },
+  { title: "Sala Final de Cintia", file: "songs/main/sinnoh/cintia-sala-final.mp3", image: "images/cintia-sala-final.png", group: "main", region: "Sinnoh" },
+  { title: "Ribera Valor", file: "songs/main/sinnoh/orilla-valor.mp3", image: "images/orilla-valor.png", group: "main", region: "Sinnoh" },
+  { title: "Valle Eólico", file: "songs/main/sinnoh/valle-eolico.mp3", image: "images/valle-eolico.png", group: "main", region: "Sinnoh" },
   { title: "Ciudad Caolín",  file: "songs/main/teselia/ciudad-caolin.mp3",     image: "images/ciudad-caolin.png",   group: "main",  region: "Teselia" },
   { title: "Ciudad Engobe",  file: "songs/main/teselia/ciudad-engobe.mp3",     image: "images/ciudad-engobe.png",   group: "main",  region: "Teselia" },
   { title: "Ciudad Esmalte",  file: "songs/main/teselia/ciudad-esmalte.mp3",     image: "images/ciudad-esmalte.png",   group: "main",  region: "Teselia" },
@@ -160,6 +183,13 @@ const songs = [
   { title: "Pueblo Ladrillo",  file: "songs/main/teselia/pueblo-ladrillo.mp3",     image: "images/pueblo-ladrillo.png",   group: "main",  region: "Teselia" },
   { title: "Pueblo Ocre",  file: "songs/main/teselia/pueblo-ocre.mp3",     image: "images/pueblo-ocre.png",   group: "main",  region: "Teselia" },
   { title: "Pueblo Terracota",  file: "songs/main/teselia/pueblo-terracota.mp3",     image: "images/pueblo-terracota.png",   group: "main",  region: "Teselia" },
+  { title: "Bosque de los Perdidos", file: "songs/main/teselia/bosque-de-los-perdidos.mp3", image: "images/bosque-de-los-perdidos.png", group: "main", region: "Teselia" },
+  { title: "Palacio de N", file: "songs/main/teselia/castillo-n.mp3", image: "images/castillo-n.png", group: "main", region: "Teselia" },
+  { title: "Despedida de N", file: "songs/main/teselia/despedida-de-n.mp3", image: "images/despedida-de-n.png", group: "main", region: "Teselia" },
+  { title: "Habitación de N", file: "songs/main/teselia/habitacion-n.mp3", image: "images/habitacion-n.png", group: "main", region: "Teselia" },
+  { title: "Solar de los Sueños", file: "songs/main/teselia/solar-de-los-sueños.mp3", image: "images/solar-de-los-sueños.png", group: "main", region: "Teselia" },
+  { title: "Torre Duodraco", file: "songs/main/teselia/torre-duodraco.mp3", image: "images/torre-duodraco.png", group: "main", region: "Teselia" },
+  { title: "Un Corazón Inquebrantable", file: "songs/main/teselia/un-corazon-inquebrantable.mp3", image: "images/un-corazon-inquebrantable.png", group: "main", region: "Teselia" },
   { title: "Ciudad Batik",  file: "songs/main/kalos/ciudad-batik.mp3",     image: "images/ciudad-batik.png",   group: "main",  region: "Kalos" },
   { title: "Ciudad Fluxus",  file: "songs/main/kalos/ciudad-fluxus.mp3",     image: "images/ciudad-fluxus.png",   group: "main",  region: "Kalos" },
   { title: "Bosque Novarte",  file: "songs/main/kalos/bosque-novarte.mp3",     image: "images/bosque-novarte.png",   group: "main",  region: "Kalos" },
@@ -174,6 +204,9 @@ const songs = [
   { title: "Pueblo Crómlech",  file: "songs/main/kalos/pueblo-cromlech.mp3",     image: "images/pueblo-cromlech.png",   group: "main",  region: "Kalos" },
   { title: "Pueblo Fresco",  file: "songs/main/kalos/pueblo-fresco.mp3",     image: "images/pueblo-fresco.png",   group: "main",  region: "Kalos" },
   { title: "Pueblo Vánitas",  file: "songs/main/kalos/pueblo-vanitas.mp3",     image: "images/pueblo-vanitas.png",   group: "main",  region: "Kalos" },
+  { title: "Palacio Cénit", file: "songs/main/kalos/palacio-cenit.mp3", image: "images/palacio-cenit.png", group: "main", region: "Kalos" },
+  { title: "Cueva Brillante", file: "songs/main/kalos/cueva-brillante.mp3", image: "images/cueva-brillante.png", group: "main", region: "Kalos" },
+  { title: "Fábrica de Poké Balls", file: "songs/main/kalos/fabrica-pokeballs.mp3", image: "images/fabrica-pokeballs.png", group: "main", region: "Kalos" },
   { title: "Ciudad Hauoli",  file: "songs/main/alola/ciudad-hauoli.mp3",     image: "images/ciudad-hauoli.png",   group: "main",  region: "Alola" },
   { title: "Ciudad Kantai",  file: "songs/main/alola/ciudad-kantai.mp3",     image: "images/ciudad-kantai.png",   group: "main",  region: "Alola" },
   { title: "Ciudad Konikoni",  file: "songs/main/alola/ciudad-konikoni.mp3",     image: "images/ciudad-konikoni.png",   group: "main",  region: "Alola" },
@@ -184,6 +217,11 @@ const songs = [
   { title: "Cañón de Poni",  file: "songs/main/alola/cañon-poni.mp3",     image: "images/cañon-poni.png",   group: "main",  region: "Alola" },
   { title: "Paraíso Aether",  file: "songs/main/alola/paraiso-aether.mp3",     image: "images/paraiso-aether.png",   group: "main",  region: "Alola" },
   { title: "Aldea Marina",  file: "songs/main/alola/aldea-marina.mp3",     image: "images/aldea-marina.png",   group: "main",  region: "Alola" },
+  { title: "Escuela de Entrenadores", file: "songs/main/alola/escuela-de-entrenadores-alola.mp3", image: "images/escuela-de-entrenadores-alola.png", group: "main", region: "Alola" },
+  { title: "Cueva Sotobosque", file: "songs/main/alola/cueva-sotobosque.mp3", image: "images/cueva-sotobosque.png", group: "main", region: "Alola" },
+  { title: "Colina Dequilate", file: "songs/main/alola/colina-dequilate.mp3", image: "images/colina-dequilate.png", group: "main", region: "Alola" },
+  { title: "Avenida Royale", file: "songs/main/alola/avenida-royale.mp3", image: "images/avenida-royale.png", group: "main", region: "Alola" },
+  { title: "Poké Resort", file: "songs/main/alola/poke-resort.mp3", image: "images/poke-resort.png", group: "main", region: "Alola" },
 
   // Combate — (sustituye "NOMBRE-CANCION-X" y "Combate XXX" por el nombre y archivo reales; añade tantas líneas como necesites)
   { title: "Salvaje Kanto",        file: "songs/main/combate/salvaje-kanto.mp3", image: "images/salvaje-kanto.png", group: "combat", region: "Combate" },
@@ -253,6 +291,10 @@ const songs = [
   { title: "Xerneas / Yveltal", file: "songs/main/combate/xerneas-yveltal.mp3", image: "images/xerneas-yveltal.png", group: "combat", region: "Combate" },
   { title: "Lugia", file: "songs/main/combate/lugia.mp3", image: "images/lugia.png", group: "combat", region: "Combate" },
   { title: "Ho-Oh", file: "songs/main/combate/ho-oh.mp3", image: "images/ho-oh.png", group: "combat", region: "Combate" },
+  { title: "Entei", file: "songs/main/combate/entei.mp3", image: "images/entei.png", group: "combat", region: "Combate" },
+  { title: "Raikou", file: "songs/main/combate/raikou.mp3", image: "images/raikou.png", group: "combat", region: "Combate" },
+  { title: "Los Regis", file: "songs/main/combate/regis.mp3", image: "images/regis.png", group: "combat", region: "Combate" },
+  { title: "Suicune", file: "songs/main/combate/suicune.mp3", image: "images/suicune.png", group: "combat", region: "Combate" },
 
   // ── Other — Minijuegos ──
   // "other" debe coincidir con la clave usada en data-other / OTHER_CATEGORIES:
@@ -264,6 +306,7 @@ const songs = [
   //   "colosseum-xd"    → songs/other/colosseum-xd/<pista>.mp3
   //   "ranger"          → songs/other/ranger/<pista>.mp3
   //   "title-screens"   → songs/other/title/<region-en-minusculas>.mp3
+  //   "openings-anime"  → songs/other/openings-anime/opening-<region-en-minusculas>.mp3
   // Sustituye/completa file e image con tus rutas reales; puedes añadir tantas
   // canciones por categoría como quieras (no hace falta que sea 1 por región).
 
@@ -342,7 +385,7 @@ const songs = [
   { title: "Laboratorio Pokémon Oscuros",                file: "songs/other/colosseum-xd/laboratorio-pokemon-oscuros.mp3",                 image: "images/laboratorio-pokemon-oscuros.png",                  group: "other", other: "colosseum-xd" },
   { title: "Monte Batalla",             file: "songs/other/colosseum-xd/monte-batalla.mp3",             image: "images/monte-batalla.png",              group: "other", other: "colosseum-xd" },
   { title: "Pilar Legendario",                   file: "songs/other/colosseum-xd/pilar-legendario.mp3",                   image: "images/pilar-legendario.png",                    group: "other", other: "colosseum-xd" },
-  { title: "Pueblo Piria",                   file: "songs/other/colosseum-xd/pueblo-pirita.mp3",                   image: "images/pueblo-pirita.png",                    group: "other", other: "colosseum-xd" },
+  { title: "Pueblo Pirita",                   file: "songs/other/colosseum-xd/pueblo-pirita.mp3",                   image: "images/pueblo-pirita.png",                    group: "other", other: "colosseum-xd" },
   { title: "Puerto Ancla",                   file: "songs/other/colosseum-xd/puerto-ancla.mp3",                   image: "images/puerto-ancla.png",                    group: "other", other: "colosseum-xd" },
   { title: "Puesto de Servicio",                   file: "songs/other/colosseum-xd/puesto-de-servicio.mp3",                   image: "images/puesto-de-servicio.png",                    group: "other", other: "colosseum-xd" },
   { title: "Torre Colosal",                   file: "songs/other/colosseum-xd/torre-colosal.mp3",                   image: "images/torre-colosal.png",                    group: "other", other: "colosseum-xd" },
@@ -368,12 +411,35 @@ const songs = [
   { title: "Pantalla de Título Teselia",  file: "songs/other/title/teselia.mp3",  image: "images/titulo-teselia.png",  group: "other", other: "title-screens" },
   { title: "Pantalla de Título Kalos",    file: "songs/other/title/kalos.mp3",    image: "images/titulo-kalos.png",    group: "other", other: "title-screens" },
   { title: "Pantalla de Título Alola",    file: "songs/other/title/alola.mp3",    image: "images/titulo-alola.png",    group: "other", other: "title-screens" },
+
+  // Openings del Anime
+  // EJEMPLOS (sustituye/añade los tuyos, uno por opening real del anime).
+  { title: "Opening Kanto",   file: "songs/other/openings-anime/opening-kanto.mp3",   image: "images/opening-kanto.png",   group: "other", other: "openings-anime" },
+  { title: "Opening Johto",   file: "songs/other/openings-anime/opening-johto.mp3",   image: "images/opening-johto.png",   group: "other", other: "openings-anime" },
+  { title: "Opening Hoenn",   file: "songs/other/openings-anime/opening-hoenn.mp3",   image: "images/opening-hoenn.png",   group: "other", other: "openings-anime" },
+  { title: "Opening Sinnoh",  file: "songs/other/openings-anime/opening-sinnoh.mp3",  image: "images/opening-sinnoh.png",  group: "other", other: "openings-anime" },
+  { title: "Opening Teselia", file: "songs/other/openings-anime/opening-teselia.mp3", image: "images/opening-teselia.png", group: "other", other: "openings-anime" },
+  { title: "Opening Kalos",   file: "songs/other/openings-anime/opening-kalos.mp3",   image: "images/opening-kalos.png",   group: "other", other: "openings-anime" },
+  { title: "Opening Alola",   file: "songs/other/openings-anime/opening-alola.mp3",   image: "images/opening-alola.png",   group: "other", other: "openings-anime" },
+  // Openings del Anime — doblaje latinoamericano (`variant: "latino"`). Solo entran en el
+  // pool de partida cuando el jugador elige "Español Latino" en la pantalla previa
+  // (screen-openings-lang-select, ver session.openingsVariant y buildPool()); las de arriba
+  // (sin `variant`) son las que se usan con "Español de España" o con idioma "en".
+  // EJEMPLO (sustituye/añade los tuyos, uno por opening real del anime en latino).
+  { title: "Opening Latino Temporada 1", file: "songs/other/openings-latino/temporada1.mp3", image: "images/opening-kanto.png", group: "other", other: "openings-anime", variant: "latino" },
 ];
 
 // Número de rondas por partida (Modo Fácil, Normal, Difícil y fases de región del Modo Historia)
 const TOTAL_ROUNDS = 10;
-// Número de rondas por partida en Minijuegos
+// Número de rondas por partida en Minijuegos (por defecto). Alguna categoría
+// puede tener su propia duración distinta — ver OTHER_ROUNDS_OVERRIDES.
 const OTHER_ROUNDS = 5;
+// Excepciones a OTHER_ROUNDS por categoría de Minijuegos (clave = valor de
+// session.otherGame). Pokémon Mundo Misterioso dura 10 rondas en vez de las
+// 5 del resto de categorías.
+const OTHER_ROUNDS_OVERRIDES = {
+  "mystery-dungeon": 10,
+};
 
 // ═══════════════════════════════════════════════
 //  ⏱️ CRONÓMETRO DE RONDA + SISTEMA DE PUNTOS
@@ -635,19 +701,19 @@ function addProfileXp(points) {
   const after = computeLevelInfo(profile.xp);
   renderProfileBar();
   if (after.level > before) {
-    const toasts = [{ icon: "⬆️", title: `¡Subiste al nivel ${after.level}!` }];
+    const toasts = [{ icon: "⬆️", label: t("toast.levelUpLabel"), title: t("toast.levelUpTitle", { n: after.level }) }];
     // Comprobar si el nuevo nivel desbloquea algún modo de juego
     Object.keys(MODE_UNLOCKS).forEach(key => {
       const cfg = MODE_UNLOCKS[key];
       if (typeof cfg.level === "number" && cfg.level > before && cfg.level <= after.level) {
-        toasts.push({ icon: "🔓", title: `¡${cfg.name} desbloqueado!` });
+        toasts.push({ icon: "🔓", label: t("toast.modeUnlockedLabel"), title: t("toast.unlockedTitle", { name: tData(`modeUnlock.${key}.name`, cfg.name) }) });
       }
     });
     // Comprobar si el nuevo nivel desbloquea alguna categoría de Minijuegos
     Object.keys(OTHER_UNLOCKS).forEach(key => {
       const cfg = OTHER_UNLOCKS[key];
       if (typeof cfg.level === "number" && cfg.level > before && cfg.level <= after.level) {
-        toasts.push({ icon: "🔓", title: `¡${cfg.name} desbloqueado!` });
+        toasts.push({ icon: "🔓", label: t("toast.minigameUnlockedLabel"), title: t("toast.unlockedTitle", { name: tData(`otherUnlock.${key}.name`, cfg.name) }) });
       }
     });
     // Comprobar si el nuevo nivel desbloquea algún avatar de perfil nuevo
@@ -655,7 +721,7 @@ function addProfileXp(points) {
       const cfg = AVATAR_UNLOCKS[id];
       if (cfg.level > before && cfg.level <= after.level) {
         const av = AVATAR_CATALOG.find(a => a.id === id);
-        toasts.push({ icon: "🖼️", title: `¡Nuevo avatar disponible: ${av ? av.name : id}!` });
+        toasts.push({ icon: "🖼️", image: av ? av.url : null, label: t("toast.avatarUnlockedLabel"), title: t("toast.newAvatarTitle", { name: av ? av.name : id }) });
       }
     });
     queueAchievementToasts(toasts);
@@ -689,7 +755,11 @@ const STORY_COMBAT_ROUNDS = 3;
 let session = {
   mode: null,            // GameMode
   normalRegion: null,    // "Kanto"...
-  otherGame: null,       // "mystery-dungeon" | "colosseum-xd" | "ranger" | "title-screens"
+  otherGame: null,       // "mystery-dungeon" | "colosseum-xd" | "ranger" | "title-screens" | "openings-anime"
+  openingsVariant: null, // null (España) | "latino" — solo aplica cuando otherGame === "openings-anime";
+                          // fija qué canciones de esa categoría entran en el pool (ver buildPool()).
+                          // Se pregunta con la pantalla previa "screen-openings-lang-select" (solo si
+                          // settings.language === "es") justo antes de startGame(GameMode.OTHER, "openings-anime").
   pool: [],              // canciones filtradas para la sesión
   questionType: "title", // "title" | "region"
   roundsTarget: 10,      // nº de rondas de la partida actual (se recalcula en startGame)
@@ -717,6 +787,7 @@ let state = {
   currentSong: null,
   answered: false,
   chanseyUsed: false, // true si ya se ha gastado la segunda oportunidad del evento Chansey en esta ronda
+  hintUsed: false, // true si el jugador ha pedido la pista visual en esta ronda (Fácil/Normal/Historia; -50% puntos)
   history: [], // files ya usadas en esta partida
 };
 
@@ -773,40 +844,58 @@ const ACHIEVEMENTS = [
   { id: "story_complete_100",     icon: "👑", title: "Historia perfecta",      desc: "Completa el modo Historia con un 100 % de aciertos.", section: "story" },
   { id: "encounter_charizard_5",   icon: "🔥", title: "Avistamiento: Charizard",  desc: "Haz que Charizard aparezca 5 veces.", section: "encounters" },
   { id: "encounter_charizard",    icon: "🔥", title: "Cazador de llamas",      desc: "Haz que Charizard aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_charizard_20", icon: "🌟", title: "Brillo de Charizard",    desc: "Haz que Charizard aparezca 20 veces.", section: "encounters" },
   { id: "encounter_slowpoke_5",    icon: "🐌", title: "Avistamiento: Slowpoke",   desc: "Haz que Slowpoke aparezca 5 veces.", section: "encounters" },
   { id: "encounter_slowpoke",     icon: "🐌", title: "Paciencia Slowpoke",     desc: "Haz que Slowpoke aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_slowpoke_20",  icon: "🌟", title: "Brillo de Slowpoke",     desc: "Haz que Slowpoke aparezca 20 veces.", section: "encounters" },
   { id: "encounter_rapidash_5",    icon: "🐎", title: "Avistamiento: Rapidash",   desc: "Haz que Rapidash aparezca 5 veces.", section: "encounters" },
   { id: "encounter_rapidash",     icon: "🐎", title: "Velocidad Rapidash",     desc: "Haz que Rapidash aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_rapidash_20",  icon: "🌟", title: "Brillo de Rapidash",     desc: "Haz que Rapidash aparezca 20 veces.", section: "encounters" },
   { id: "encounter_ditto_5",       icon: "🟣", title: "Avistamiento: Ditto",      desc: "Haz que Ditto aparezca 5 veces.", section: "encounters" },
   { id: "encounter_ditto",        icon: "🟣", title: "Imitador Ditto",         desc: "Haz que Ditto aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_ditto_20",     icon: "🌟", title: "Brillo de Ditto",        desc: "Haz que Ditto aparezca 20 veces.", section: "encounters" },
   { id: "encounter_inkay_5",       icon: "🔄", title: "Avistamiento: Inkay",      desc: "Haz que Inkay aparezca 5 veces.", section: "encounters" },
   { id: "encounter_inkay",        icon: "🔄", title: "Giro Inkay",             desc: "Haz que Inkay aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_inkay_20",     icon: "🌟", title: "Brillo de Inkay",        desc: "Haz que Inkay aparezca 20 veces.", section: "encounters" },
   { id: "encounter_hypno_5",       icon: "🌙", title: "Avistamiento: Hypno",      desc: "Haz que Hypno aparezca 5 veces.", section: "encounters" },
   { id: "encounter_hypno",        icon: "🌙", title: "Hypnosis de Hypno",      desc: "Haz que Hypno aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_hypno_20",     icon: "🌟", title: "Brillo de Hypno",        desc: "Haz que Hypno aparezca 20 veces.", section: "encounters" },
   { id: "encounter_chansey_5",     icon: "🥚", title: "Avistamiento: Chansey",    desc: "Haz que Chansey aparezca 5 veces.", section: "encounters" },
   { id: "encounter_chansey",      icon: "🥚", title: "Segunda oportunidad",    desc: "Haz que Chansey aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_chansey_20",   icon: "🌟", title: "Brillo de Chansey",      desc: "Haz que Chansey aparezca 20 veces.", section: "encounters" },
   { id: "encounter_gengar_5",      icon: "👻", title: "Avistamiento: Gengar",     desc: "Haz que Gengar aparezca 5 veces.", section: "encounters" },
   { id: "encounter_gengar",       icon: "👻", title: "Sombra de Gengar",       desc: "Haz que Gengar aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_gengar_20",    icon: "🌟", title: "Brillo de Gengar",       desc: "Haz que Gengar aparezca 20 veces.", section: "encounters" },
   { id: "encounter_pikachu_5",     icon: "⚡", title: "Avistamiento: Pikachu",    desc: "Haz que Pikachu aparezca 5 veces.", section: "encounters" },
   { id: "encounter_pikachu",      icon: "⚡", title: "Chispa de Pikachu",      desc: "Haz que Pikachu aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_pikachu_20",   icon: "🌟", title: "Brillo de Pikachu",      desc: "Haz que Pikachu aparezca 20 veces.", section: "encounters" },
   { id: "encounter_blastoise_5",   icon: "💧", title: "Avistamiento: Blastoise",  desc: "Haz que Blastoise aparezca 5 veces.", section: "encounters" },
   { id: "encounter_blastoise",    icon: "💧", title: "Danza lluvia",           desc: "Haz que Blastoise aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_blastoise_20", icon: "🌟", title: "Brillo de Blastoise",    desc: "Haz que Blastoise aparezca 20 veces.", section: "encounters" },
   { id: "encounter_venusaur_5",    icon: "🌿", title: "Avistamiento: Venusaur",   desc: "Haz que Venusaur aparezca 5 veces.", section: "encounters" },
   { id: "encounter_venusaur",     icon: "🌿", title: "Aroma de Venusaur",      desc: "Haz que Venusaur aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_venusaur_20",  icon: "🌟", title: "Brillo de Venusaur",     desc: "Haz que Venusaur aparezca 20 veces.", section: "encounters" },
   { id: "encounter_electrode_5",   icon: "💥", title: "Avistamiento: Electrode",  desc: "Haz que Electrode aparezca 5 veces.", section: "encounters" },
   { id: "encounter_electrode",    icon: "💥", title: "Cuenta atrás",           desc: "Haz que Electrode aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_electrode_20", icon: "🌟", title: "Brillo de Electrode",    desc: "Haz que Electrode aparezca 20 veces.", section: "encounters" },
   { id: "encounter_porygon_5",     icon: "🖥️", title: "Avistamiento: Porygon",    desc: "Haz que Porygon aparezca 5 veces.", section: "encounters" },
   { id: "encounter_porygon",      icon: "🖥️", title: "Fallo digital",          desc: "Haz que Porygon aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_porygon_20",   icon: "🌟", title: "Brillo de Porygon",      desc: "Haz que Porygon aparezca 20 veces.", section: "encounters" },
   { id: "encounter_snorlax_5",     icon: "😴", title: "Avistamiento: Snorlax",    desc: "Haz que Snorlax aparezca 5 veces.", section: "encounters" },
   { id: "encounter_snorlax",      icon: "😴", title: "Siesta de Snorlax",      desc: "Haz que Snorlax aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_snorlax_20",   icon: "🌟", title: "Brillo de Snorlax",      desc: "Haz que Snorlax aparezca 20 veces.", section: "encounters" },
   { id: "encounter_jigglypuff_5",  icon: "🎤", title: "Avistamiento: Jigglypuff", desc: "Haz que Jigglypuff aparezca 5 veces.", section: "encounters" },
   { id: "encounter_jigglypuff",   icon: "🎤", title: "Canción de cuna",        desc: "Haz que Jigglypuff aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_jigglypuff_20", icon: "🌟", title: "Brillo de Jigglypuff",  desc: "Haz que Jigglypuff aparezca 20 veces.", section: "encounters" },
   { id: "encounter_shiny_5",       icon: "✨", title: "Avistamiento brillante",  desc: "Encuentra 5 veces un Pokémon shiny.", section: "encounters" },
   { id: "encounter_shiny",        icon: "✨", title: "Cazabrillos",            desc: "Encuentra 10 veces un Pokémon shiny.", section: "encounters" },
+  { id: "encounter_shiny_20",     icon: "🌟", title: "Evolución brillante",    desc: "Encuentra 20 veces un Pokémon shiny.", section: "encounters" },
   { id: "encounter_mewtwo_5",      icon: "🧬", title: "Avistamiento: Mewtwo",     desc: "Haz que Mewtwo aparezca 5 veces.", section: "encounters" },
   { id: "encounter_mewtwo",       icon: "🧬", title: "Clon psíquico",          desc: "Haz que Mewtwo aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_mewtwo_20",    icon: "🌟", title: "Brillo de Mewtwo",       desc: "Haz que Mewtwo aparezca 20 veces.", section: "encounters" },
   { id: "encounter_mew_5",         icon: "🎭", title: "Avistamiento: Mew",        desc: "Haz que Mew aparezca 5 veces.", section: "encounters" },
   { id: "encounter_mew",          icon: "🎭", title: "Transformista",          desc: "Haz que Mew aparezca 10 veces.", section: "encounters" },
+  { id: "encounter_mew_20",       icon: "🌟", title: "Brillo de Mew",          desc: "Haz que Mew aparezca 20 veces.", section: "encounters" },
 ];
 
 // Secciones en las que se agrupan los logros en la pantalla de Logros (ver
@@ -890,6 +979,12 @@ const ACHIEVEMENT_CONDITIONS = {
 // futuro cambia alguno de los dos umbrales, solo hay que tocarlo aquí.
 const ENCOUNTER_THRESHOLD_5 = 5;
 const ENCOUNTER_THRESHOLD = 10;
+// Tercer escalón, más difícil aún: a las 20 apariciones («encounter_<id>_20»),
+// que no desbloquea al Pokémon de las colinas (ya lo estaba desde el
+// escalón de 10) sino que cambia SU SPRITE ahí por el shiny — ver
+// isHillPokemonShinyUnlocked()/hillPokemonSpriteInfo() en pokemon.js y su
+// uso en checkAchievements() más abajo.
+const ENCOUNTER_THRESHOLD_20 = 20;
 const ENCOUNTER_CONDITION_IDS = [
   "charizard", "slowpoke", "rapidash", "ditto", "inkay", "hypno", "chansey",
   "gengar", "pikachu", "blastoise", "venusaur", "electrode",
@@ -898,6 +993,7 @@ const ENCOUNTER_CONDITION_IDS = [
 ENCOUNTER_CONDITION_IDS.forEach(id => {
   ACHIEVEMENT_CONDITIONS[`encounter_${id}_5`] = s => ((s.encounterCounts && s.encounterCounts[id]) || 0) >= ENCOUNTER_THRESHOLD_5;
   ACHIEVEMENT_CONDITIONS[`encounter_${id}`] = s => ((s.encounterCounts && s.encounterCounts[id]) || 0) >= ENCOUNTER_THRESHOLD;
+  ACHIEVEMENT_CONDITIONS[`encounter_${id}_20`] = s => ((s.encounterCounts && s.encounterCounts[id]) || 0) >= ENCOUNTER_THRESHOLD_20;
 });
 
 // Cuenta cuántas canciones de una lista están desbloqueadas en la Sonidex
@@ -908,8 +1004,8 @@ function sonidexUnlockedCountForList(s, list) {
 
 // ── Modos desbloqueables mediante nivel de perfil o logros ──
 const MODE_UNLOCKS = {
-  hard:     { level: 5, btnId: "mode-hard",     name: "Modo Difícil",          reqTitle: "Nivel 5 de perfil" },
-  combat:   { level: 8, btnId: "mode-combat",   name: "Modo Combate",          reqTitle: "Nivel 8 de perfil" },
+  hard:     { level: 8, btnId: "mode-hard",     name: "Modo Difícil",          reqTitle: "Nivel 8 de perfil" },
+  combat:   { level: 10, btnId: "mode-combat",   name: "Modo Combate",          reqTitle: "Nivel 10 de perfil" },
   infinite: { achId: "all_regions", btnId: "mode-infinite", name: "Modo Desafío Infinito", reqTitle: "Viajero regional" },
 };
 
@@ -928,13 +1024,14 @@ function isModeUnlocked(key) {
 // ── Categorías de Minijuegos desbloqueables mediante nivel de perfil o logros ──
 const OTHER_UNLOCKS = {
   "centro-pokemon":  { level: 3,               name: "Centro Pokémon",           reqTitle: "Nivel 3 de perfil" },
-  "laboratorios":    { achId: "games_10",      name: "Laboratorios",             reqTitle: "Aficionado" },
-  "bicicletas":      { level: 10,              name: "Bicicletas",               reqTitle: "Nivel 10 de perfil" },
-  "surf":            { level: 14,              name: "Surf",                     reqTitle: "Nivel 14 de perfil" },
+  "laboratorios":    { level: 4,               name: "Laboratorios",             reqTitle: "Nivel 4 de perfil" },
+  "bicicletas":      { level: 5,               name: "Bicicletas",               reqTitle: "Nivel 5 de perfil" },
+  "surf":            { level: 6,               name: "Surf",                     reqTitle: "Nivel 6 de perfil" },
   "mystery-dungeon": { achId: "story_hoenn",   name: "Pokémon Mundo Misterioso", reqTitle: "Historia: Hoenn" },
   "colosseum-xd":    { achId: "correct_100",   name: "Pokémon Colosseum / XD",   reqTitle: "Melómano" },
   "ranger":          { achId: "games_30",      name: "Pokémon Ranger",           reqTitle: "Entrenador dedicado" },
-  "title-screens":   { level: 12,              name: "Pantallas de Título",      reqTitle: "Nivel 12 de perfil" },
+  "title-screens":   { level: 7,               name: "Pantallas de Título",      reqTitle: "Nivel 7 de perfil" },
+  "openings-anime":  { level: 9,               name: "Openings del Anime",       reqTitle: "Nivel 9 de perfil" },
 };
 
 /** Indica si una categoría de Minijuegos (definida en OTHER_UNLOCKS)
@@ -957,25 +1054,38 @@ function getFeatureUnlocksForAchievement(achId) {
   const feats = [];
   Object.keys(MODE_UNLOCKS).forEach(key => {
     const cfg = MODE_UNLOCKS[key];
-    if (cfg.achId === achId) feats.push({ icon: "🎮", name: cfg.name, type: "modo de juego" });
+    if (cfg.achId === achId) feats.push({ icon: "🎮", name: tData(`modeUnlock.${key}.name`, cfg.name), type: t("feature.gameMode") });
   });
   Object.keys(OTHER_UNLOCKS).forEach(key => {
     const cfg = OTHER_UNLOCKS[key];
-    if (cfg.achId === achId) feats.push({ icon: "🕹️", name: cfg.name, type: "categoría de Minijuegos" });
+    if (cfg.achId === achId) feats.push({ icon: "🕹️", name: tData(`otherUnlock.${key}.name`, cfg.name), type: t("feature.minigameCategory") });
   });
   if (achId === "story_complete") {
-    feats.push({ icon: "🎉", name: "Eventos Pokémon", type: "en el Desafío Infinito" });
+    feats.push({ icon: "🎉", name: t("feature.pokeEventsInInfinite"), type: t("feature.pokeEventsInInfiniteType") });
   }
-  if (achId.startsWith("encounter_")) {
+  if (achId.startsWith("encounter_") && achId.endsWith("_20")) {
+    // Logro de 20 apariciones: no añade un Pokémon nuevo a las colinas (ya
+    // paseaba desde el logro de 10), sino que le cambia el sprite a shiny
+    // (ver hillPokemonSpriteInfo() en pokemon.js). Caso especial: el propio
+    // Caterpie Shiny evoluciona ahí a un Metapod Shiny.
+    const eventId = achId.slice("encounter_".length, -"_20".length);
+    const ev = typeof PokeEvents !== "undefined" ? PokeEvents.list().find(e => e.id === eventId) : null;
+    if (ev) {
+      const name = eventId === "shiny"
+        ? t("feature.metapodShinyName")
+        : t("feature.hillPokemonShinyName", { name: tData(`pokeEvent.${ev.id}.name`, ev.name) });
+      feats.push({ icon: "🌟", name, type: t("feature.hillPokemon") });
+    }
+  } else if (achId.startsWith("encounter_")) {
     const eventId = achId.replace("encounter_", "");
     const ev = typeof PokeEvents !== "undefined" ? PokeEvents.list().find(e => e.id === eventId) : null;
-    if (ev) feats.push({ icon: "🌄", name: `${ev.name} en las colinas`, type: "Pokémon del fondo" });
+    if (ev) feats.push({ icon: "🌄", name: t("feature.hillPokemonName", { name: tData(`pokeEvent.${ev.id}.name`, ev.name) }), type: t("feature.hillPokemon") });
   }
   Object.keys(AVATAR_UNLOCKS).forEach(id => {
     const cfg = AVATAR_UNLOCKS[id];
     if (cfg.achId === achId) {
       const av = AVATAR_CATALOG.find(a => a.id === id);
-      feats.push({ icon: "🖼️", name: av ? `Avatar: ${av.name}` : "un avatar", type: "avatar de perfil" });
+      feats.push({ icon: "🖼️", name: av ? t("feature.avatarName", { name: av.name }) : t("feature.avatarGeneric"), type: t("feature.avatarType") });
     }
   });
   return feats;
@@ -1050,7 +1160,7 @@ function trackSongCorrect(song) {
 
   const nowUnlocked = isSongUnlocked(song);
   if (!wasUnlocked && nowUnlocked) {
-    queueAchievementToasts([{ icon: "🎼", title: `¡Ficha desbloqueada en Sonidex!: ${song.title}` }]);
+    queueAchievementToasts([{ icon: "🎼", label: t("toast.soundexUnlockedLabel"), title: t("toast.soundexUnlockedTitle", { title: songDisplayName(song) }) }]);
     updateHomeSonidexSummary();
     if (screens.sonidex.classList.contains("show")) renderSonidexScreen();
   }
@@ -1134,13 +1244,13 @@ function checkAchievements() {
     Object.keys(MODE_UNLOCKS).forEach(key => {
       const cfg = MODE_UNLOCKS[key];
       if (newlyUnlockedIds.includes(cfg.achId)) {
-        modeToasts.push({ icon: "🔓", title: `¡${cfg.name} desbloqueado!` });
+        modeToasts.push({ icon: "🔓", label: t("toast.modeUnlockedLabel"), title: t("toast.unlockedTitle", { name: tData(`modeUnlock.${key}.name`, cfg.name) }) });
       }
     });
     Object.keys(OTHER_UNLOCKS).forEach(key => {
       const cfg = OTHER_UNLOCKS[key];
       if (newlyUnlockedIds.includes(cfg.achId)) {
-        modeToasts.push({ icon: "🔓", title: `¡${cfg.name} desbloqueado!` });
+        modeToasts.push({ icon: "🔓", label: t("toast.minigameUnlockedLabel"), title: t("toast.unlockedTitle", { name: tData(`otherUnlock.${key}.name`, cfg.name) }) });
       }
     });
 
@@ -1149,7 +1259,7 @@ function checkAchievements() {
     // Avisamos al jugador con un toast propio.
     const eventToasts = [];
     if (newlyUnlockedIds.includes("story_complete")) {
-      eventToasts.push({ icon: "🎉", title: "¡Eventos Pokémon desbloqueados en el Desafío Infinito!" });
+      eventToasts.push({ icon: "🎉", label: t("toast.featureUnlockedLabel"), title: t("toast.pokeEventsUnlockedTitle") });
     }
 
     // Los logros «encounter_<id>» desbloquean, uno por uno, a los Pokémon
@@ -1158,12 +1268,32 @@ function checkAchievements() {
     const hillToasts = [];
     const newHillPokemon = [];
     newlyUnlockedIds.forEach(id => {
-      if (!id.startsWith("encounter_")) return;
+      if (!id.startsWith("encounter_") || id.endsWith("_5") || id.endsWith("_20")) return;
       const eventId = id.replace("encounter_", "");
       const ev = PokeEvents.list().find(e => e.id === eventId);
       if (ev) {
-        hillToasts.push({ icon: "🌄", title: `¡${ev.name} ahora pasea por las colinas!` });
+        hillToasts.push({ icon: "🌄", label: t("toast.newHillEncounterLabel"), title: t("toast.newHillEncounterTitle", { name: tData(`pokeEvent.${ev.id}.name`, ev.name) }) });
         newHillPokemon.push(ev);
+      }
+    });
+
+    // Los logros «encounter_<id>_20», un escalón más difícil, no añaden un
+    // Pokémon nuevo (ya paseaba desde el logro de 10) sino que le cambian
+    // el sprite a shiny (ver refreshBgPokemonSprite() en pokemon.js). Caso
+    // especial: el propio evento Caterpie Shiny evoluciona ahí a un Metapod
+    // Shiny en vez de "volver a brillar".
+    const hillShinyToasts = [];
+    const shinyHillPokemon = [];
+    newlyUnlockedIds.forEach(id => {
+      if (!id.startsWith("encounter_") || !id.endsWith("_20")) return;
+      const eventId = id.slice("encounter_".length, -"_20".length);
+      const ev = PokeEvents.list().find(e => e.id === eventId);
+      if (ev) {
+        const title = eventId === "shiny"
+          ? t("toast.metapodShinyTitle")
+          : t("toast.newHillShinyTitle", { name: tData(`pokeEvent.${ev.id}.name`, ev.name) });
+        hillShinyToasts.push({ icon: "🌟", label: t("toast.newHillShinyLabel"), title });
+        shinyHillPokemon.push(ev);
       }
     });
 
@@ -1176,16 +1306,22 @@ function checkAchievements() {
       const cfg = AVATAR_UNLOCKS[id];
       if (cfg.achId && newlyUnlockedIds.includes(cfg.achId)) {
         const av = AVATAR_CATALOG.find(a => a.id === id);
-        avatarToasts.push({ icon: "🖼️", title: `¡Nuevo avatar disponible: ${av ? av.name : id}!` });
+        avatarToasts.push({ icon: "🖼️", image: av ? av.url : null, label: t("toast.avatarUnlockedLabel"), title: t("toast.newAvatarTitle", { name: av ? av.name : id }) });
       }
     });
 
-    if (modeToasts.length || eventToasts.length || hillToasts.length || avatarToasts.length) playSFX(SFX.newmode);
+    if (modeToasts.length || eventToasts.length || hillToasts.length || hillShinyToasts.length || avatarToasts.length) playSFX(SFX.newmode);
 
-    queueAchievementToasts(newlyUnlocked.concat(modeToasts).concat(eventToasts).concat(hillToasts).concat(avatarToasts));
+    // Los logros en sí (newlyUnlocked) sí son "Logro desbloqueado"; todo lo
+    // demás (modo, minijuego, evento, colina, avatar) es una consecuencia
+    // del logro, no el logro en sí, así que llevan su propia etiqueta (ver
+    // arriba) en vez de reutilizar la de logro.
+    const achievementToasts = newlyUnlocked.map(a => ({ icon: a.icon, label: t("toast.achievementUnlockedLabel"), title: tData(`achv.${a.id}.title`, a.title) }));
+    queueAchievementToasts(achievementToasts.concat(modeToasts).concat(eventToasts).concat(hillToasts).concat(hillShinyToasts).concat(avatarToasts));
     updateModeLocksUI();
     updateOtherLocksUI();
     newHillPokemon.forEach(addBgPokemon);
+    shinyHillPokemon.forEach(refreshBgPokemonSprite);
     if (screens.achievements.classList.contains("show")) renderAchievementsScreen();
     updateHomeAchievementSummary();
   }
@@ -1228,7 +1364,11 @@ function buildPool() {
     session.pool = songs.filter(s => s.group === "main");
     session.questionType = "title";
   } else if (session.mode === GameMode.OTHER) {
-    session.pool = songs.filter(s => s.group === "other" && s.other === session.otherGame);
+    // Openings del Anime tiene dos variantes de doblaje (España/Latino, ver
+    // session.openingsVariant); el resto de categorías no usan `variant` en absoluto,
+    // así que Boolean(s.variant) es siempre false para ellas y este filtro no les afecta.
+    const wantLatino = session.otherGame === "openings-anime" && session.openingsVariant === "latino";
+    session.pool = songs.filter(s => s.group === "other" && s.other === session.otherGame && Boolean(s.variant) === wantLatino);
     session.questionType = "title";
   } else if (session.mode === GameMode.INFINITE) {
     // Desafío Infinito: todas las canciones principales, sin límite de rondas, EXCEPTO las de Combate y las de Minijuegos
@@ -1257,7 +1397,7 @@ function generateOptionsForCurrent(correctSong) {
     const correct = correctSong.region;
     const wrongRegions = EASY_REGIONS.filter(r => r !== correct);
     const wrongs = shuffle(wrongRegions).slice(0, 3);
-    return shuffle([correct, ...wrongs]).map(x => ({ label: x, isCorrect: x === correct }));
+    return shuffle([correct, ...wrongs]).map(x => ({ label: regionDisplayName(x), isCorrect: x === correct }));
   }
 
   // TITLE: opciones = títulos del pool
@@ -1267,7 +1407,7 @@ function generateOptionsForCurrent(correctSong) {
   const wrongCount = totalOptions - 1;
 
   const wrongs = shuffle(wrongSongs).slice(0, wrongCount);
-  const opts = shuffle([correctSong, ...wrongs]).map(s => ({ label: s.title, isCorrect: s.title === correctSong.title }));
+  const opts = shuffle([correctSong, ...wrongs]).map(s => ({ label: songDisplayName(s), isCorrect: s.title === correctSong.title }));
   return opts;
 }
 
@@ -1353,8 +1493,8 @@ function storyGameOver() {
     Leaderboard.submitScore("story", profile.username, profile.avatarId, state.score, ensurePlayerId());
   }
   showScreen("home", false);
-  storyCompleteTitle.textContent = "Game Over";
-  storyCompleteSubtitle.textContent = "Has perdido tus 3 vidas. Vuelve a intentarlo desde Kanto.";
+  storyCompleteTitle.textContent = t("story.gameOverTitle");
+  storyCompleteSubtitle.textContent = t("story.gameOverDesc");
   storyCompleteBall.src = STORY_BROKEN_HEART;
   storyCompleteOverlay.classList.add('gameover');
   storyCompleteOverlay.classList.add('show');
@@ -1394,8 +1534,11 @@ function electrodeExplode() {
   updateStatsUI();
 
   setTimeout(() => {
+    // Se compara dataset.correct (no el texto del botón) porque en
+    // idioma inglés el texto mostrado puede estar traducido (p. ej.
+    // "Unova") y ya no coincidiría con la clave interna de la región.
     document.querySelectorAll('.answer-btn').forEach(b => {
-      if (b.textContent === (session.questionType === "region" ? state.currentSong.region : state.currentSong.title)) {
+      if (b.dataset.correct === "1") {
         b.classList.add('reveal');
       }
     });
@@ -1460,15 +1603,16 @@ function startGame(mode, extra=null) {
   // arrancamos desde los totales acumulados hasta ahora en vez de desde 0.
   const initialScore = (mode === GameMode.STORY) ? session.storyTotalScore : 0;
   const initialStreak = (mode === GameMode.STORY) ? session.storyStreak : 0;
-  state = { score: initialScore, correct: 0, round: 1, streak: initialStreak, currentSong: null, answered: false, chanseyUsed: false, history: [] };
+  state = { score: initialScore, correct: 0, round: 1, streak: initialStreak, currentSong: null, answered: false, chanseyUsed: false, hintUsed: false, history: [] };
   document.getElementById('result-overlay').classList.remove('show');
 
   // nº de rondas de esta partida: en Modo Historia, la fase de combate dura menos rondas;
-  // en Minijuegos (Modo OTHER) la partida dura solo OTHER_ROUNDS rondas.
+  // en Minijuegos (Modo OTHER) la partida dura OTHER_ROUNDS rondas, salvo que
+  // la categoría tenga su propia excepción en OTHER_ROUNDS_OVERRIDES.
   session.roundsTarget = (mode === GameMode.STORY && session.storyPhase === "combat")
     ? STORY_COMBAT_ROUNDS
     : (mode === GameMode.OTHER)
-      ? OTHER_ROUNDS
+      ? (OTHER_ROUNDS_OVERRIDES[extra] ?? OTHER_ROUNDS)
       : TOTAL_ROUNDS;
 
   setModeLabel();
@@ -1494,9 +1638,11 @@ function startRound() {
 
   state.answered = false;
   state.chanseyUsed = false;
+  state.hintUsed = false;
   state.currentSong = getRandomSongFromPool();
   updateStatsUI();
   startRoundTimer();
+  resetHintButton();
 
   // Modo Difícil: 10s por ronda para responder (antes la canción se pausaba
   // a los 3s; ahora suena sin cortes durante los 10s del temporizador).
@@ -1504,10 +1650,10 @@ function startRound() {
 
   // Texto de pregunta
   const q = document.getElementById('song-question');
-  if (session.questionType === "region") q.textContent = '🌍 ¿A qué región pertenece esta canción?';
-  else q.textContent = '🎶 ¿Qué canción está sonando?';
+  if (session.questionType === "region") q.textContent = t("quiz.questionRegion");
+  else q.textContent = t("quiz.questionSong");
 
-  document.getElementById('audio-status').textContent = '▶ Reproduciendo...';
+  document.getElementById('audio-status').textContent = t("quiz.playing");
 
   // Ocultar el nombre de la ciudad hasta que el jugador responda (modo fácil)
   const cityReveal = document.getElementById('song-city-reveal');
@@ -1584,7 +1730,7 @@ function startRound() {
     initAudioContext();
     if (audioCtx.state === 'suspended') audioCtx.resume();
     audio.play().catch(() => {
-      document.getElementById('audio-status').textContent = '▶ Toca la pantalla para reproducir';
+      document.getElementById('audio-status').textContent = t("quiz.tapToPlay");
       document.addEventListener('touchstart', resumeAudio, { once: true });
       document.addEventListener('click', resumeAudio, { once: true });
     });
@@ -1603,6 +1749,24 @@ function startRound() {
 function resumeAudio() {
   if (audioCtx) audioCtx.resume();
   audio.play().catch(() => {});
+}
+
+/**
+ * Pista visual (Fácil / Normal / Modo Historia): el jugador puede pedir
+ * ver, antes de responder, la carátula de la canción que está sonando
+ * dentro del contenedor circular (mismo sitio donde se revela al acertar
+ * o fallar). A cambio, esta ronda vale un 50% menos de puntos (ver
+ * handleAnswer). Solo se puede usar una vez por ronda y solo antes de
+ * responder.
+ */
+function useVisualHint() {
+  if (state.answered || state.hintUsed) return;
+  if (session.mode !== GameMode.EASY && session.mode !== GameMode.NORMAL && session.mode !== GameMode.STORY) return;
+
+  state.hintUsed = true;
+  playSFX(SFX.go);
+  setSongImage(state.currentSong);
+  markHintButtonUsed();
 }
 
 /**
@@ -1628,7 +1792,7 @@ function handleAnswer(btn, isCorrect) {
     btn.disabled = true;
     playSFX(SFX.wrong);
     const status = document.getElementById('audio-status');
-    if (status) status.textContent = '💗 ¡Chansey te da otra oportunidad!';
+    if (status) status.textContent = t("quiz.chanseySecondChance");
     return;
   }
 
@@ -1645,7 +1809,7 @@ function handleAnswer(btn, isCorrect) {
   // Modo fácil: mostrar el nombre de la ciudad de la canción que está sonando
   if (session.mode === GameMode.EASY) {
     const cityReveal = document.getElementById('song-city-reveal');
-    cityReveal.textContent = `🏙️ ${state.currentSong.title}`;
+    cityReveal.textContent = `🏙️ ${songDisplayName(state.currentSong)}`;
     cityReveal.style.display = 'block';
   }
 
@@ -1662,7 +1826,10 @@ function handleAnswer(btn, isCorrect) {
     // Evento Pikachu: multiplica por x3 los puntos obtenidos en la ronda.
     const activeEventId = PokeEvents.activeId();
     const eventPointsMultiplier = activeEventId === "shiny" ? 5 : activeEventId === "pikachu" ? 3 : 1;
-    const multiplier = getStreakMultiplier(state.streak) * eventPointsMultiplier;
+    // Pista visual: si el jugador la ha usado esta ronda, se queda con la
+    // mitad de los puntos que le correspondería (ver useVisualHint()).
+    const hintPointsMultiplier = state.hintUsed ? 0.5 : 1;
+    const multiplier = getStreakMultiplier(state.streak) * eventPointsMultiplier * hintPointsMultiplier;
     const roundPoints = Math.round(basePoints * multiplier);
     state.score += roundPoints;
     // addProfileXp/trackCorrectAnswer/trackSongCorrect son las únicas llamadas
@@ -1695,8 +1862,10 @@ function handleAnswer(btn, isCorrect) {
 
     setTimeout(() => {
       document.querySelectorAll('.answer-btn').forEach(b => {
-        // en EASY el "label" correcto es región
-        if (b.textContent === (session.questionType === "region" ? state.currentSong.region : state.currentSong.title)) {
+        // dataset.correct en vez del texto del botón: en EASY el texto
+        // puede estar traducido (p. ej. "Unova" en vez de "Teselia") y
+        // dejaría de coincidir con la clave interna de la región.
+        if (b.dataset.correct === "1") {
           b.classList.add('reveal');
         }
       });
@@ -1749,13 +1918,13 @@ function showResult() {
   const overlay = document.getElementById('result-overlay');
 
   if (session.mode === GameMode.INFINITE) {
-    let emoji = '😅', title = '¡Buen intento!';
-    if (state.correct >= 30) { emoji = '🏆'; title = '¡Maestro Pokémon!'; }
-    else if (state.correct >= 15) { emoji = '⭐'; title = '¡Muy bien!'; }
-    else if (state.correct >= 5) { emoji = '🎵'; title = '¡Buen trabajo!'; }
+    let emoji = '😅', title = t("result.attempt");
+    if (state.correct >= 30) { emoji = '🏆'; title = t("result.master"); }
+    else if (state.correct >= 15) { emoji = '⭐'; title = t("result.great"); }
+    else if (state.correct >= 5) { emoji = '🎵'; title = t("result.good"); }
     document.getElementById('result-emoji').textContent = emoji;
     document.getElementById('result-title').textContent = title;
-    document.getElementById('result-score-num').textContent = `${state.correct} rondas superadas · 💰 ${state.score} pts`;
+    document.getElementById('result-score-num').textContent = t("result.infiniteScore", { n: state.correct, score: state.score });
     overlay.classList.add('show');
     if (state.correct >= 10) playSFX(SFX.victory);
     trackGameFinished(Math.round(Math.min(state.correct / 20, 1) * 100));
@@ -1770,13 +1939,13 @@ function showResult() {
   }
 
   const pct = Math.round(state.correct / session.roundsTarget * 100);
-  let emoji = '😅', title = '¡Buen intento!';
-  if (pct >= 90) { emoji = '🏆'; title = '¡Maestro Pokémon!'; }
-  else if (pct >= 70) { emoji = '⭐'; title = '¡Muy bien!'; }
-  else if (pct >= 50) { emoji = '🎵'; title = '¡Buen trabajo!'; }
+  let emoji = '😅', title = t("result.attempt");
+  if (pct >= 90) { emoji = '🏆'; title = t("result.master"); }
+  else if (pct >= 70) { emoji = '⭐'; title = t("result.great"); }
+  else if (pct >= 50) { emoji = '🎵'; title = t("result.good"); }
   document.getElementById('result-emoji').textContent = emoji;
   document.getElementById('result-title').textContent = title;
-  document.getElementById('result-score-num').textContent = `${state.correct} / ${session.roundsTarget} · 💰 ${state.score} pts`;
+  document.getElementById('result-score-num').textContent = t("result.roundsScore", { n: state.correct, total: session.roundsTarget, score: state.score });
   overlay.classList.add('show');
   if (state.correct >= 10) playSFX(SFX.victory);
   trackGameFinished(pct, { mode: session.mode, region: session.normalRegion, otherGame: session.otherGame, correctCount: state.correct });
@@ -1837,8 +2006,31 @@ document.querySelectorAll("[data-other]").forEach(btn => {
     const key = btn.getAttribute("data-other");
     if (!isOtherUnlocked(key)) { showLockedOtherMessage(key); return; }
     playSFX(SFX.go);
+    // Se reinicia aquí (y no dentro de startGame) para que quede a null tanto si esta
+    // categoría no es Openings del Anime como si el jugador entra en Openings del Anime
+    // jugando en inglés (sin pantalla previa, siempre versión España).
+    session.openingsVariant = null;
+    if (key === "openings-anime" && settings.language === "es") {
+      // Jugando en español: antes de arrancar, preguntar España/Latino (ver botones
+      // #openings-lang-spain / #openings-lang-latino más abajo).
+      showScreen("openingsLangSelect");
+      return;
+    }
     startGame(GameMode.OTHER, key);
   });
+});
+
+// Openings del Anime: pantalla previa de selección de doblaje (solo se llega aquí
+// jugando en español, ver el listener de [data-other] de arriba).
+document.getElementById("openings-lang-spain").addEventListener("click", () => {
+  playSFX(SFX.go);
+  session.openingsVariant = null;
+  startGame(GameMode.OTHER, "openings-anime");
+});
+document.getElementById("openings-lang-latino").addEventListener("click", () => {
+  playSFX(SFX.go);
+  session.openingsVariant = "latino";
+  startGame(GameMode.OTHER, "openings-anime");
 });
 
 // Normal: tarjetas de región
@@ -1862,7 +2054,7 @@ REGIONS.forEach(r => {
   b.innerHTML = `
     <span class="region-card-gen">GEN ${meta.gen}</span>
     <span class="region-card-icon">${meta.icon}</span>
-    <span class="region-card-name">${r}</span>
+    <span class="region-card-name">${regionDisplayName(r)}</span>
   `;
   b.onclick = () => { playSFX(SFX.go); startGame(GameMode.NORMAL, r); };
   pillsWrap.appendChild(b);
@@ -1870,6 +2062,7 @@ REGIONS.forEach(r => {
 
 // Quiz: next
 document.getElementById("next-btn").addEventListener("click", nextRound);
+document.getElementById("hint-btn").addEventListener("click", useVisualHint);
 document.getElementById("restart-btn").addEventListener("click", () => { playSFX(SFX.go); restartGame(); });
 document.getElementById("exit-btn").addEventListener("click", () => { playSFX(SFX.go); exitGame(); });
 
@@ -1982,7 +2175,7 @@ function storyFinish() {
   saveAchievements();
   trackGameFinished(pct, { mode: session.mode });
 
-  storyCompleteTitle.textContent = "¡Modo Historia Completado!";
+  storyCompleteTitle.textContent = t("story.completeTitle");
   storyCompleteBall.src = STORY_BALL_COMBAT;
   storyCompleteOverlay.classList.remove('gameover');
   storyCompleteOverlay.classList.add('show');
@@ -2002,10 +2195,16 @@ document.getElementById("go-story").addEventListener("click", () => { playSFX(SF
 //  🚀 INIT
 // ═══════════════════════════════════════════════
 // Arranque de la aplicación al cargar la página. loadSettings/loadAchievements/
-// loadProfile vienen de storage.js, buildBgPokemon() de pokemon.js y menuAudio
+// loadProfile vienen de storage.js, applyTranslations() de i18n.js,
+// applyLanguageSwitchUI() de ui.js, buildBgPokemon() de pokemon.js y menuAudio
 // de audio.js: si algún día se cambia el orden de los <script> en index.html,
 // este bloque sería el primero en romperse.
 loadSettings();
+// Pinta el idioma guardado (settings.language) en todo el marcado estático
+// y en los botones Español/English nada más cargar la página, antes de que
+// el jugador toque nada.
+applyTranslations();
+applyLanguageSwitchUI();
 loadAchievements();
 loadProfile();
 renderProfileBar();
